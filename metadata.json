@@ -1,0 +1,8 @@
+{
+  "name": "Healthy Food & Dish Finder",
+  "description": "Discover healthy, macro-targeted, seed-oil-free, and keto dishes at local independent restaurants with interactive maps and AI menu analysis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
