@@ -8,30 +8,29 @@ import DishDetailModal from '@/components/DishDetailModal';
 import MenuScannerModal from '@/components/MenuScannerModal';
 import BentoFilters, { FilterState } from '@/components/BentoFilters';
 import CreatorFeed from '@/components/CreatorFeed';
+import CategoryCarousel from '@/components/CategoryCarousel';
+import HeroPromoBanner from '@/components/HeroPromoBanner';
 import {
   Compass,
   MapPin,
   ScanLine,
-  Film,
   Flame,
   ChevronDown,
   List,
   Map as MapIcon,
+  Beef,
+  ShieldCheck,
 } from 'lucide-react';
 
-// Dynamically import InteractiveMap and IntroSequence with SSR disabled to prevent Leaflet/browser canvas errors
+// Dynamically import InteractiveMap with SSR disabled to prevent Leaflet/browser canvas errors
 const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950 text-slate-400 gap-2">
-      <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+    <div className="w-full h-full flex flex-col items-center justify-center bg-stone-100 text-stone-500 gap-2">
+      <div className="w-6 h-6 border-2 border-[#C8102E] border-t-transparent rounded-full animate-spin"></div>
       <span className="text-xs font-mono font-medium">Loading Map Zones...</span>
     </div>
   ),
-});
-
-const IntroSequence = dynamic(() => import('@/components/IntroSequence'), {
-  ssr: false,
 });
 
 export default function Page() {
@@ -39,12 +38,12 @@ export default function Page() {
   // 1. Mobile UX State: Toggle between full-screen 'list' and 'map' on mobile screens (< lg)
   const [mobileView, setMobileView] = useState<'map' | 'list'>('list');
 
-  const [showIntro, setShowIntro] = useState(false);
   const [dishes, setDishes] = useState<Dish[]>(INITIAL_DISHES);
   const [selectedCity, setSelectedCity] = useState<CityLocation>(CITY_LOCATIONS[0]);
   const [selectedDish, setSelectedDish] = useState<Dish | null>(INITIAL_DISHES[0]);
   const [detailDish, setDetailDish] = useState<Dish | null>(null);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string>('all');
 
   useEffect(() => {
     setIsMounted(true);
@@ -63,10 +62,7 @@ export default function Page() {
       }
     };
     const handleUnhandledRejection = (e: PromiseRejectionEvent) => {
-      if (
-        e.reason?.message?.includes('ResizeObserver') ||
-        e.reason?.message?.includes('spline')
-      ) {
+      if (e.reason?.message?.includes('ResizeObserver')) {
         e.preventDefault();
       }
     };
@@ -118,6 +114,7 @@ export default function Page() {
   }, [dishes]);
 
   const resetFilters = () => {
+    setActiveCategory('all');
     setFilters({
       search: '',
       seedOilFree: false,
@@ -128,6 +125,27 @@ export default function Page() {
       minProtein: 0,
       maxCarbs: 50,
     });
+  };
+
+  const handleCategorySelect = (catId: string) => {
+    setActiveCategory(catId);
+    if (catId === 'all') {
+      setFilters((prev) => ({ ...prev, search: '', seedOilFree: false, grassFed: false, keto: false }));
+    } else if (catId === 'beef') {
+      setFilters((prev) => ({ ...prev, search: 'beef', grassFed: true }));
+    } else if (catId === 'seed-oil-free') {
+      setFilters((prev) => ({ ...prev, seedOilFree: true }));
+    } else if (catId === 'poultry') {
+      setFilters((prev) => ({ ...prev, search: 'chicken' }));
+    } else if (catId === 'keto') {
+      setFilters((prev) => ({ ...prev, keto: true, maxCarbs: 20 }));
+    } else if (catId === 'bowls') {
+      setFilters((prev) => ({ ...prev, search: 'bowl' }));
+    } else if (catId === 'seafood') {
+      setFilters((prev) => ({ ...prev, search: 'salmon' }));
+    } else if (catId === 'tallow') {
+      setFilters((prev) => ({ ...prev, search: 'tallow' }));
+    }
   };
 
   const filteredDishes = useMemo(() => {
@@ -176,39 +194,46 @@ export default function Page() {
     setDetailDish(newDish);
   };
 
-  if (showIntro && isMounted) {
-    return <IntroSequence onComplete={() => setShowIntro(false)} />;
-  }
-
   const allCityDishesCount =
     selectedCity.name === 'All Locations'
       ? dishes.length
       : dishes.filter((d) => d.city === selectedCity.name).length;
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen w-full bg-slate-100 font-sans text-slate-900 overflow-hidden relative">
+    <div className="flex flex-col lg:flex-row h-screen w-full bg-[#F7F5F0] font-sans text-stone-900 overflow-hidden relative">
       {/* 
         MAP CONTAINER:
-        - 2. Desktop Layout: On lg screens and above, maintains side-by-side split screen (w-[460px] xl:w-[500px] h-full).
-        - 3. Mobile Layout: On screens < lg, conditionally rendered full-screen when mobileView === 'map', hidden when 'list'.
+        - Desktop Layout: On lg screens and above, maintains side-by-side split screen (w-[460px] xl:w-[500px] h-full).
+        - Mobile Layout: On screens < lg, conditionally rendered full-screen when mobileView === 'map', hidden when 'list'.
       */}
       <div
         id="interactive-map-panel"
-        className={`w-full lg:w-[460px] xl:w-[500px] h-[calc(100dvh-64px)] lg:h-full flex-col bg-slate-950 border-b lg:border-b-0 lg:border-r border-slate-800 shrink-0 relative ${
+        className={`w-full lg:w-[460px] xl:w-[500px] h-[calc(100dvh-64px)] lg:h-full flex-col bg-white border-b lg:border-b-0 lg:border-r border-stone-200 shrink-0 relative ${
           mobileView === 'map' ? 'flex' : 'hidden lg:flex'
         }`}
       >
         {/* Map Top Bar */}
-        <div className="p-3.5 sm:p-4 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 flex items-center justify-between z-10 shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
-              <MapPin className="w-4 h-4" />
+        <div className="px-4 py-3.5 bg-white/95 backdrop-blur-xl border-b border-stone-200 flex items-center justify-between z-10 shrink-0 shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="w-9 h-9 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-[#C8102E] shrink-0 shadow-xs">
+                <MapPin className="w-4 h-4 stroke-[2.5]" />
+              </div>
+              <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#C8102E]"></span>
+              </span>
             </div>
             <div>
-              <span className="text-xs font-black text-white uppercase tracking-wider block leading-tight">
-                Active Map Zone
-              </span>
-              <span className="text-[11px] text-slate-400 font-medium">
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-black text-stone-900 uppercase tracking-wider block leading-tight">
+                  Active Map Zone
+                </span>
+                <span className="px-1.5 py-0.5 rounded-full bg-rose-100 border border-rose-200 text-[10px] font-mono font-black text-[#C8102E]">
+                  LIVE
+                </span>
+              </div>
+              <span className="text-[11px] text-stone-500 font-semibold">
                 {filteredDishes.length} vetted in {selectedCity.name}
               </span>
             </div>
@@ -221,7 +246,7 @@ export default function Page() {
               value={selectedCity.name}
               suppressHydrationWarning
               onChange={(e) => handleCityNameChange(e.target.value)}
-              className="appearance-none bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs pl-3 pr-8 py-1.5 rounded-xl border border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
+              className="appearance-none bg-white hover:bg-stone-50 text-stone-800 font-bold text-xs pl-3 pr-8 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 cursor-pointer shadow-xs transition-all"
             >
               <option value="All Locations">All Locations ({dishes.length})</option>
               {CITY_LOCATIONS.map((c) => (
@@ -230,7 +255,7 @@ export default function Page() {
                 </option>
               ))}
             </select>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <ChevronDown className="w-3.5 h-3.5 text-stone-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
         </div>
 
@@ -247,8 +272,8 @@ export default function Page() {
               city={selectedCity}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950 text-slate-400 gap-2">
-              <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-full h-full flex flex-col items-center justify-center bg-stone-100 text-stone-500 gap-2">
+              <div className="w-6 h-6 border-2 border-[#C8102E] border-t-transparent rounded-full animate-spin"></div>
               <span className="text-xs font-mono font-medium">Loading Map Zones...</span>
             </div>
           )}
@@ -256,15 +281,15 @@ export default function Page() {
 
         {/* Map Selected Dish Quick Card on Map Bottom */}
         {selectedDish && (
-          <div className="p-3 bg-slate-900/95 border-t border-slate-800 backdrop-blur-md z-10 shrink-0 flex items-center justify-between gap-3">
+          <div className="p-3 bg-white/95 border-t border-stone-200 backdrop-blur-xl z-10 shrink-0 flex items-center justify-between gap-3 shadow-md">
             <div className="min-w-0">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 block">
+              <span className="text-[10px] font-black uppercase tracking-widest text-[#C8102E] block">
                 Selected Pin
               </span>
-              <h4 className="text-xs font-extrabold text-white truncate leading-tight">
+              <h4 className="text-xs font-black text-stone-900 truncate leading-tight">
                 {selectedDish.name}
               </h4>
-              <p className="text-[11px] text-slate-400 truncate">
+              <p className="text-[11px] text-stone-600 truncate font-medium">
                 {selectedDish.restaurant} • {selectedDish.protein}g Protein • {selectedDish.cookingFat}
               </p>
             </div>
@@ -272,7 +297,7 @@ export default function Page() {
               <button
                 id="map-view-details-btn"
                 onClick={() => setDetailDish(selectedDish)}
-                className="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-black transition-all cursor-pointer shadow-sm"
+                className="px-3.5 py-1.5 rounded-xl bg-[#C8102E] hover:bg-[#A30D25] text-white text-xs font-black transition-all cursor-pointer shadow-sm"
               >
                 Inspect
               </button>
@@ -283,86 +308,114 @@ export default function Page() {
 
       {/* 
         MAIN CONTENT / DISH LIST PANEL:
-        - 2. Desktop Layout: On lg screens and above, renders the right half of the split screen (flex-1 h-full).
-        - 3. Mobile Layout: On screens < lg, conditionally rendered full-screen when mobileView === 'list', hidden when 'map'.
+        - Desktop Layout: On lg screens and above, renders the right half of the split screen (flex-1 h-full).
+        - Mobile Layout: On screens < lg, conditionally rendered full-screen when mobileView === 'list', hidden when 'map'.
       */}
       <div
         id="main-dish-list-panel"
-        className={`flex-1 h-[calc(100dvh-64px)] lg:h-full flex-col overflow-y-auto bg-slate-100 ${
+        className={`flex-1 h-[calc(100dvh-64px)] lg:h-full flex-col overflow-y-auto bg-[#F7F5F0] ${
           mobileView === 'list' ? 'flex' : 'hidden lg:flex'
         }`}
       >
-        {/* Top Header */}
+        {/* Arby's Fast-Casual Inspired Header */}
         <header
           id="main-app-header"
-          className="sticky top-0 z-30 px-4 sm:px-6 py-3.5 sm:py-4 bg-white/90 backdrop-blur-md border-b border-slate-200/90 flex flex-wrap items-center justify-between gap-3"
+          className="sticky top-0 z-30 px-4 sm:px-6 py-3.5 bg-white/95 backdrop-blur-xl border-b border-stone-200 flex flex-wrap items-center justify-between gap-3 shadow-xs"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-emerald-500 flex items-center justify-center text-black shadow-md shadow-emerald-500/20 shrink-0">
-              <Compass className="w-5 h-5" />
+          {/* Brand & Identity */}
+          <div className="flex items-center gap-3.5">
+            <div className="relative group">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#C8102E] flex items-center justify-center text-white shadow-md shadow-rose-900/20 shrink-0 transition-transform group-hover:scale-105">
+                <Beef className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
+              </div>
+              <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#C8102E] border-2 border-white"></span>
+              </span>
             </div>
+
             <div>
               <div className="flex items-center gap-2">
                 <h1
                   id="app-main-title"
-                  className="font-black text-base sm:text-lg md:text-xl tracking-tight text-slate-900 leading-none"
+                  className="font-black text-lg sm:text-xl md:text-2xl tracking-tight text-stone-900 leading-none flex items-center gap-2"
                 >
-                  Healthy Food in your Vicinity
+                  <span className="tracking-tighter">VICINITY</span>
+                  <span className="text-[10px] font-black tracking-widest text-[#C8102E] uppercase bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full hidden sm:inline-block">
+                    100% Seed-Oil Free
+                  </span>
                 </h1>
-                <button
-                  id="replay-intro-btn"
-                  onClick={() => setShowIntro(true)}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black text-white hover:bg-neutral-800 text-[11px] font-bold transition-all shadow-xs cursor-pointer"
-                  title="Replay 3D Scroll Intro Sequence"
-                >
-                  <Film className="w-3 h-3 text-emerald-400" />
-                  <span>3D Intro</span>
-                </button>
               </div>
-              <p className="text-slate-500 font-medium text-xs mt-0.5">
-                Local macro discovery engine &amp; verified seed-oil-free dining
-              </p>
+
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-stone-500 font-semibold text-xs">
+                  Lab &amp; Chef Verified Clean-Fuel Dining
+                </span>
+                <span className="text-stone-300 hidden md:inline">•</span>
+                <span className="text-emerald-700 text-[11px] font-bold hidden md:inline-flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  No Canola • No Soybean Oil
+                </span>
+              </div>
             </div>
           </div>
 
           {/* Action CTAs & Location Switcher */}
-          <div className="flex items-center gap-2">
-            {/* Quick Header Location Selector */}
+          <div className="flex items-center gap-2.5">
+            {/* Quick Header Location Selector Pill */}
             <div className="relative flex items-center">
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 transition-colors shadow-xs">
-                <MapPin className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white hover:bg-stone-50 border border-stone-200 text-xs font-bold text-stone-800 transition-colors shadow-xs">
+                <MapPin className="w-3.5 h-3.5 text-[#C8102E] shrink-0" />
                 <select
                   id="header-city-selector"
                   value={selectedCity.name}
                   onChange={(e) => handleCityNameChange(e.target.value)}
                   suppressHydrationWarning
-                  className="bg-transparent font-bold text-xs text-slate-900 focus:outline-none cursor-pointer pr-1"
+                  className="bg-transparent font-bold text-xs text-stone-900 focus:outline-none cursor-pointer pr-1"
                 >
-                  <option value="All Locations">All Locations ({dishes.length})</option>
+                  <option value="All Locations">
+                    All Locations ({dishes.length})
+                  </option>
                   {CITY_LOCATIONS.map((c) => (
                     <option key={c.name} value={c.name}>
                       {c.name}, {c.state} ({cityDishCounts[c.name] ?? 0})
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="w-3 h-3 text-slate-400 pointer-events-none" />
+                <ChevronDown className="w-3 h-3 text-stone-400 pointer-events-none" />
               </div>
             </div>
 
+            {/* AI Menu Scanner CTA Button */}
             <button
               id="open-menu-scanner-btn"
               onClick={() => setIsScannerOpen(true)}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-md cursor-pointer group"
+              className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl bg-[#C8102E] hover:bg-[#A30D25] text-white text-xs font-black tracking-wide transition-all shadow-md shadow-rose-900/20 hover:scale-[1.02] active:scale-[0.98] cursor-pointer group"
             >
-              <ScanLine className="w-4 h-4 text-emerald-400 group-hover:rotate-12 transition-transform" />
-              <span className="hidden xs:inline">AI Menu Scanner</span>
-              <span className="xs:hidden">Scanner</span>
+              <ScanLine className="w-4 h-4 text-white group-hover:rotate-12 transition-transform stroke-[2.5]" />
+              <span className="hidden xs:inline">Scan Menu (AI)</span>
+              <span className="xs:hidden">Scan</span>
             </button>
           </div>
         </header>
 
         {/* Dashboard Content Body */}
-        <main className="p-4 sm:p-6 space-y-6 max-w-7xl w-full mx-auto pb-8">
+        <main className="p-4 sm:p-6 space-y-6 max-w-7xl w-full mx-auto pb-12">
+          {/* Fast-Casual Hero Promo Banner (Inspired by Arby's UI Reference) */}
+          <HeroPromoBanner
+            onExploreClick={() => {
+              const el = document.getElementById('dishes-grid-section');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            onOpenScanner={() => setIsScannerOpen(true)}
+          />
+
+          {/* Pinterest-style Category Carousel (Meats, Keto, Bowls, Seed-Oil Free) */}
+          <CategoryCarousel
+            activeCategory={activeCategory}
+            onSelectCategory={handleCategorySelect}
+          />
+
           {/* Bento Filters Bar with Location Filter */}
           <BentoFilters
             filters={filters}
@@ -380,20 +433,20 @@ export default function Page() {
           <CreatorFeed />
 
           {/* Dishes Grid */}
-          <div className="space-y-4">
+          <div id="dishes-grid-section" className="space-y-4 pt-2">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm sm:text-base font-extrabold text-slate-900 flex items-center gap-2">
-                <Flame className="w-4 h-4 text-amber-500" />
+              <h2 className="text-base sm:text-lg font-black text-stone-900 flex items-center gap-2">
+                <Flame className="w-4 h-4 text-[#C8102E]" />
                 <span>
-                  Verified Clean Dishes in{' '}
-                  <span className="text-emerald-700 underline decoration-emerald-300 underline-offset-2">
+                  Verified Dishes in{' '}
+                  <span className="text-[#C8102E] underline decoration-rose-400/40 underline-offset-4">
                     {selectedCity.name === 'All Locations'
                       ? 'All Locations'
                       : `${selectedCity.name}, ${selectedCity.state}`}
                   </span>
                 </span>
-                <span className="text-xs font-bold text-slate-400">
-                  ({filteredDishes.length})
+                <span className="text-xs font-bold text-stone-700 px-2.5 py-0.5 rounded-full bg-white border border-stone-200 shadow-xs">
+                  {filteredDishes.length} items
                 </span>
               </h2>
             </div>
@@ -415,21 +468,21 @@ export default function Page() {
                 ))}
               </div>
             ) : (
-              <div className="p-8 sm:p-12 text-center bg-white rounded-3xl border border-dashed border-slate-300 space-y-3">
-                <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto">
+              <div className="p-8 sm:p-12 text-center bg-white rounded-3xl border border-dashed border-stone-300 space-y-3 shadow-xs">
+                <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-[#C8102E] flex items-center justify-center mx-auto">
                   <Compass className="w-6 h-6" />
                 </div>
-                <h3 className="font-extrabold text-slate-900 text-sm">
-                  No dishes match all active vetoes in {selectedCity.name}
+                <h3 className="font-extrabold text-stone-900 text-sm">
+                  No dishes match all active filters in {selectedCity.name}
                 </h3>
-                <p className="text-xs text-slate-500 max-w-md mx-auto">
+                <p className="text-xs text-stone-500 max-w-md mx-auto font-medium">
                   Try adjusting your protein or carb thresholds, or click reset to view all
                   verified healthy dishes in this city zone.
                 </p>
                 <button
                   id="empty-reset-filters-btn"
                   onClick={resetFilters}
-                  className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-extrabold transition-all cursor-pointer shadow-md"
+                  className="px-4 py-2 rounded-xl bg-[#C8102E] hover:bg-[#A30D25] text-white text-xs font-black transition-all cursor-pointer shadow-sm"
                 >
                   Reset Veto Filters
                 </button>
@@ -440,14 +493,11 @@ export default function Page() {
       </div>
 
       {/* 
-        4. Bottom Navigation:
-        - Fixed bottom tab bar for mobile (< lg)
-        - Evenly spaced buttons: "List" and "Map" with Lucide icons
-        - Highlights the active tab with Emerald-500 text/indicator
+        Bottom Navigation for Mobile (< lg)
       */}
       <nav
         id="mobile-bottom-nav-bar"
-        className="fixed bottom-0 left-0 right-0 h-16 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800 z-50 flex lg:hidden items-center justify-around px-4 shadow-2xl"
+        className="fixed bottom-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-lg border-t border-stone-200 z-50 flex lg:hidden items-center justify-around px-4 shadow-lg"
       >
         {/* List Tab Button */}
         <button
@@ -455,21 +505,21 @@ export default function Page() {
           onClick={() => setMobileView('list')}
           className={`flex-1 flex flex-col items-center justify-center h-full py-1.5 transition-all cursor-pointer relative ${
             mobileView === 'list'
-              ? 'text-emerald-400 font-extrabold'
-              : 'text-slate-400 hover:text-slate-200 font-medium'
+              ? 'text-[#C8102E] font-black'
+              : 'text-stone-500 hover:text-stone-800 font-semibold'
           }`}
         >
           {mobileView === 'list' && (
-            <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+            <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-[#C8102E] rounded-full" />
           )}
-          <List className={`w-5 h-5 mb-1 ${mobileView === 'list' ? 'text-emerald-400 scale-110' : 'text-slate-400'} transition-transform`} />
+          <List className={`w-5 h-5 mb-1 ${mobileView === 'list' ? 'text-[#C8102E] scale-110' : 'text-stone-400'} transition-transform`} />
           <span className="text-[11px] tracking-wide">
             List ({filteredDishes.length})
           </span>
         </button>
 
         {/* Divider */}
-        <div className="w-px h-6 bg-slate-800 shrink-0" />
+        <div className="w-px h-6 bg-stone-200 shrink-0" />
 
         {/* Map Tab Button */}
         <button
@@ -477,14 +527,14 @@ export default function Page() {
           onClick={() => setMobileView('map')}
           className={`flex-1 flex flex-col items-center justify-center h-full py-1.5 transition-all cursor-pointer relative ${
             mobileView === 'map'
-              ? 'text-emerald-400 font-extrabold'
-              : 'text-slate-400 hover:text-slate-200 font-medium'
+              ? 'text-[#C8102E] font-black'
+              : 'text-stone-500 hover:text-stone-800 font-semibold'
           }`}
         >
           {mobileView === 'map' && (
-            <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+            <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-[#C8102E] rounded-full" />
           )}
-          <MapIcon className={`w-5 h-5 mb-1 ${mobileView === 'map' ? 'text-emerald-400 scale-110' : 'text-slate-400'} transition-transform`} />
+          <MapIcon className={`w-5 h-5 mb-1 ${mobileView === 'map' ? 'text-[#C8102E] scale-110' : 'text-stone-400'} transition-transform`} />
           <span className="text-[11px] tracking-wide">
             Map
           </span>

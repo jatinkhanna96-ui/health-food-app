@@ -243,21 +243,21 @@ export default function InteractiveMap({
         }">
           ${
             isSelected
-              ? '<div class="absolute -inset-2 bg-emerald-400/40 rounded-full animate-ping"></div>'
+              ? '<div class="absolute -inset-2 bg-rose-500/30 rounded-full animate-ping"></div>'
               : ''
           }
-          <div class="relative flex items-center gap-1.5 px-2.5 py-1 rounded-full border shadow-xl backdrop-blur-md ${
+          <div class="relative flex items-center gap-1.5 px-2.5 py-1 rounded-full border shadow-lg backdrop-blur-md ${
             isSelected
-              ? 'bg-emerald-500 border-emerald-300 text-black font-black ring-4 ring-emerald-500/30'
-              : 'bg-slate-900/90 border-slate-700 text-white font-extrabold hover:border-emerald-500'
+              ? 'bg-[#C8102E] border-rose-400 text-white font-black ring-4 ring-rose-500/20'
+              : 'bg-white border-stone-200 text-stone-900 font-extrabold hover:border-[#C8102E]'
           }">
             <span class="w-2 h-2 rounded-full ${
-              isSelected ? 'bg-black' : 'bg-emerald-400 animate-pulse'
+              isSelected ? 'bg-white' : 'bg-[#C8102E]'
             }"></span>
             <span class="text-xs tracking-tight">${dish.protein}g</span>
           </div>
           <div class="w-0 h-0 border-x-4 border-x-transparent border-t-6 mx-auto ${
-            isSelected ? 'border-t-emerald-500' : 'border-t-slate-800'
+            isSelected ? 'border-t-[#C8102E]' : 'border-t-stone-400'
           }"></div>
         </div>
       `,
@@ -271,9 +271,9 @@ export default function InteractiveMap({
     return (
       <div
         id="interactive-map-ssr-fallback"
-        className="w-full h-full flex flex-col items-center justify-center bg-slate-950 text-slate-400 gap-2.5 p-6"
+        className="w-full h-full flex flex-col items-center justify-center bg-stone-100 text-stone-500 gap-2.5 p-6"
       >
-        <div className="w-7 h-7 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-7 h-7 border-2 border-[#C8102E] border-t-transparent rounded-full animate-spin"></div>
         <span className="text-xs font-mono font-medium tracking-wide">
           Loading OpenStreetMap tiles...
         </span>
@@ -284,7 +284,7 @@ export default function InteractiveMap({
   return (
     <div
       id="interactive-react-leaflet-wrapper"
-      className="relative w-full h-full min-h-[340px] bg-slate-950 overflow-hidden"
+      className="relative w-full h-full min-h-[340px] bg-stone-100 overflow-hidden"
     >
       {/* 100% Free OpenStreetMap via React-Leaflet */}
       <MapContainer
@@ -332,30 +332,30 @@ export default function InteractiveMap({
               }}
             >
               <Popup className="custom-dish-popup">
-                <div className="p-3 space-y-2 w-64 text-slate-100">
+                <div className="p-3 space-y-2 w-64 text-stone-900 bg-white rounded-2xl">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono font-bold uppercase truncate max-w-[150px]">
+                    <span className="px-2 py-0.5 rounded-full bg-rose-50 text-[#C8102E] border border-rose-200 text-[10px] font-mono font-bold uppercase truncate max-w-[150px]">
                       {dish.cookingFat}
                     </span>
-                    <span className="font-extrabold text-xs text-emerald-400 shrink-0">
+                    <span className="font-extrabold text-xs text-[#C8102E] shrink-0">
                       {dish.protein}g Protein
                     </span>
                   </div>
 
                   <div>
-                    <h4 className="font-black text-sm text-white leading-tight">
+                    <h4 className="font-black text-sm text-stone-900 leading-tight">
                       {dish.name}
                     </h4>
-                    <p className="text-xs text-slate-400 mt-0.5 truncate">
+                    <p className="text-xs text-stone-500 mt-0.5 truncate">
                       {dish.restaurant}
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-between text-[11px] text-slate-300 border-t border-slate-800 pt-2 font-medium">
-                    <span>${dish.price.toFixed(2)}</span>
-                    <span className="text-slate-400">{dish.calories} kcal</span>
-                    <span className="text-blue-400 font-bold">{dish.carbs}g C</span>
-                    <span className="text-amber-400 font-bold">{dish.fat}g F</span>
+                  <div className="flex items-center justify-between text-[11px] text-stone-700 border-t border-stone-100 pt-2 font-medium">
+                    <span className="font-bold text-stone-900">${dish.price.toFixed(2)}</span>
+                    <span className="text-stone-500">{dish.calories} kcal</span>
+                    <span className="text-blue-600 font-bold">{dish.carbs}g C</span>
+                    <span className="text-amber-600 font-bold">{dish.fat}g F</span>
                   </div>
                 </div>
               </Popup>
@@ -365,20 +365,20 @@ export default function InteractiveMap({
       </MapContainer>
 
       {/* Floating Info Overlay (Top Left) */}
-      <div className="absolute top-3.5 left-3.5 z-[400] px-3 py-1.5 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-slate-800 shadow-xl flex items-center gap-2 pointer-events-none">
-        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span className="text-xs font-extrabold text-white">
+      <div className="absolute top-3.5 left-3.5 z-[400] px-3 py-1.5 rounded-2xl bg-white/95 backdrop-blur-md border border-stone-200 shadow-md flex items-center gap-2 pointer-events-none">
+        <span className="w-2 h-2 rounded-full bg-[#C8102E] animate-pulse"></span>
+        <span className="text-xs font-extrabold text-stone-900">
           {city?.name || 'City'}, {city?.state || ''}
         </span>
-        <span className="text-[10px] text-slate-400 font-mono">
+        <span className="text-[10px] text-stone-500 font-mono">
           ({dishes.length} Verified)
         </span>
       </div>
 
       {/* Attribution / OpenStreetMap Indicator (Top Right) */}
-      <div className="absolute top-3.5 right-3.5 z-[400] flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md p-1.5 rounded-2xl border border-slate-800 shadow-xl">
-        <div className="flex items-center gap-1 px-2 py-0.5 text-[11px] font-bold text-slate-400">
-          <Compass className="w-3.5 h-3.5 text-emerald-400" />
+      <div className="absolute top-3.5 right-3.5 z-[400] flex items-center gap-1.5 bg-white/95 backdrop-blur-md p-1.5 rounded-2xl border border-stone-200 shadow-md">
+        <div className="flex items-center gap-1 px-2 py-0.5 text-[11px] font-bold text-stone-600">
+          <Compass className="w-3.5 h-3.5 text-[#C8102E]" />
           <span>OpenStreetMap</span>
         </div>
       </div>

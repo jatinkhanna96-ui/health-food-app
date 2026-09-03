@@ -12,6 +12,8 @@ import {
   SlidersHorizontal,
   MapPin,
   ChevronDown,
+  UtensilsCrossed,
+  Flame,
 } from 'lucide-react';
 import { CityLocation } from '@/lib/mockData';
 
@@ -68,63 +70,63 @@ export default function BentoFilters({
     selectedCityName !== 'All Locations';
 
   return (
-    <div className="space-y-3.5 bg-white p-4 sm:p-5 rounded-3xl border border-slate-200 shadow-sm">
+    <div className="space-y-4 bg-white p-4 sm:p-5 rounded-3xl border border-stone-200/90 shadow-[0_4px_24px_rgba(28,25,23,0.05)]">
       {/* Top Search & Location Dropdown Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-        {/* Search Bar */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        {/* Search Bar with Arby's style input */}
         <div className="relative flex-1">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             id="dish-search-input"
             type="text"
             value={filters.search}
             onChange={(e) => onChange({ ...filters, search: e.target.value })}
-            placeholder="Search dish, steak, tallow, salmon, ramen..."
+            placeholder="Search healthy dishes, steak, tallow, salmon, bowls..."
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
             suppressHydrationWarning
-            className="w-full pl-9 pr-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-stone-50 border border-stone-200 text-xs font-semibold text-stone-900 placeholder-stone-400 focus:outline-none focus:border-[#C8102E] focus:ring-2 focus:ring-[#C8102E]/15 transition-all shadow-inner"
           />
         </div>
 
-        {/* Feed Location Selector Dropdown */}
+        {/* Location Dropdown */}
         <div className="relative shrink-0 flex items-center">
           <div className="relative w-full sm:w-auto">
-            <MapPin className="w-3.5 h-3.5 text-emerald-600 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <MapPin className="w-3.5 h-3.5 text-[#C8102E] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <select
               id="feed-city-selector-dropdown"
               value={selectedCityName}
               onChange={(e) => onCityChange?.(e.target.value)}
               suppressHydrationWarning
-              className="w-full sm:w-auto appearance-none pl-8 pr-8 py-2 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer transition-colors"
+              className="w-full sm:w-auto appearance-none pl-9 pr-9 py-2.5 rounded-2xl bg-stone-50 hover:bg-stone-100 border border-stone-200 text-xs font-bold text-stone-800 focus:outline-none focus:border-[#C8102E] focus:ring-2 focus:ring-[#C8102E]/15 cursor-pointer transition-all shadow-sm"
             >
-              <option value="All Locations">
+              <option value="All Locations" className="bg-white text-stone-900">
                 📍 All Locations ({totalDishesCount})
               </option>
               {availableCities.map((c) => (
-                <option key={c.name} value={c.name}>
+                <option key={c.name} value={c.name} className="bg-white text-stone-900">
                   {c.name}, {c.state} ({cityDishCounts[c.name] ?? 0})
                 </option>
               ))}
             </select>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <ChevronDown className="w-3.5 h-3.5 text-stone-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
         </div>
 
         {/* Count & Reset Actions */}
-        <div className="flex items-center gap-2 justify-between sm:justify-end shrink-0">
-          <span className="text-xs font-bold text-slate-500 whitespace-nowrap">
-            Showing <strong className="text-slate-900">{filteredCount}</strong> of{' '}
-            {totalDishesCount}
+        <div className="flex items-center gap-2.5 justify-between sm:justify-end shrink-0">
+          <span className="text-xs font-bold text-stone-500 whitespace-nowrap">
+            Showing <strong className="text-stone-900">{filteredCount}</strong> of{' '}
+            <span className="text-stone-400">{totalDishesCount}</span>
           </span>
           {hasActiveFilters && (
             <button
               id="reset-filters-btn"
               onClick={onReset}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold transition-all border border-stone-200 cursor-pointer shadow-sm active:scale-95"
             >
-              <RotateCcw className="w-3 h-3" />
+              <RotateCcw className="w-3 h-3 text-[#C8102E]" />
               <span>Reset</span>
             </button>
           )}
@@ -132,38 +134,38 @@ export default function BentoFilters({
       </div>
 
       {/* Location Filter Pills Row (Horizontal Scroll) */}
-      <div className="space-y-1.5 pt-0.5">
+      <div className="space-y-2 pt-1 border-t border-stone-100">
         <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-1.5 font-extrabold text-slate-800">
-            <MapPin className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Filter by Location</span>
+          <div className="flex items-center gap-1.5 font-black text-stone-800">
+            <MapPin className="w-3.5 h-3.5 text-[#C8102E]" />
+            <span>Deliver to / Location Zone</span>
           </div>
-          <span className="text-[11px] font-semibold text-slate-400">
-            Active: <strong className="text-emerald-600">{selectedCityName}</strong>
+          <span className="text-[11px] font-semibold text-stone-500">
+            Current: <strong className="text-[#C8102E]">{selectedCityName}</strong>
           </span>
         </div>
 
         <div
           id="feed-location-pills-carousel"
-          className="flex items-center gap-1.5 overflow-x-auto hide-scrollbar pb-0.5 pt-0.5"
+          className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1 pt-0.5"
         >
           {/* All Locations Pill */}
           <button
             id="feed-location-pill-all"
             type="button"
             onClick={() => onCityChange?.('All Locations')}
-            className={`shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
               selectedCityName === 'All Locations'
-                ? 'bg-emerald-500 text-black shadow-sm shadow-emerald-500/30'
-                : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80'
+                ? 'bg-[#C8102E] text-white shadow-md shadow-rose-900/15 font-black'
+                : 'bg-stone-50 hover:bg-stone-100 text-stone-700 border border-stone-200'
             }`}
           >
             <span>All Locations</span>
             <span
-              className={`px-1.5 py-0.2 rounded-md text-[10px] font-extrabold ${
+              className={`px-1.5 py-0.5 rounded-md text-[10px] font-black ${
                 selectedCityName === 'All Locations'
-                  ? 'bg-black/20 text-black'
-                  : 'bg-slate-200 text-slate-600'
+                  ? 'bg-white/20 text-white'
+                  : 'bg-stone-200 text-stone-600'
               }`}
             >
               {totalDishesCount}
@@ -180,18 +182,18 @@ export default function BentoFilters({
                 id={`feed-location-pill-${city.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
                 type="button"
                 onClick={() => onCityChange?.(city.name)}
-                className={`shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
                   isSelected
-                    ? 'bg-emerald-500 text-black shadow-sm shadow-emerald-500/30'
-                    : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80'
+                    ? 'bg-[#C8102E] text-white shadow-md shadow-rose-900/15 font-black'
+                    : 'bg-stone-50 hover:bg-stone-100 text-stone-700 border border-stone-200'
                 }`}
               >
                 <span>{city.name}</span>
                 <span
-                  className={`px-1.5 py-0.2 rounded-md text-[10px] font-extrabold ${
+                  className={`px-1.5 py-0.5 rounded-md text-[10px] font-black ${
                     isSelected
-                      ? 'bg-black/20 text-black'
-                      : 'bg-slate-200 text-slate-600'
+                      ? 'bg-white/20 text-white'
+                      : 'bg-stone-200 text-stone-600'
                   }`}
                 >
                   {count}
@@ -202,23 +204,23 @@ export default function BentoFilters({
         </div>
       </div>
 
-      {/* Veto Badges Bento Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+      {/* Dietary Veto Badges Bento Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
         {/* Seed-Oil Free */}
         <button
           id="filter-seed-oil-btn"
           onClick={() => toggleFilter('seedOilFree')}
-          className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
+          className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 ${
             filters.seedOilFree
-              ? 'bg-emerald-500 border-emerald-500 text-black shadow-md shadow-emerald-500/20'
-              : 'bg-slate-50 border-slate-200 hover:border-emerald-300 text-slate-700'
+              ? 'bg-[#C8102E] border-[#C8102E] text-white shadow-md shadow-rose-900/15'
+              : 'bg-stone-50 hover:bg-stone-100 border-stone-200 text-stone-800'
           }`}
         >
           <div className="flex items-center justify-between">
-            <ShieldCheck className="w-4 h-4" />
+            <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
             <span
-              className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-md ${
-                filters.seedOilFree ? 'bg-black/20 text-black' : 'bg-slate-200 text-slate-600'
+              className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md ${
+                filters.seedOilFree ? 'bg-white/20 text-white' : 'bg-stone-200 text-stone-600'
               }`}
             >
               VETO
@@ -231,17 +233,17 @@ export default function BentoFilters({
         <button
           id="filter-grass-fed-btn"
           onClick={() => toggleFilter('grassFed')}
-          className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
+          className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 ${
             filters.grassFed
-              ? 'bg-emerald-900 border-emerald-900 text-emerald-200 shadow-md'
-              : 'bg-slate-50 border-slate-200 hover:border-emerald-300 text-slate-700'
+              ? 'bg-[#932016] border-[#932016] text-white shadow-md shadow-rose-900/15'
+              : 'bg-stone-50 hover:bg-stone-100 border-stone-200 text-stone-800'
           }`}
         >
           <div className="flex items-center justify-between">
-            <Beef className="w-4 h-4" />
+            <Beef className="w-4 h-4 stroke-[2.5]" />
             <span
-              className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-md ${
-                filters.grassFed ? 'bg-emerald-800 text-emerald-200' : 'bg-slate-200 text-slate-600'
+              className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md ${
+                filters.grassFed ? 'bg-white/20 text-white' : 'bg-stone-200 text-stone-600'
               }`}
             >
               CLEAN
@@ -254,17 +256,17 @@ export default function BentoFilters({
         <button
           id="filter-gluten-free-btn"
           onClick={() => toggleFilter('glutenFree')}
-          className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
+          className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 ${
             filters.glutenFree
-              ? 'bg-amber-500 border-amber-500 text-black shadow-md'
-              : 'bg-slate-50 border-slate-200 hover:border-amber-300 text-slate-700'
+              ? 'bg-amber-600 border-amber-600 text-white shadow-md shadow-amber-900/15'
+              : 'bg-stone-50 hover:bg-stone-100 border-stone-200 text-stone-800'
           }`}
         >
           <div className="flex items-center justify-between">
-            <WheatOff className="w-4 h-4" />
+            <WheatOff className="w-4 h-4 stroke-[2.5]" />
             <span
-              className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-md ${
-                filters.glutenFree ? 'bg-black/20 text-black' : 'bg-slate-200 text-slate-600'
+              className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md ${
+                filters.glutenFree ? 'bg-white/20 text-white' : 'bg-stone-200 text-stone-600'
               }`}
             >
               CELIAC
@@ -277,17 +279,17 @@ export default function BentoFilters({
         <button
           id="filter-keto-btn"
           onClick={() => toggleFilter('keto')}
-          className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
+          className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 ${
             filters.keto
-              ? 'bg-purple-600 border-purple-600 text-white shadow-md'
-              : 'bg-slate-50 border-slate-200 hover:border-purple-300 text-slate-700'
+              ? 'bg-purple-600 border-purple-600 text-white shadow-md shadow-purple-900/15'
+              : 'bg-stone-50 hover:bg-stone-100 border-stone-200 text-stone-800'
           }`}
         >
           <div className="flex items-center justify-between">
-            <Sparkles className="w-4 h-4" />
+            <Sparkles className="w-4 h-4 stroke-[2.5]" />
             <span
-              className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-md ${
-                filters.keto ? 'bg-purple-700 text-white' : 'bg-slate-200 text-slate-600'
+              className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md ${
+                filters.keto ? 'bg-white/20 text-white' : 'bg-stone-200 text-stone-600'
               }`}
             >
               MACRO
@@ -300,17 +302,17 @@ export default function BentoFilters({
         <button
           id="filter-dairy-free-btn"
           onClick={() => toggleFilter('dairyFree')}
-          className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
+          className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 ${
             filters.dairyFree
-              ? 'bg-blue-600 border-blue-600 text-white shadow-md'
-              : 'bg-slate-50 border-slate-200 hover:border-blue-300 text-slate-700'
+              ? 'bg-sky-600 border-sky-600 text-white shadow-md shadow-sky-900/15'
+              : 'bg-stone-50 hover:bg-stone-100 border-stone-200 text-stone-800'
           }`}
         >
           <div className="flex items-center justify-between">
-            <MilkOff className="w-4 h-4" />
+            <MilkOff className="w-4 h-4 stroke-[2.5]" />
             <span
-              className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-md ${
-                filters.dairyFree ? 'bg-blue-700 text-white' : 'bg-slate-200 text-slate-600'
+              className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md ${
+                filters.dairyFree ? 'bg-white/20 text-white' : 'bg-stone-200 text-stone-600'
               }`}
             >
               A2/DF
@@ -322,10 +324,10 @@ export default function BentoFilters({
 
       {/* Sliders for Min Protein & Max Carbs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-        <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between gap-2">
+        <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 flex flex-col justify-between gap-2.5">
           <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-slate-700">Min Protein Threshold</span>
-            <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">
+            <span className="text-stone-700">Min Protein Threshold</span>
+            <span className="px-2.5 py-0.5 rounded-md bg-rose-100 text-[#C8102E] border border-rose-200 font-mono font-bold">
               {filters.minProtein}g+
             </span>
           </div>
@@ -338,14 +340,14 @@ export default function BentoFilters({
             value={filters.minProtein}
             onChange={(e) => onChange({ ...filters, minProtein: Number(e.target.value) })}
             suppressHydrationWarning
-            className="w-full accent-emerald-500 cursor-pointer"
+            className="w-full accent-[#C8102E] cursor-pointer"
           />
         </div>
 
-        <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between gap-2">
+        <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 flex flex-col justify-between gap-2.5">
           <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-slate-700">Max Net Carbs Cap</span>
-            <span className="px-2 py-0.5 rounded-md bg-blue-100 text-blue-800">
+            <span className="text-stone-700">Max Net Carbs Cap</span>
+            <span className="px-2.5 py-0.5 rounded-md bg-blue-100 text-blue-800 border border-blue-200 font-mono font-bold">
               ≤ {filters.maxCarbs}g
             </span>
           </div>
@@ -358,10 +360,11 @@ export default function BentoFilters({
             value={filters.maxCarbs}
             onChange={(e) => onChange({ ...filters, maxCarbs: Number(e.target.value) })}
             suppressHydrationWarning
-            className="w-full accent-blue-500 cursor-pointer"
+            className="w-full accent-blue-600 cursor-pointer"
           />
         </div>
       </div>
     </div>
   );
 }
+
