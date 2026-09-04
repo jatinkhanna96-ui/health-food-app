@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className="min-h-screen bg-[#F7F4ED] text-stone-900 antialiased font-sans"
+        className="min-h-screen bg-zinc-950 text-zinc-100 antialiased font-sans selection:bg-emerald-500/25 selection:text-emerald-300"
       >
         {children}
       </body>

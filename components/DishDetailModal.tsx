@@ -14,6 +14,7 @@ import {
   WheatOff,
   MilkOff,
   Sparkles,
+  Zap,
 } from 'lucide-react';
 
 interface DishDetailModalProps {
@@ -30,10 +31,10 @@ export default function DishDetailModal({ dish, onClose }: DishDetailModalProps)
   const fatPct = Math.round((dish.fat / totalMacroGrams) * 100);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
       <div
         id="dish-detail-modal"
-        className="relative w-full max-w-2xl glass-panel text-stone-100 rounded-3xl overflow-hidden my-8 flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-2xl bg-zinc-950 border border-white/10 text-zinc-100 rounded-3xl overflow-hidden my-6 sm:my-8 flex flex-col max-h-[90vh] shadow-[0_0_50px_rgba(0,0,0,0.8)]"
       >
         {/* Header Image with Close Button */}
         <div className="relative w-full h-64 sm:h-72 bg-black shrink-0">
@@ -44,153 +45,155 @@ export default function DishDetailModal({ dish, onClose }: DishDetailModalProps)
             className="object-cover"
             referrerPolicy="no-referrer"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a2e1f]/95 via-black/35 to-black/60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-black/60" />
 
-          {/* Close button in dark pill pod */}
+          {/* Close button in dark glass pill pod */}
           <button
             id="close-dish-modal-btn"
             onClick={onClose}
-            className="absolute top-4 right-4 p-2.5 rounded-full glass-pill-dark hover:bg-white/20 text-emerald-100 transition-all cursor-pointer shadow-md border border-white/20"
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 p-2.5 rounded-full bg-zinc-950/80 hover:bg-zinc-900 text-white transition-all duration-300 cursor-pointer shadow-xl border border-white/20 active:scale-95"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
           {/* Top Veto Badges */}
-          <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-            {dish.isSeedOilFree && (
-              <span className="px-3 py-1 rounded-full glass-btn-plus text-[#0a2e1f] text-xs font-black flex items-center gap-1.5 shadow-md uppercase">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#0a2e1f]" />
-                Seed-Oil Free
-              </span>
-            )}
+          <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 flex flex-wrap gap-1.5 sm:gap-2 max-w-[calc(100%-65px)]">
+            <span className="px-3 py-1.5 rounded-full bg-emerald-950/85 backdrop-blur-md text-emerald-300 text-xs font-black flex items-center gap-1.5 shadow-[0_0_15px_rgba(16,185,129,0.35)] uppercase border border-emerald-500/50">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>Verified Clean Zone</span>
+            </span>
             {dish.isGrassFed && (
-              <span className="px-3 py-1 rounded-full glass-pill-dark text-emerald-200 text-xs font-bold border border-white/20 flex items-center gap-1.5 shadow-sm">
-                <Beef className="w-3.5 h-3.5 text-[#b6f7c1]" />
-                100% Grass-Fed
+              <span className="px-3 py-1.5 rounded-full bg-zinc-950/80 backdrop-blur-md text-emerald-300 text-xs font-bold border border-white/15 flex items-center gap-1.5 shadow-md">
+                <Beef className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span>100% Grass-Fed</span>
               </span>
             )}
           </div>
 
           {/* Title & Restaurant on Image */}
-          <div className="absolute bottom-4 left-6 right-6 text-white space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="text-2xl sm:text-3xl font-black text-white">{dish.name}</span>
-              <span className="text-xl sm:text-2xl font-black text-[#b6f7c1] drop-shadow-sm">
+          <div className="absolute bottom-3 left-4 right-4 sm:bottom-4 sm:left-6 sm:right-6 text-white space-y-1">
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight">
+                {dish.name}
+              </span>
+              <span className="text-lg sm:text-2xl font-black text-amber-400 drop-shadow-sm shrink-0">
                 ${dish.price.toFixed(2)}
               </span>
             </div>
-            <p className="text-sm font-semibold text-emerald-200 flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-[#b6f7c1] shrink-0" />
-              <span>{dish.restaurant}</span>
-              <span className="text-emerald-400">&bull;</span>
-              <span className="text-emerald-300/80 truncate">{dish.restaurantAddress}</span>
+            <p className="text-xs sm:text-sm font-semibold text-zinc-300 flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400 shrink-0" />
+              <span className="truncate">{dish.restaurant}</span>
+              <span className="text-zinc-600">&bull;</span>
+              <span className="text-zinc-400 truncate">{dish.restaurantAddress}</span>
             </p>
           </div>
         </div>
 
         {/* Scrollable Content Body */}
-        <div className="p-6 overflow-y-auto space-y-5 text-stone-100">
-          {/* Macro Breakdown Visualizer */}
-          <div className="p-5 rounded-2xl glass-card space-y-3.5">
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5 text-zinc-100">
+          {/* Empowering Nutritional Microcopy Visualizer */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-white/5 border border-white/10 space-y-3.5">
             <div className="flex items-center justify-between">
               <h4 className="font-extrabold text-white text-sm flex items-center gap-2">
-                <Flame className="w-4 h-4 text-[#b6f7c1]" />
-                <span>Macro &amp; Caloric Profile</span>
+                <Zap className="w-4 h-4 text-emerald-400" />
+                <span>Bio-Individual Energy Breakdown</span>
               </h4>
-              <span className="text-xs font-bold text-emerald-200/80">
-                Energy: <strong className="text-white">{dish.calories} kcal</strong>
+              <span className="text-xs font-bold text-emerald-400">
+                {dish.calories} Clean Calories &bull; {dish.protein}g Muscle Protein
               </span>
             </div>
 
             {/* Macro Bar */}
-            <div className="w-full h-3 bg-black/40 rounded-full overflow-hidden flex border border-white/15">
+            <div className="w-full h-3 bg-zinc-900 rounded-full overflow-hidden flex border border-white/10">
               <div
                 style={{ width: `${proteinPct}%` }}
-                className="bg-[#b6f7c1] h-full transition-all"
+                className="bg-emerald-500 h-full transition-all duration-500"
                 title={`Protein: ${dish.protein}g (${proteinPct}%)`}
               />
               <div
                 style={{ width: `${carbsPct}%` }}
-                className="bg-sky-400 h-full transition-all"
+                className="bg-amber-400 h-full transition-all duration-500"
                 title={`Carbs: ${dish.carbs}g (${carbsPct}%)`}
               />
               <div
                 style={{ width: `${fatPct}%` }}
-                className="bg-amber-400 h-full transition-all"
-                title={`Fat: ${dish.fat}g (${fatPct}%)`}
+                className="bg-emerald-300 h-full transition-all duration-500"
+                title={`Clean Fat: ${dish.fat}g (${fatPct}%)`}
               />
             </div>
 
             {/* 4 Macro Stat Cards */}
-            <div className="grid grid-cols-4 gap-2.5 pt-1 text-center font-sans">
-              <div className="p-2.5 rounded-2xl glass-pill border border-white/15">
-                <span className="text-[10px] font-extrabold text-[#b6f7c1] block uppercase">
-                  Protein
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 pt-1 text-center">
+              <div className="p-3 rounded-2xl bg-zinc-900/80 border border-emerald-500/30 shadow-inner">
+                <span className="text-[10px] font-extrabold text-emerald-400 block uppercase tracking-wider">
+                  Muscle Protein
                 </span>
-                <span className="text-base font-black text-white">{dish.protein}g</span>
-                <span className="text-[10px] text-emerald-300/70 block font-bold">{proteinPct}%</span>
+                <span className="text-lg font-black text-white">{dish.protein}g</span>
+                <span className="text-[10px] text-zinc-400 block font-bold">{proteinPct}% Ratio</span>
               </div>
-              <div className="p-2.5 rounded-2xl glass-pill border border-white/15">
-                <span className="text-[10px] font-extrabold text-sky-300 block uppercase">
-                  Net Carbs
+              <div className="p-3 rounded-2xl bg-zinc-900/80 border border-white/10 shadow-inner">
+                <span className="text-[10px] font-extrabold text-amber-400 block uppercase tracking-wider">
+                  Clean Carbs
                 </span>
-                <span className="text-base font-black text-white">{dish.carbs}g</span>
-                <span className="text-[10px] text-emerald-300/70 block font-bold">{carbsPct}%</span>
+                <span className="text-lg font-black text-white">{dish.carbs}g</span>
+                <span className="text-[10px] text-zinc-400 block font-bold">{carbsPct}% Glycogen</span>
               </div>
-              <div className="p-2.5 rounded-2xl glass-pill border border-white/15">
-                <span className="text-[10px] font-extrabold text-amber-300 block uppercase">Clean Fat</span>
-                <span className="text-base font-black text-white">{dish.fat}g</span>
-                <span className="text-[10px] text-emerald-300/70 block font-bold">{fatPct}%</span>
-              </div>
-              <div className="p-2.5 rounded-2xl glass-pill border border-white/15">
-                <span className="text-[10px] font-extrabold text-indigo-300 block uppercase">
-                  Fiber
+              <div className="p-3 rounded-2xl bg-zinc-900/80 border border-emerald-500/30 shadow-inner">
+                <span className="text-[10px] font-extrabold text-emerald-300 block uppercase tracking-wider">
+                  Fuel Fats
                 </span>
-                <span className="text-base font-black text-white">{dish.fiber}g</span>
-                <span className="text-[10px] text-emerald-300/70 block font-bold">Prebiotic</span>
+                <span className="text-lg font-black text-white">{dish.fat}g</span>
+                <span className="text-[10px] text-zinc-400 block font-bold">{fatPct}% Ketones</span>
+              </div>
+              <div className="p-3 rounded-2xl bg-zinc-900/80 border border-white/10 shadow-inner">
+                <span className="text-[10px] font-extrabold text-zinc-300 block uppercase tracking-wider">
+                  Prebiotic Fiber
+                </span>
+                <span className="text-lg font-black text-white">{dish.fiber}g</span>
+                <span className="text-[10px] text-zinc-400 block font-bold">Microbiome</span>
               </div>
             </div>
           </div>
 
           {/* Cooking Medium Audit */}
-          <div className="p-4 rounded-2xl glass-card border border-[#b6f7c1]/30 flex items-start gap-3">
-            <div className="w-7 h-7 rounded-full bg-[#b6f7c1] text-[#0a2e1f] flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+          <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-start gap-3 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+            <div className="w-7 h-7 rounded-full bg-emerald-500 text-zinc-950 flex items-center justify-center font-black text-xs shrink-0 shadow-md">
               ✓
             </div>
             <div>
-              <h5 className="font-extrabold text-[#b6f7c1] text-sm">
-                Verified Cooking Medium: {dish.cookingFat}
+              <h5 className="font-extrabold text-emerald-300 text-sm">
+                Strict Cooking Medium: {dish.cookingFat}
               </h5>
-              <p className="text-xs text-emerald-100 mt-1 leading-relaxed">
+              <p className="text-xs text-zinc-300 mt-1 leading-relaxed">
                 {dish.chefNotes}
               </p>
             </div>
           </div>
 
-          {/* Verified Ingredients List */}
+          {/* Verified Clean Ingredients List */}
           <div className="space-y-2.5">
-            <h4 className="font-extrabold text-white text-sm">Ingredients Breakdown</h4>
+            <h4 className="font-extrabold text-white text-sm">100% Vetted Ingredients</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {dish.ingredients.map((ing, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-2 p-2.5 rounded-xl glass-pill border border-white/15 text-xs font-semibold text-emerald-100"
+                  className="flex items-center gap-2 p-2.5 rounded-xl bg-zinc-900/80 border border-white/10 text-xs font-semibold text-zinc-200"
                 >
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#b6f7c1] shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   <span>{ing}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Highlights */}
+          {/* Culinary Highlights */}
           <div className="space-y-2.5">
-            <h4 className="font-extrabold text-white text-sm">Culinary Highlights</h4>
+            <h4 className="font-extrabold text-white text-sm">Biohacker Highlights</h4>
             <div className="flex flex-wrap gap-2">
               {dish.highlights.map((hl, idx) => (
                 <span
                   key={idx}
-                  className="px-3 py-1 rounded-full glass-pill text-[#b6f7c1] text-xs font-bold border border-[#b6f7c1]/30"
+                  className="px-3 py-1 rounded-full bg-emerald-950/60 text-emerald-300 text-xs font-bold border border-emerald-500/30"
                 >
                   ✨ {hl}
                 </span>
@@ -200,19 +203,19 @@ export default function DishDetailModal({ dish, onClose }: DishDetailModalProps)
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 px-6 border-t border-white/10 bg-black/40 backdrop-blur-md flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-1.5 text-amber-300 text-xs font-bold">
-            <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-            <span>{dish.rating} rating</span>
-            <span className="text-emerald-400 font-normal">({dish.reviewsCount} verified diners)</span>
+        <div className="p-4 px-5 sm:px-6 border-t border-white/10 bg-zinc-950 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 text-amber-400 text-xs font-bold justify-center sm:justify-start">
+            <Star className="w-4 h-4 fill-amber-400 text-amber-400 shrink-0" />
+            <span>{dish.rating} Vetted Rating</span>
+            <span className="text-zinc-500 font-normal truncate">({dish.reviewsCount} verified audits)</span>
           </div>
 
           <button
             id="modal-close-action-btn"
             onClick={onClose}
-            className="px-5 py-2.5 rounded-2xl glass-btn-plus text-[#0a2e1f] text-xs font-black transition-all cursor-pointer active:scale-95"
+            className="w-full sm:w-auto px-6 py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-xs font-black transition-all duration-300 cursor-pointer active:scale-95 shadow-lg shadow-emerald-500/25 text-center"
           >
-            Back to Explore
+            Return to Oasis
           </button>
         </div>
       </div>

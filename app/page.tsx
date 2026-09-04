@@ -26,7 +26,8 @@ import {
   Radar,
   ChevronRight,
   ArrowRight,
-  Plus,
+  Zap,
+  CheckCircle2,
 } from 'lucide-react';
 
 const CITIES_DROPDOWN: { id: ReelCity; label: string; cityName: string; state: string }[] = [
@@ -68,6 +69,9 @@ export default function HomePage() {
     dairyFree: false,
     minProtein: 0,
     maxCarbs: 50,
+    benefitPostWorkout: false,
+    benefitBrainFuel: false,
+    benefitGutSoothers: false,
   });
 
   const selectedReelCity: ReelCity = useMemo(() => {
@@ -99,30 +103,11 @@ export default function HomePage() {
       dairyFree: false,
       minProtein: 0,
       maxCarbs: 50,
+      benefitPostWorkout: false,
+      benefitBrainFuel: false,
+      benefitGutSoothers: false,
     });
     setSelectedCookingFat('all');
-  };
-
-  // Quick Vibe Presets
-  const applyVibePreset = (preset: 'high-protein' | 'carnivore' | 'keto' | 'celiac' | 'detox') => {
-    switch (preset) {
-      case 'high-protein':
-        setFilters((prev) => ({ ...prev, minProtein: 45, maxCarbs: 50, seedOilFree: true }));
-        break;
-      case 'carnivore':
-        setFilters((prev) => ({ ...prev, grassFed: true, seedOilFree: true, maxCarbs: 10, minProtein: 40 }));
-        setSelectedCookingFat('Tallow');
-        break;
-      case 'keto':
-        setFilters((prev) => ({ ...prev, keto: true, maxCarbs: 10, seedOilFree: true }));
-        break;
-      case 'celiac':
-        setFilters((prev) => ({ ...prev, glutenFree: true, seedOilFree: true }));
-        break;
-      case 'detox':
-        setFilters((prev) => ({ ...prev, seedOilFree: true, dairyFree: true, grassFed: true }));
-        break;
-    }
   };
 
   const triggerRadarScan = () => {
@@ -154,6 +139,17 @@ export default function HomePage() {
         if (!matchesName && !matchesRest && !matchesFat && !matchesIng) {
           return false;
         }
+      }
+
+      // Benefit filter logic:
+      if (filters.benefitPostWorkout && dish.protein < 40) {
+        return false;
+      }
+      if (filters.benefitBrainFuel && !dish.isKeto && dish.carbs > 20) {
+        return false;
+      }
+      if (filters.benefitGutSoothers && (!dish.isSeedOilFree || (!dish.isGlutenFree && !dish.isDairyFree))) {
+        return false;
       }
 
       if (filters.seedOilFree && !dish.isSeedOilFree) return false;
@@ -203,12 +199,38 @@ export default function HomePage() {
   const allCityDishesCount = dishes.filter((d) => d.city === selectedCity.name).length;
 
   return (
-    <div className="min-h-screen bg-[#0a2e1f] text-[#e8f5ed] flex flex-col font-sans selection:bg-[#b6f7c1]/30 selection:text-[#0a2e1f]">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-emerald-500/25 selection:text-emerald-300">
       {/* ========================================================================= */}
-      {/* 1. SLIDE-OUT CARTOGRAPHY RADAR DRAWER                                      */}
+      {/* THE MANIFESTO HEADER (STICKY AT TOP)                                       */}
+      {/* "The Clean Zone: No seed oils. No hidden sugars. Just real food."         */}
       {/* ========================================================================= */}
       <div
-        className={`fixed inset-0 z-40 bg-black/65 backdrop-blur-xs transition-opacity duration-300 ${
+        id="clean-zone-manifesto-header"
+        className="sticky top-0 z-40 w-full bg-zinc-950/90 backdrop-blur-xl border-b border-emerald-500/20 py-2 sm:py-2.5 px-4 text-center transition-all shadow-[0_4px_24px_rgba(0,0,0,0.6)]"
+      >
+        <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-black tracking-wide text-zinc-100">
+          <span className="relative flex h-2.5 w-2.5 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.9)]" />
+          </span>
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center">
+            <span className="text-emerald-400 uppercase tracking-widest text-[11px] sm:text-xs font-black">
+              The Clean Zone:
+            </span>
+            <span className="text-zinc-200">No seed oils.</span>
+            <span className="text-zinc-600 hidden sm:inline">&bull;</span>
+            <span className="text-zinc-200">No hidden sugars.</span>
+            <span className="text-zinc-600 hidden sm:inline">&bull;</span>
+            <span className="text-amber-400 font-extrabold">Just real food.</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* SLIDE-OUT OASIS CARTOGRAPHY RADAR DRAWER                                  */}
+      {/* ========================================================================= */}
+      <div
+        className={`fixed inset-0 z-45 bg-black/80 backdrop-blur-sm transition-opacity duration-300 ${
           isMapOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setIsMapOpen(false)}
@@ -216,25 +238,25 @@ export default function HomePage() {
 
       <aside
         id="vicinity-map-drawer"
-        className={`fixed inset-y-0 left-0 z-50 w-full sm:w-[500px] md:w-[560px] lg:w-[620px] bg-[#082419]/90 backdrop-blur-2xl text-white shadow-[12px_0_40px_rgba(0,0,0,0.65)] flex flex-col border-r border-white/20 transition-transform duration-300 ease-out transform ${
+        className={`fixed inset-y-0 left-0 z-50 w-[calc(100%-48px)] sm:w-[540px] md:w-[600px] lg:w-[640px] max-w-[640px] bg-zinc-950 text-zinc-100 shadow-[0_0_50px_rgba(0,0,0,0.9)] flex flex-col border-r border-white/10 transition-transform duration-300 ease-out transform ${
           isMapOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Drawer Header */}
-        <div className="p-4 sm:p-5 bg-black/40 backdrop-blur-md border-b border-white/15 flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 bg-zinc-900/90 backdrop-blur-md border-b border-white/10 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl glass-pill text-[#b6f7c1] flex items-center justify-center shadow-md border border-[#b6f7c1]/30">
-              <Radar className={`w-5 h-5 ${isRadarScanning ? 'animate-spin text-[#b6f7c1]' : ''}`} />
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center shadow-md border border-emerald-500/30">
+              <Radar className={`w-5 h-5 ${isRadarScanning ? 'animate-spin text-emerald-400' : ''}`} />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-black text-white text-base leading-tight">
-                  Vicinity Radar
+                  The Oasis Map
                 </h3>
-                <span className="w-2 h-2 rounded-full bg-[#b6f7c1] animate-ping" />
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
               </div>
-              <p className="text-[11px] font-bold text-emerald-300/70 uppercase tracking-wider">
-                {filteredDishes.length} Verified Kitchens in Range
+              <p className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">
+                {filteredDishes.length} Verified Clean Havens
               </p>
             </div>
           </div>
@@ -243,7 +265,7 @@ export default function HomePage() {
             <button
               id="close-map-drawer-btn"
               onClick={() => setIsMapOpen(false)}
-              className="p-2 rounded-xl glass-pill hover:bg-white/20 text-emerald-100 border border-white/20 transition-colors shadow-xs cursor-pointer active:scale-95"
+              className="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-white/10 transition-colors shadow-xs cursor-pointer active:scale-95"
               title="Close Map Slider"
             >
               <X className="w-4 h-4" />
@@ -252,22 +274,22 @@ export default function HomePage() {
         </div>
 
         {/* Drawer Options & Filter Deck */}
-        <div className="p-3.5 bg-black/30 backdrop-blur-md border-b border-white/10 space-y-3 shrink-0">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] font-black uppercase text-emerald-300/90 tracking-wider flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5 text-[#b6f7c1]" />
-              <span>Search Perimeter:</span>
+        <div className="p-3.5 sm:px-5 bg-zinc-900/60 backdrop-blur-md border-b border-white/10 space-y-3 shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <span className="text-[11px] font-black uppercase text-zinc-300 tracking-wider flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span>Oasis Radius:</span>
             </span>
 
-            <div className="inline-flex rounded-xl glass-pill p-1 border border-white/15">
+            <div className="inline-flex rounded-xl bg-zinc-950 p-1 border border-white/10 self-start sm:self-auto gap-1">
               {[1, 3, 5, 10].map((radius) => (
                 <button
                   key={radius}
                   onClick={() => setMapRadius(radius)}
                   className={`px-3 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
                     mapRadius === radius
-                      ? 'glass-btn-plus text-[#0a2e1f]'
-                      : 'text-emerald-200/80 hover:text-white'
+                      ? 'bg-emerald-500 text-zinc-950 shadow-[0_0_12px_rgba(16,185,129,0.4)]'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   {radius} mi
@@ -278,15 +300,74 @@ export default function HomePage() {
         </div>
 
         {/* Interactive Map Area */}
-        <div className="relative flex-1 bg-[#0a2e1f] overflow-hidden min-h-[300px]">
-          <InteractiveMap
-            dishes={filteredDishes}
-            city={selectedCity}
-            selectedDish={selectedDish}
-            onSelectDish={(d) => setSelectedDish(d)}
-            radiusMiles={mapRadius}
-            isRadarScanning={isRadarScanning}
-          />
+        <div className="p-3 sm:p-4 flex-1 flex flex-col min-h-0 space-y-3 bg-zinc-950">
+          <div className="relative flex-1 rounded-2xl sm:rounded-3xl border border-white/10 overflow-hidden shadow-2xl min-h-[300px]">
+            <InteractiveMap
+              dishes={filteredDishes}
+              city={selectedCity}
+              selectedDish={selectedDish}
+              onSelectDish={(d) => setSelectedDish(d)}
+              radiusMiles={mapRadius}
+              isRadarScanning={isRadarScanning}
+              onViewDetail={(d) => setDetailDish(d)}
+            />
+          </div>
+
+          {/* Selected Dish Preview inside drawer */}
+          {selectedDish ? (
+            <div className="p-3.5 rounded-2xl bg-zinc-900/90 border border-white/10 text-white flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-xl shrink-0 animate-in fade-in slide-in-from-bottom-2 duration-200">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-12 h-12 rounded-xl bg-zinc-950 overflow-hidden shrink-0 border border-white/15 relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={selectedDish.image}
+                    alt={selectedDish.name}
+                    className="w-full h-full object-cover"
+                  />
+                  {selectedDish.isSeedOilFree && (
+                    <span className="absolute bottom-0 inset-x-0 bg-emerald-500 text-zinc-950 text-[8px] font-black uppercase text-center py-0.5">
+                      Clean
+                    </span>
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-xs font-black text-white truncate max-w-[180px]">
+                      {selectedDish.restaurant}
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 font-bold">
+                      {selectedDish.cookingFat}
+                    </span>
+                  </div>
+                  <p className="text-xs text-zinc-300 font-semibold truncate mt-0.5">
+                    {selectedDish.name} &bull; <span className="text-amber-400 font-black">${selectedDish.price.toFixed(2)}</span>
+                  </p>
+                  <p className="text-[10px] text-zinc-400 truncate">
+                    {selectedDish.protein}g Muscle Protein &bull; {selectedDish.calories} Clean Calories
+                  </p>
+                </div>
+              </div>
+
+              <button
+                id="map-view-dish-details-btn"
+                onClick={() => setDetailDish(selectedDish)}
+                className="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-xs font-black transition-all cursor-pointer shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-1.5 shrink-0 active:scale-95 hover:scale-[1.02]"
+              >
+                <span>Inspect Plate</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <div className="px-3.5 py-2.5 rounded-xl bg-zinc-900/80 border border-white/10 text-zinc-400 text-xs flex items-center justify-between shrink-0">
+              <span className="flex items-center gap-2 text-[11px] font-medium text-zinc-300">
+                <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span>Tap any glowing beacon to preview clean kitchen</span>
+              </span>
+              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
+                {filteredDishes.length} Havens
+              </span>
+            </div>
+          )}
         </div>
       </aside>
 
@@ -295,79 +376,95 @@ export default function HomePage() {
       {/* ========================================================================= */}
       <header
         id="main-app-header"
-        className="sticky top-0 z-30 px-4 sm:px-6 lg:px-8 py-3.5 bg-[#082419]/80 backdrop-blur-2xl border-b border-white/15 flex flex-wrap items-center justify-between gap-3 shadow-[0_8px_30px_rgba(0,0,0,0.35)]"
+        className="sticky top-[38px] sm:top-[42px] z-30 px-3.5 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 bg-zinc-950/90 backdrop-blur-xl border-b border-white/10 shadow-lg"
       >
-        {/* Left Brand Identity */}
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl glass-pill flex items-center justify-center text-[#b6f7c1] shadow-md border border-[#b6f7c1]/35 shrink-0">
-            <Compass className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-black text-base sm:text-lg lg:text-xl tracking-tight text-white leading-none">
-                Healthy Vicinity
-              </span>
-              <span className="px-2 py-0.5 rounded-full glass-pill-dark text-[#b6f7c1] text-[10px] font-black tracking-wider uppercase border border-[#b6f7c1]/35 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#b6f7c1] animate-ping" />
-                <span>LIVE</span>
-              </span>
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+          {/* Top/Left Brand Identity */}
+          <div className="flex items-center justify-between w-full sm:w-auto">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)] shrink-0">
+                <Compass className="w-4 h-4 sm:w-5 sm:h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-black text-base sm:text-lg lg:text-xl tracking-tight text-white leading-none">
+                    Healthy Vicinity
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 text-[10px] font-black tracking-wider uppercase border border-emerald-500/50 flex items-center gap-1 shrink-0">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                    <span>VERIFIED</span>
+                  </span>
+                </div>
+                <p className="hidden sm:flex text-zinc-400 font-semibold text-[11px] sm:text-xs mt-0.5 items-center gap-1.5">
+                  <span>Exclusive Biohacker Health Zone &bull; Certified Pure Fats</span>
+                </p>
+              </div>
             </div>
-            <p className="text-emerald-300/70 font-semibold text-[11px] sm:text-xs mt-0.5 flex items-center gap-1.5">
-              <span>Bio-Individual Dining Engine &bull; Zero Seed Oils</span>
-            </p>
-          </div>
-        </div>
 
-        {/* Right Header Navigation Actions */}
-        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-          {/* City Dropdown */}
-          <div className="relative">
-            <select
-              id="header-city-selector"
-              value={selectedReelCity}
-              onChange={(e) => handleCitySelect(e.target.value as ReelCity)}
-              className="appearance-none glass-pill-dark hover:bg-white/10 text-white font-black text-xs pl-3.5 pr-8 py-2.5 rounded-2xl border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#b6f7c1]/40 cursor-pointer transition-all shadow-xs"
+            {/* Mobile Scan Button */}
+            <div className="flex sm:hidden items-center gap-1.5 shrink-0">
+              <button
+                id="mobile-header-scan-btn"
+                onClick={() => setIsScannerOpen(true)}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-500 text-zinc-950 text-xs font-black shadow-lg shadow-emerald-500/25 active:scale-95"
+              >
+                <ScanLine className="w-3.5 h-3.5" />
+                <span>Scan</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Controls: City Dropdown, Map Radar, and Desktop AI Scanner */}
+          <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+            {/* City Dropdown */}
+            <div className="relative flex-1 sm:flex-initial min-w-0">
+              <select
+                id="header-city-selector"
+                suppressHydrationWarning
+                value={selectedReelCity}
+                onChange={(e) => handleCitySelect(e.target.value as ReelCity)}
+                className="w-full sm:w-auto appearance-none bg-zinc-900/90 hover:bg-zinc-800 text-white font-black text-xs pl-3 pr-7 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-white/15 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60 cursor-pointer transition-all shadow-inner truncate"
+              >
+                {CITIES_DROPDOWN.map((c) => (
+                  <option key={c.id} value={c.id} className="bg-zinc-950 text-white">
+                    📍 {c.label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-emerald-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
+
+            {/* Oasis Map Radar Button */}
+            <button
+              id="header-open-map-btn"
+              onClick={() => setIsMapOpen(true)}
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white text-xs font-black border border-white/10 hover:border-emerald-500/40 transition-all duration-300 shadow-lg cursor-pointer group active:scale-95 whitespace-nowrap hover:scale-[1.02]"
+              title="Open Oasis Map"
             >
-              {CITIES_DROPDOWN.map((c) => (
-                <option key={c.id} value={c.id} className="bg-[#082419] text-white">
-                  📍 {c.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="w-3.5 h-3.5 text-[#b6f7c1] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Radar className="w-4 h-4 text-emerald-400 group-hover:rotate-45 transition-transform shrink-0" />
+              <span>Oasis Map</span>
+              <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 font-black text-[10px] border border-emerald-500/40">
+                {filteredDishes.length}
+              </span>
+            </button>
+
+            {/* Desktop AI Menu Scanner CTA Button */}
+            <button
+              id="open-menu-scanner-btn"
+              onClick={() => setIsScannerOpen(true)}
+              className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-xs font-black shadow-lg shadow-emerald-500/30 transition-all duration-300 cursor-pointer group active:scale-95 shrink-0 hover:scale-[1.02]"
+            >
+              <ScanLine className="w-4 h-4 text-zinc-950 group-hover:rotate-12 transition-transform" />
+              <span>AI Menu Scanner</span>
+            </button>
           </div>
-
-          {/* Map Radar Button */}
-          <button
-            id="header-open-map-btn"
-            onClick={() => setIsMapOpen(true)}
-            className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-2xl glass-pill hover:bg-white/15 text-[#b6f7c1] text-xs font-black border border-white/20 transition-all shadow-xs cursor-pointer group active:scale-95"
-            title="Open Map Radar"
-          >
-            <Radar className="w-4 h-4 text-[#b6f7c1] group-hover:rotate-45 transition-transform" />
-            <span>Map Radar</span>
-            <span className="px-1.5 py-0.5 rounded-md glass-pill-dark text-[#b6f7c1] font-black text-[10px] border border-[#b6f7c1]/30">
-              {filteredDishes.length}
-            </span>
-          </button>
-
-          {/* AI Menu Scanner CTA Button */}
-          <button
-            id="open-menu-scanner-btn"
-            onClick={() => setIsScannerOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl glass-btn-plus text-[#0a2e1f] text-xs font-black transition-all cursor-pointer group active:scale-95"
-          >
-            <ScanLine className="w-4 h-4 text-[#0a2e1f] group-hover:rotate-12 transition-transform" />
-            <span className="hidden sm:inline">AI Menu Scanner</span>
-            <span className="sm:hidden">Scan</span>
-          </button>
         </div>
       </header>
 
       {/* ========================================================================= */}
       {/* MAIN VIEWPORT CONTENT                                                     */}
       {/* ========================================================================= */}
-      <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-7 flex-1">
+      <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-7 flex-1 pb-24 sm:pb-8">
         {/* ========================================================================= */}
         {/* KITCHEN PROOF & SIZZLE REELS LIVE PROOF SECTION                            */}
         {/* ========================================================================= */}
@@ -381,82 +478,58 @@ export default function HomePage() {
         />
 
         {/* ========================================================================= */}
-        {/* GUARANTEE SPOTLIGHT & QUICK FUEL PRESETS                                  */}
+        {/* BIOHACKER HERO SPOTLIGHT                                                  */}
         {/* ========================================================================= */}
-        <section className="relative rounded-3xl glass-panel text-white p-6 sm:p-9 overflow-hidden">
-          <div className="absolute -right-16 -bottom-16 w-80 h-80 bg-[#b6f7c1]/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute top-0 right-1/4 w-72 h-72 bg-[#134631]/40 rounded-full blur-3xl pointer-events-none" />
+        <section className="relative rounded-3xl bg-white/5 backdrop-blur-md text-white p-6 sm:p-9 overflow-hidden border border-white/10 shadow-2xl">
+          <div className="absolute -right-16 -bottom-16 w-80 h-80 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-1/4 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 max-w-2xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-pill text-[11px] font-black text-[#b6f7c1] uppercase tracking-wider border border-[#b6f7c1]/30">
-              <Sparkles className="w-3.5 h-3.5 text-[#b6f7c1]" />
-              <span>100% Seed-Oil-Free &bull; Pure Animal &amp; Fruit Fats</span>
+            <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1 rounded-full bg-emerald-950/80 text-emerald-300 text-[10px] sm:text-[11px] font-black uppercase tracking-wider border border-emerald-500/50 max-w-full leading-snug shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span>The Safe Oasis &bull; Strict Clean-Ingredient Verification</span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.1] text-white">
-              CLEAN FUEL. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#b6f7c1] to-[#80ed99]">
-                NUTRITION OPTIMIZED.
+              THE CLEAN ZONE. <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-amber-300">
+                ZERO TOXIC OILS.
               </span>
             </h1>
 
-            <p className="text-sm sm:text-base text-emerald-100/90 font-medium leading-relaxed max-w-xl">
-              Dine out without inflammatory industrial oils. Curating independent kitchens cooking exclusively in{' '}
-              <strong className="text-white">beef tallow, cold-pressed extra virgin olive oil</strong>, and{' '}
-              <strong className="text-white">grass-fed ghee</strong> across {selectedCity.name}.
+            <p className="text-sm sm:text-base text-zinc-300 font-medium leading-relaxed max-w-xl">
+              Absolute relief for health-conscious diners. Every single meal in this zone has been forensically vetted to use only{' '}
+              <strong className="text-emerald-300">100% grass-fed beef tallow, single-estate EVOO</strong>, and{' '}
+              <strong className="text-amber-300">pasture ghee</strong> across {selectedCity.name}.
             </p>
 
-            {/* Quick Fuel Presets */}
-            <div className="pt-2 space-y-2">
-              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-300/80 block">
-                ⚡ Quick Fuel Presets (1-Click Tune):
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { id: 'high-protein', label: '💪 High Protein (45g+)', tag: 'high-protein' as const },
-                  { id: 'carnivore', label: '🥩 Carnivore Tallow', tag: 'carnivore' as const },
-                  { id: 'keto', label: '🥑 Clean Keto', tag: 'keto' as const },
-                  { id: 'celiac', label: '🌾 Celiac Safe', tag: 'celiac' as const },
-                  { id: 'detox', label: '🛡️ Seed-Oil Detox', tag: 'detox' as const },
-                ].map((vibe) => (
-                  <button
-                    key={vibe.id}
-                    onClick={() => applyVibePreset(vibe.tag)}
-                    className="px-3 py-1.5 rounded-xl glass-pill hover:bg-white/15 text-emerald-100 text-xs font-bold transition-all border border-white/15 active:scale-95 cursor-pointer shadow-xs"
-                  >
-                    {vibe.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* CTAs */}
-            <div className="pt-3 flex flex-wrap items-center gap-3 sm:gap-4">
+            <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
               <button
                 id="hero-open-map-btn"
                 onClick={() => setIsMapOpen(true)}
-                className="px-6 py-3 rounded-2xl glass-btn-plus text-[#0a2e1f] font-black text-xs sm:text-sm transition-all active:scale-95 cursor-pointer inline-flex items-center gap-2 group"
+                className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-xs sm:text-sm transition-all duration-300 shadow-lg shadow-emerald-500/30 active:scale-95 cursor-pointer inline-flex items-center justify-center gap-2 group hover:scale-[1.02]"
               >
-                <Radar className="w-4 h-4 text-[#0a2e1f] group-hover:rotate-45 transition-transform" />
-                <span>Explore Map Radar</span>
-                <ChevronRight className="w-4 h-4 text-[#0a2e1f] group-hover:translate-x-0.5 transition-transform" />
+                <Radar className="w-4 h-4 text-zinc-950 group-hover:rotate-45 transition-transform shrink-0" />
+                <span>Explore Oasis Map</span>
+                <ChevronRight className="w-4 h-4 text-zinc-950 group-hover:translate-x-0.5 transition-transform shrink-0" />
               </button>
 
               <button
                 onClick={() => setIsScannerOpen(true)}
-                className="px-5 py-3 rounded-2xl glass-pill hover:bg-white/15 text-emerald-100 font-bold text-xs sm:text-sm transition-all border border-white/20 active:scale-95 cursor-pointer inline-flex items-center gap-2"
+                className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 hover:text-white font-bold text-xs sm:text-sm transition-all duration-300 border border-white/10 active:scale-95 cursor-pointer inline-flex items-center justify-center gap-2 hover:scale-[1.02]"
               >
-                <ScanLine className="w-4 h-4 text-[#b6f7c1]" />
-                <span>Scan Physical Menu</span>
+                <ScanLine className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Forensic Menu OCR</span>
               </button>
             </div>
           </div>
         </section>
 
         {/* ========================================================================= */}
-        {/* BENTO FILTERS MATRIX                                                      */}
+        {/* BENEFIT-DRIVEN BENTO FILTERS MATRIX                                       */}
         {/* ========================================================================= */}
-        <section aria-label="Filters">
+        <section aria-label="Benefit-Driven Filters">
           <BentoFilters
             filters={filters}
             onChange={setFilters}
@@ -470,20 +543,22 @@ export default function HomePage() {
         {/* VERIFIED CLEAN DISHES GRID FEED                                           */}
         {/* ========================================================================= */}
         <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg sm:text-xl font-black text-white flex items-center gap-2.5">
-              <Flame className="w-5 h-5 text-[#b6f7c1]" />
-              <span>Verified Clean Dishes in {selectedCity.name}, {selectedCity.state}</span>
-              <span className="text-xs font-black text-[#0a2e1f] bg-[#b6f7c1] px-2.5 py-0.5 rounded-full">
-                {filteredDishes.length} Matches
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-base sm:text-xl font-black text-white flex items-center gap-2">
+                <Flame className="w-5 h-5 text-emerald-400 shrink-0" />
+                <span>Verified Clean Dishes in {selectedCity.name}, {selectedCity.state}</span>
+              </h2>
+              <span className="text-xs font-black text-emerald-300 bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-500/40 shrink-0 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
+                {filteredDishes.length} Clean Havens
               </span>
-            </h2>
+            </div>
 
             <button
               onClick={() => setIsMapOpen(true)}
-              className="text-xs font-extrabold text-[#b6f7c1] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-extrabold text-emerald-400 hover:text-emerald-300 hover:underline flex items-center gap-1 cursor-pointer self-start sm:self-auto shrink-0 transition-colors"
             >
-              <span>View Map Radar</span>
+              <span>View in Oasis Map</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -504,56 +579,59 @@ export default function HomePage() {
               ))}
             </div>
           ) : (
-            <div className="p-12 text-center glass-panel rounded-3xl space-y-3">
-              <div className="w-12 h-12 rounded-2xl glass-pill text-[#b6f7c1] flex items-center justify-center mx-auto border border-[#b6f7c1]/30">
+            <div className="p-12 text-center bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl space-y-3 shadow-2xl">
+              <div className="w-12 h-12 rounded-2xl bg-zinc-900 text-emerald-400 flex items-center justify-center mx-auto border border-white/10">
                 <Compass className="w-6 h-6" />
               </div>
-              <h3 className="font-extrabold text-white text-sm">
+              <h3 className="font-extrabold text-white text-base">
                 No dishes match all active vetoes in {selectedCity.name}
               </h3>
-              <p className="text-xs text-emerald-200/70 max-w-md mx-auto font-medium">
-                Try loosening your protein/carb thresholds or reset filters to see all clean dishes.
+              <p className="text-xs text-zinc-400 max-w-md mx-auto font-medium">
+                Try toggling off a benefit filter or reset thresholds to explore all verified clean fuel in {selectedCity.name}.
               </p>
               <button
                 id="empty-reset-filters-btn"
                 onClick={resetFilters}
-                className="px-5 py-2.5 rounded-xl glass-btn-plus text-[#0a2e1f] text-xs font-black transition-all cursor-pointer active:scale-95"
+                className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-xs font-black transition-all duration-300 cursor-pointer active:scale-95 shadow-lg shadow-emerald-500/25 hover:scale-[1.02]"
               >
-                Reset Veto Filters
+                Reset Filters
               </button>
             </div>
           )}
         </section>
 
         {/* ========================================================================= */}
-        {/* BOTTOM BANNER: 100% SEED-OIL-FREE & CLEAN FUEL. NUTRITION OPTIMIZED.     */}
+        {/* BOTTOM BANNER: THE CLEAN ZONE MANIFESTO                                   */}
         {/* ========================================================================= */}
-        <footer className="p-6 sm:p-7 rounded-3xl glass-panel flex flex-col sm:flex-row items-center justify-between gap-5">
-          <div className="flex items-center gap-4 text-center sm:text-left">
-            <div className="w-12 h-12 rounded-2xl glass-pill flex items-center justify-center text-[#b6f7c1] shrink-0 border border-[#b6f7c1]/30">
-              <ShieldCheck className="w-6 h-6" />
+        <footer className="p-5 sm:p-7 rounded-3xl bg-white/5 backdrop-blur-md text-white border border-white/10 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+          <div className="flex items-start sm:items-center gap-3.5 sm:gap-4 text-left">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-emerald-950/90 flex items-center justify-center text-emerald-400 shrink-0 border border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+              <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
-              <h4 className="font-black text-white text-sm sm:text-base tracking-wider uppercase">
-                100% SEED-OIL-FREE &bull; PURE ANIMAL &amp; FRUIT FATS
+              <h4 className="font-black text-white text-xs sm:text-base tracking-wider uppercase flex items-center gap-2">
+                <span>The Clean Zone Manifesto</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  100% Vetted
+                </span>
               </h4>
-              <p className="text-xs text-[#b6f7c1] font-extrabold mt-0.5">
-                CLEAN FUEL. NUTRITION OPTIMIZED.
+              <p className="text-xs text-emerald-400 font-extrabold mt-0.5">
+                No seed oils. No hidden sugars. Just real food.
               </p>
-              <p className="text-[11px] text-emerald-300/70 mt-0.5">
-                Every restaurant verified for authentic beef tallow, single-estate EVOO, and grass-fed ghee.
+              <p className="text-[11px] text-zinc-400 mt-0.5 leading-relaxed">
+                Independent kitchens strictly verified for pure beef tallow, cold-pressed olive oil, and pasture-raised ghee.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-3 w-full sm:w-auto shrink-0">
             <button
               id="footer-explore-map-btn"
               onClick={() => setIsMapOpen(true)}
-              className="px-5 py-2.5 rounded-2xl glass-btn-plus text-[#0a2e1f] text-xs font-black transition-all cursor-pointer active:scale-95 flex items-center gap-1.5"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-xs font-black transition-all duration-300 cursor-pointer active:scale-95 flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/25 hover:scale-[1.02]"
             >
-              <Radar className="w-4 h-4 text-[#0a2e1f]" />
-              <span>Explore Map</span>
+              <Radar className="w-4 h-4 text-zinc-950" />
+              <span>Launch Oasis Map</span>
             </button>
           </div>
         </footer>
@@ -562,22 +640,22 @@ export default function HomePage() {
       {/* ========================================================================= */}
       {/* FLOATING MAP TRIGGER BUTTON                                               */}
       {/* ========================================================================= */}
-      <div className="fixed bottom-6 right-6 z-30 flex items-center gap-2">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-30 flex items-center gap-2">
         <button
           id="floating-map-toggle-btn"
           onClick={() => setIsMapOpen(true)}
-          className="group px-5 py-3 rounded-full glass-panel text-white font-black text-xs shadow-2xl flex items-center gap-2.5 border border-white/25 hover:border-white/40 transition-all cursor-pointer active:scale-95"
+          className="group px-4 py-2.5 sm:px-5 sm:py-3 rounded-full bg-zinc-900/90 hover:bg-zinc-800 text-white font-black text-xs shadow-2xl flex items-center gap-2 sm:gap-2.5 border border-white/15 transition-all duration-300 cursor-pointer active:scale-95 hover:scale-[1.02] backdrop-blur-md hover:border-emerald-500/50"
           title="Slide out the interactive map from the left"
         >
           <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#b6f7c1] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#52b788]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.9)]" />
           </span>
-          <span>Explore Map</span>
-          <span className="px-1.5 py-0.5 rounded-md glass-pill-dark text-[#b6f7c1] text-[10px] font-black border border-[#b6f7c1]/30">
+          <span>Oasis Map</span>
+          <span className="px-1.5 py-0.5 rounded-md bg-emerald-950 text-emerald-300 text-[10px] font-black border border-emerald-500/40">
             {filteredDishes.length}
           </span>
-          <ChevronRight className="w-3.5 h-3.5 text-[#b6f7c1] group-hover:translate-x-0.5 transition-transform" />
+          <ChevronRight className="w-3.5 h-3.5 text-emerald-400 group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
 

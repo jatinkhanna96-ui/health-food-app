@@ -1,16 +1,19 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { Dish, CityLocation } from '@/lib/mockData';
 import {
   Plus,
   Minus,
   Navigation,
   MapPin,
-  Flame,
   ShieldCheck,
   Star,
-  Crosshair,
+  Compass,
+  Layers,
+  Sparkles,
+  ChevronRight,
+  Zap,
 } from 'lucide-react';
 
 interface InteractiveMapProps {
@@ -20,6 +23,41 @@ interface InteractiveMapProps {
   city: CityLocation;
   radiusMiles?: number;
   isRadarScanning?: boolean;
+  onViewDetail?: (dish: Dish) => void;
+}
+
+type MapStyle = 'dark' | 'voyager' | 'osm';
+
+// Mercator Projection Math helpers
+function lngToTileX(lng: number, z: number): number {
+  return ((lng + 180) / 360) * Math.pow(2, z);
+}
+
+function latToTileY(lat: number, z: number): number {
+  const latRad = (lat * Math.PI) / 180;
+  return ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * Math.pow(2, z);
+}
+
+function pixelToLng(px: number, z: number): number {
+  return (px / (256 * Math.pow(2, z))) * 360 - 180;
+}
+
+function pixelToLat(py: number, z: number): number {
+  const n = Math.PI - (2 * Math.PI * py) / (256 * Math.pow(2, z));
+  return (180 / Math.PI) * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
+}
+
+function getTileUrl(style: MapStyle, z: number, x: number, y: number): string {
+  const subdomains = ['a', 'b', 'c', 'd'];
+  const s = subdomains[Math.abs(x + y) % subdomains.length];
+  if (style === 'osm') {
+    return `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
+  }
+  if (style === 'voyager') {
+    return `https://${s}.basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}.png`;
+  }
+  // Default: Dark Minimalist Monochrome CartoDB Dark Matter
+  return `https://${s}.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`;
 }
 
 export default function InteractiveMap({
@@ -29,345 +67,138 @@ export default function InteractiveMap({
   city,
   radiusMiles = 5,
   isRadarScanning = false,
+  onViewDetail,
 }: InteractiveMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [zoom, setZoom] = useState(1);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [containerSize, setContainerSize] = useState({ width: 500, height: 500 });
+  const [zoom, setZoom] = useState(14);
+  const [center, setCenter] = useState({ lat: city.lat, lng: city.lng });
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [hoveredDish, setHoveredDish] = useState<Dish | null>(null);
-  const [containerSize, setContainerSize] = useState({ width: 400, height: 600 });
+  const [mapStyle, setMapStyle] = useState<MapStyle>('dark');
   const [radarAngle, setRadarAngle] = useState(0);
+  const [showStyleMenu, setShowStyleMenu] = useState(false);
 
-  // Observe container dimensions for drawer slide animations
+  // Auto-fit & observe container dimensions
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
-          setContainerSize({
-            width: entry.contentRect.width,
-            height: entry.contentRect.height,
-          });
-        }
+    const updateSize = () => {
+      if (container.clientWidth > 0 && container.clientHeight > 0) {
+        setContainerSize({
+          width: container.clientWidth,
+          height: container.clientHeight,
+        });
       }
-    });
+    };
 
+    updateSize();
+    const observer = new ResizeObserver(updateSize);
     observer.observe(container);
     return () => observer.disconnect();
   }, []);
 
-  // Reset viewport when city changes
+  // Update center and default zoom when city changes
   useEffect(() => {
-    setOffset({ x: 0, y: 0 });
-    setZoom(1);
+    setCenter({ lat: city.lat, lng: city.lng });
+    setPanOffset({ x: 0, y: 0 });
+    setZoom(city.zoom || 14);
+    setHoveredDish(null);
   }, [city]);
 
-  // Radar scanning animation
+  // Center on dish if selectedDish changes and differs from current city center
+  useEffect(() => {
+    if (selectedDish) {
+      if (selectedDish.city === city.name) {
+        setCenter({
+          lat: selectedDish.coordinates.lat,
+          lng: selectedDish.coordinates.lng,
+        });
+        setPanOffset({ x: 0, y: 0 });
+      }
+    }
+  }, [selectedDish, city.name]);
+
+  // Radar sweep animation
   useEffect(() => {
     if (!isRadarScanning) return;
     let animId: number;
     const animate = () => {
-      setRadarAngle((prev) => (prev + 0.06) % (Math.PI * 2));
+      setRadarAngle((prev) => (prev + 0.05) % (Math.PI * 2));
       animId = requestAnimationFrame(animate);
     };
     animId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animId);
   }, [isRadarScanning]);
 
-  // Convert lat/lng to canvas x/y relative to city center
-  const getCoordinates = useCallback(
-    (lat: number, lng: number, width: number, height: number) => {
-      const scale = 14000 * zoom;
-      const x = width / 2 + (lng - city.lng) * scale + offset.x;
-      const y = height / 2 - (lat - city.lat) * scale + offset.y;
-      return { x, y };
+  // Commit pan drag offset to center coordinates
+  const commitPan = useCallback(
+    (offset: { x: number; y: number }) => {
+      if (offset.x === 0 && offset.y === 0) return;
+      const Z = Math.round(zoom);
+      const cPixelX = lngToTileX(center.lng, Z) * 256;
+      const cPixelY = latToTileY(center.lat, Z) * 256;
+
+      const newCenterPixelX = cPixelX - offset.x;
+      const newCenterPixelY = cPixelY - offset.y;
+
+      const newLng = pixelToLng(newCenterPixelX, Z);
+      const newLat = pixelToLat(newCenterPixelY, Z);
+
+      setCenter({ lat: newLat, lng: newLng });
+      setPanOffset({ x: 0, y: 0 });
     },
-    [city.lat, city.lng, zoom, offset.x, offset.y]
+    [center.lat, center.lng, zoom]
   );
 
-  // Render Map Canvas with High-DPI support
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
-    const width = containerSize.width || 400;
-    const height = containerSize.height || 600;
-
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-    ctx.scale(dpr, dpr);
-
-    // Clear background with warm cartographic canvas
-    ctx.fillStyle = '#F5F2EB';
-    ctx.fillRect(0, 0, width, height);
-
-    // Draw stylized grid roads and city blocks
-    ctx.strokeStyle = 'rgba(226, 219, 206, 0.9)';
-    ctx.lineWidth = 1;
-
-    const gridSize = 48 * zoom;
-    const startX = (offset.x % gridSize) - gridSize;
-    const startY = (offset.y % gridSize) - gridSize;
-
-    for (let x = startX; x < width + gridSize; x += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
-    }
-
-    for (let y = startY; y < height + gridSize; y += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(width, y);
-      ctx.stroke();
-    }
-
-    // Draw secondary arterial road lines
-    ctx.strokeStyle = 'rgba(210, 200, 185, 0.85)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, height * 0.5 + offset.y * 0.4);
-    ctx.lineTo(width, height * 0.5 + offset.y * 0.4);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(width * 0.5 + offset.x * 0.4, 0);
-    ctx.lineTo(width * 0.5 + offset.x * 0.4, height);
-    ctx.stroke();
-
-    // Draw stylized river / waterway curve
-    ctx.strokeStyle = 'rgba(186, 218, 235, 0.6)';
-    ctx.lineWidth = 24 * zoom;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(0, height * 0.45 + offset.y * 0.5);
-    ctx.bezierCurveTo(
-      width * 0.35 + offset.x * 0.3,
-      height * 0.35 + offset.y * 0.5,
-      width * 0.65 + offset.x * 0.3,
-      height * 0.65 + offset.y * 0.5,
-      width,
-      height * 0.55 + offset.y * 0.5
-    );
-    ctx.stroke();
-
-    // Draw City Center Indicator
-    const centerCoord = getCoordinates(city.lat, city.lng, width, height);
-
-    // Draw Radius Range Ring (Vicinity Boundary)
-    const radiusPixels = radiusMiles * 28 * zoom;
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(centerCoord.x, centerCoord.y, radiusPixels, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(16, 185, 129, 0.4)';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([6, 6]);
-    ctx.stroke();
-    ctx.fillStyle = 'rgba(16, 185, 129, 0.04)';
-    ctx.fill();
-    ctx.restore();
-
-    // Radar scan sweep beam
-    if (isRadarScanning) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(centerCoord.x, centerCoord.y);
-      ctx.arc(centerCoord.x, centerCoord.y, radiusPixels * 1.2, radarAngle - 0.4, radarAngle);
-      ctx.closePath();
-      const gradient = ctx.createRadialGradient(
-        centerCoord.x,
-        centerCoord.y,
-        0,
-        centerCoord.x,
-        centerCoord.y,
-        radiusPixels * 1.2
-      );
-      gradient.addColorStop(0, 'rgba(16, 185, 129, 0.35)');
-      gradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
-      ctx.fillStyle = gradient;
-      ctx.fill();
-      ctx.restore();
-    }
-
-    // City Center Beacon
-    ctx.beginPath();
-    ctx.arc(centerCoord.x, centerCoord.y, 4, 0, Math.PI * 2);
-    ctx.fillStyle = '#059669';
-    ctx.fill();
-
-    ctx.fillStyle = '#047857';
-    ctx.font = 'bold 9px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(`${city.name.toUpperCase()} HUB (${radiusMiles}mi)`, centerCoord.x, centerCoord.y - 10);
-
-    // Draw dishes pins
-    dishes.forEach((dish) => {
-      const { x, y } = getCoordinates(dish.coordinates.lat, dish.coordinates.lng, width, height);
-      const isSelected = selectedDish?.id === dish.id;
-      const isHovered = hoveredDish?.id === dish.id;
-
-      // Pulse ring for selected / hovered dish
-      if (isSelected || isHovered) {
-        ctx.beginPath();
-        ctx.arc(x, y, 24, 0, Math.PI * 2);
-        ctx.fillStyle = isSelected ? 'rgba(16, 185, 129, 0.25)' : 'rgba(20, 184, 166, 0.2)';
-        ctx.fill();
-        ctx.strokeStyle = isSelected ? '#10B981' : '#14B8A6';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-      }
-
-      // Outer pin circle
-      ctx.beginPath();
-      ctx.arc(x, y, 14, 0, Math.PI * 2);
-      ctx.fillStyle = isSelected ? '#10B981' : '#064E3B';
-      ctx.fill();
-      ctx.strokeStyle = '#FFFFFF';
-      ctx.lineWidth = 2.5;
-      ctx.stroke();
-
-      // Inner protein text
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 9px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(`${dish.protein}g`, x, y);
-
-      // Label under pin
-      ctx.fillStyle = isSelected ? '#047857' : '#44403C';
-      ctx.font = 'bold 11px sans-serif';
-      ctx.fillText(dish.restaurant, x, y + 22);
-    });
-  }, [
-    dishes,
-    selectedDish,
-    hoveredDish,
-    zoom,
-    offset,
-    city,
-    radiusMiles,
-    isRadarScanning,
-    radarAngle,
-    containerSize,
-    getCoordinates,
-  ]);
-
-
-  // Handle Mouse Drag & Pan
+  // Mouse Handlers
   const handleMouseDown = (e: React.MouseEvent) => {
+    if (e.button !== 0) return;
     setIsDragging(true);
-    setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
+    setDragStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (isDragging) {
-      setOffset({
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y,
-      });
-      return;
-    }
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    // Check hit test for pins
-    let found: Dish | null = null;
-    for (const dish of dishes) {
-      const { x, y } = getCoordinates(
-        dish.coordinates.lat,
-        dish.coordinates.lng,
-        rect.width,
-        rect.height
-      );
-      const dist = Math.hypot(mouseX - x, mouseY - y);
-      if (dist < 20) {
-        found = dish;
-        break;
-      }
-    }
-    setHoveredDish(found);
+    if (!isDragging) return;
+    setPanOffset({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y,
+    });
   };
 
   const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleClick = (e: React.MouseEvent) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    for (const dish of dishes) {
-      const { x, y } = getCoordinates(
-        dish.coordinates.lat,
-        dish.coordinates.lng,
-        rect.width,
-        rect.height
-      );
-      const dist = Math.hypot(mouseX - x, mouseY - y);
-      if (dist < 22) {
-        onSelectDish(dish);
-        break;
-      }
+    if (isDragging) {
+      setIsDragging(false);
+      commitPan(panOffset);
     }
   };
 
-  // Touch Handlers for Mobile Pan & Tap
+  // Touch Handlers for Mobile Pan
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 1) {
       const touch = e.touches[0];
       setIsDragging(true);
-      setDragStart({ x: touch.clientX - offset.x, y: touch.clientY - offset.y });
+      setDragStart({ x: touch.clientX - panOffset.x, y: touch.clientY - panOffset.y });
     }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (isDragging && e.touches.length === 1) {
       const touch = e.touches[0];
-      setOffset({
+      setPanOffset({
         x: touch.clientX - dragStart.x,
         y: touch.clientY - dragStart.y,
       });
     }
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    setIsDragging(false);
-    if (e.changedTouches.length === 1) {
-      const touch = e.changedTouches[0];
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const rect = canvas.getBoundingClientRect();
-      const touchX = touch.clientX - rect.left;
-      const touchY = touch.clientY - rect.top;
-
-      for (const dish of dishes) {
-        const { x, y } = getCoordinates(
-          dish.coordinates.lat,
-          dish.coordinates.lng,
-          rect.width,
-          rect.height
-        );
-        const dist = Math.hypot(touchX - x, touchY - y);
-        if (dist < 26) {
-          onSelectDish(dish);
-          break;
-        }
-      }
+  const handleTouchEnd = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      commitPan(panOffset);
     }
   };
 
@@ -375,81 +206,385 @@ export default function InteractiveMap({
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     if (e.deltaY < 0) {
-      setZoom((z) => Math.min(z * 1.15, 3.0));
-    } else {
-      setZoom((z) => Math.max(z * 0.88, 0.4));
+      setZoom((z) => Math.min(17, z + 1));
+    } else if (e.deltaY > 0) {
+      setZoom((z) => Math.max(11, z - 1));
     }
   };
+
+  // Coordinates Converter (GPS to Screen Pixels)
+  const getScreenCoords = useCallback(
+    (lat: number, lng: number) => {
+      const Z = Math.round(zoom);
+      const cPixelX = lngToTileX(center.lng, Z) * 256;
+      const cPixelY = latToTileY(center.lat, Z) * 256;
+
+      const pPixelX = lngToTileX(lng, Z) * 256;
+      const pPixelY = latToTileY(lat, Z) * 256;
+
+      const x = containerSize.width / 2 + (pPixelX - cPixelX) + panOffset.x;
+      const y = containerSize.height / 2 + (pPixelY - cPixelY) + panOffset.y;
+      return { x, y };
+    },
+    [center.lat, center.lng, zoom, containerSize.width, containerSize.height, panOffset.x, panOffset.y]
+  );
+
+  // Compute Active Visible Tiles
+  const visibleTiles = useMemo(() => {
+    const Z = Math.round(zoom);
+    const numTiles = Math.pow(2, Z);
+
+    const cPixelX = lngToTileX(center.lng, Z) * 256;
+    const cPixelY = latToTileY(center.lat, Z) * 256;
+
+    const screenMinX = cPixelX - containerSize.width / 2 - panOffset.x;
+    const screenMaxX = cPixelX + containerSize.width / 2 - panOffset.x;
+    const screenMinY = cPixelY - containerSize.height / 2 - panOffset.y;
+    const screenMaxY = cPixelY + containerSize.height / 2 - panOffset.y;
+
+    const minTileX = Math.floor(screenMinX / 256);
+    const maxTileX = Math.floor(screenMaxX / 256);
+    const minTileY = Math.floor(screenMinY / 256);
+    const maxTileY = Math.floor(screenMaxY / 256);
+
+    const tiles: { key: string; url: string; left: number; top: number }[] = [];
+
+    for (let tx = minTileX; tx <= maxTileX; tx++) {
+      for (let ty = minTileY; ty <= maxTileY; ty++) {
+        const wrappedX = ((tx % numTiles) + numTiles) % numTiles;
+        if (ty < 0 || ty >= numTiles) continue;
+
+        const tilePixelLeft = tx * 256;
+        const tilePixelTop = ty * 256;
+
+        const left = containerSize.width / 2 + (tilePixelLeft - cPixelX) + panOffset.x;
+        const top = containerSize.height / 2 + (tilePixelTop - cPixelY) + panOffset.y;
+
+        tiles.push({
+          key: `${Z}-${tx}-${ty}`,
+          url: getTileUrl(mapStyle, Z, wrappedX, ty),
+          left,
+          top,
+        });
+      }
+    }
+    return tiles;
+  }, [center.lng, center.lat, zoom, panOffset.x, panOffset.y, containerSize.width, containerSize.height, mapStyle]);
+
+  // Center coordinates of selected city in screen pixels
+  const cityCenterCoords = useMemo(() => {
+    return getScreenCoords(city.lat, city.lng);
+  }, [getScreenCoords, city.lat, city.lng]);
+
+  // Radius in screen pixels
+  const radiusPixels = useMemo(() => {
+    const Z = Math.round(zoom);
+    const metersPerPixel = (156543.03392 * Math.cos((center.lat * Math.PI) / 180)) / Math.pow(2, Z);
+    const radiusMeters = radiusMiles * 1609.34;
+    return radiusMeters / metersPerPixel;
+  }, [zoom, center.lat, radiusMiles]);
+
+  // Radar Sweeping Cone SVG Path
+  const radarArcPath = useMemo(() => {
+    if (!isRadarScanning) return '';
+    const cx = cityCenterCoords.x;
+    const cy = cityCenterCoords.y;
+    const r = radiusPixels;
+    const arcSpan = Math.PI / 4;
+    const startAngle = radarAngle;
+    const endAngle = radarAngle + arcSpan;
+
+    const x1 = cx + r * Math.cos(startAngle);
+    const y1 = cy + r * Math.sin(startAngle);
+    const x2 = cx + r * Math.cos(endAngle);
+    const y2 = cy + r * Math.sin(endAngle);
+
+    return `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2} Z`;
+  }, [isRadarScanning, cityCenterCoords, radiusPixels, radarAngle]);
 
   return (
     <div
       ref={containerRef}
-      id="interactive-map-wrapper"
-      className="relative w-full h-full min-h-[340px] bg-[#F5F2EB] overflow-hidden select-none touch-none"
+      id="oasis-cartography-map"
+      className="relative w-full h-full overflow-hidden select-none bg-zinc-950 font-sans"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onWheel={handleWheel}
+      style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
     >
-      <canvas
-        ref={canvasRef}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onClick={handleClick}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onWheel={handleWheel}
-        className={`w-full h-full block ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-      />
+      {/* ===================================================================== */}
+      {/* 1. TILE LAYER: DARK MINIMALIST MONOCHROME CARTOGRAPHY                 */}
+      {/* ===================================================================== */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {visibleTiles.map((tile) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            key={tile.key}
+            src={tile.url}
+            alt=""
+            loading="eager"
+            referrerPolicy="no-referrer"
+            draggable={false}
+            className="absolute select-none pointer-events-none transition-opacity duration-150"
+            style={{
+              left: `${tile.left}px`,
+              top: `${tile.top}px`,
+              width: '256px',
+              height: '256px',
+            }}
+          />
+        ))}
+      </div>
 
-      {/* Map Floating Zoom & Recenter Controls */}
-      <div className="absolute bottom-5 right-5 z-20 flex flex-col gap-2 bg-white/95 backdrop-blur-md p-1.5 rounded-2xl border border-stone-200/90 shadow-md">
+      {/* Dark Oasis Vignette Ambient Shading */}
+      <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_80px_rgba(0,0,0,0.85)]" />
+
+      {/* ===================================================================== */}
+      {/* 2. SVG OVERLAY: GLOWING EMERALD RADAR PERIMETER & SCAN CONE           */}
+      {/* ===================================================================== */}
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none z-10"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <radialGradient id="oasisRadarGradient" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#10B981" stopOpacity="0.45" />
+            <stop offset="60%" stopColor="#10B981" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#10B981" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
+        {/* Glowing Emerald Search Radius Perimeter Ring */}
+        <circle
+          cx={cityCenterCoords.x}
+          cy={cityCenterCoords.y}
+          r={radiusPixels}
+          fill="rgba(16, 185, 129, 0.04)"
+          stroke="#10b981"
+          strokeWidth="2"
+          strokeDasharray="6 6"
+          className="filter drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+        />
+
+        {/* Dynamic Radar Sweeping Beam */}
+        {isRadarScanning && radarArcPath && (
+          <path d={radarArcPath} fill="url(#oasisRadarGradient)" />
+        )}
+      </svg>
+
+      {/* ===================================================================== */}
+      {/* 3. CITY OASIS HUB BEACON                                              */}
+      {/* ===================================================================== */}
+      <div
+        className="absolute z-10 pointer-events-none -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
+        style={{ left: `${cityCenterCoords.x}px`, top: `${cityCenterCoords.y}px` }}
+      >
+        <span className="relative flex h-5 w-5 items-center justify-center">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80" />
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 border-2 border-zinc-950 shadow-[0_0_12px_rgba(16,185,129,0.9)]" />
+        </span>
+        <span className="mt-1 px-2.5 py-0.5 rounded-full bg-zinc-950/90 backdrop-blur-md text-[9px] font-black text-emerald-300 uppercase tracking-widest border border-emerald-500/40 whitespace-nowrap shadow-[0_0_12px_rgba(16,185,129,0.25)]">
+          {city.name} Oasis Hub ({radiusMiles}mi)
+        </span>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* 4. CUSTOM GLOWING EMERALD MARKERS (SAFE OASIS IN A DARK CITY)         */}
+      {/* ===================================================================== */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
+        {dishes.map((dish) => {
+          const { x, y } = getScreenCoords(dish.coordinates.lat, dish.coordinates.lng);
+          const isSelected = selectedDish?.id === dish.id;
+          const isHovered = hoveredDish?.id === dish.id;
+
+          // Don't render if far off-screen
+          if (x < -120 || x > containerSize.width + 120 || y < -120 || y > containerSize.height + 120) {
+            return null;
+          }
+
+          return (
+            <div
+              key={dish.id}
+              className={`absolute -translate-x-1/2 -translate-y-full pointer-events-auto cursor-pointer group transition-all duration-300 ${
+                isSelected
+                  ? 'scale-120 z-35'
+                  : isHovered
+                  ? 'scale-110 z-30'
+                  : 'hover:scale-105 z-25'
+              }`}
+              style={{ left: `${x}px`, top: `${y}px` }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelectDish(dish);
+              }}
+              onMouseEnter={() => setHoveredDish(dish)}
+              onMouseLeave={() => setHoveredDish(null)}
+            >
+              {/* Glowing Emerald Pin Container */}
+              <div className="flex flex-col items-center filter drop-shadow-xl">
+                {/* Glowing Capsule Pill */}
+                <div
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black border transition-all duration-300 ${
+                    isSelected
+                      ? 'bg-emerald-950 text-white border-emerald-400 ring-2 ring-emerald-400/70 shadow-[0_0_24px_rgba(16,185,129,0.85)]'
+                      : isHovered
+                      ? 'bg-zinc-950 text-white border-emerald-500 shadow-[0_0_18px_rgba(16,185,129,0.6)]'
+                      : 'bg-zinc-950/95 text-zinc-100 border-emerald-500/50 shadow-[0_0_14px_rgba(16,185,129,0.35)]'
+                  }`}
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span className="font-extrabold text-white">{dish.protein}g</span>
+                  <span className="text-[9px] text-zinc-500">&bull;</span>
+                  <span className="text-emerald-300 truncate max-w-[90px] font-bold">
+                    {dish.cookingFat.replace('100% Grass-Fed ', '')}
+                  </span>
+                </div>
+
+                {/* Restaurant Label Cardlet */}
+                <div
+                  className={`mt-0.5 px-2 py-0.5 rounded-lg text-[10px] font-black tracking-tight whitespace-nowrap border shadow-lg transition-all duration-300 ${
+                    isSelected
+                      ? 'bg-emerald-500 text-zinc-950 border-emerald-300 font-black'
+                      : 'bg-zinc-900/95 backdrop-blur-md text-zinc-200 border-white/15 group-hover:border-emerald-500/50 group-hover:text-white'
+                  }`}
+                >
+                  {dish.restaurant}
+                </div>
+
+                {/* Glowing Beacon Needle & Glowing Dot */}
+                <div className="relative flex flex-col items-center mt-0.5">
+                  <div
+                    className={`w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[6px] ${
+                      isSelected ? 'border-t-emerald-400' : 'border-t-emerald-500/80'
+                    }`}
+                  />
+                  {/* Glowing Emerald Anchor Dot */}
+                  <div className="relative mt-0.5 flex items-center justify-center">
+                    <span className="animate-ping absolute inline-flex h-3.5 w-3.5 rounded-full bg-emerald-400 opacity-75" />
+                    <span
+                      className={`relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 border border-zinc-950 shadow-[0_0_12px_rgba(16,185,129,0.9)] ${
+                        isSelected ? 'ring-2 ring-emerald-300 scale-125' : ''
+                      }`}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ===================================================================== */}
+      {/* 5. FLOATING MAP CONTROLS & HUD IN DARK GLASS                          */}
+      {/* ===================================================================== */}
+      {/* Top Left: Street Level Indicator Badge */}
+      <div className="absolute top-3 left-3 z-30 flex items-center gap-2">
+        <div className="px-3 py-1.5 rounded-xl bg-zinc-950/90 backdrop-blur-md border border-white/10 text-white text-[11px] font-bold flex items-center gap-1.5 shadow-xl">
+          <Compass className="w-3.5 h-3.5 text-emerald-400" />
+          <span>{city.name}</span>
+          <span className="text-zinc-600">&bull;</span>
+          <span className="text-emerald-400 font-extrabold">Oasis Radar Z{zoom}</span>
+        </div>
+      </div>
+
+      {/* Top Right: Cartography Style Switcher */}
+      <div className="absolute top-3 right-3 z-30 flex items-center gap-1.5">
+        <div className="relative">
+          <button
+            id="map-style-toggle-btn"
+            onClick={() => setShowStyleMenu(!showStyleMenu)}
+            className="px-3 py-1.5 rounded-xl bg-zinc-950/90 backdrop-blur-md border border-white/10 hover:border-emerald-500/40 text-zinc-200 hover:text-white transition-all duration-300 cursor-pointer shadow-xl flex items-center gap-1.5 text-xs font-bold"
+            title="Switch map view"
+          >
+            <Layers className="w-4 h-4 text-emerald-400" />
+            <span className="hidden sm:inline capitalize">
+              {mapStyle === 'dark' ? 'Dark Oasis' : mapStyle === 'voyager' ? 'Day Streets' : 'OSM Roads'}
+            </span>
+          </button>
+
+          {showStyleMenu && (
+            <div className="absolute right-0 mt-1.5 w-44 bg-zinc-950/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/15 py-1.5 z-40 text-xs font-bold text-zinc-200 animate-in fade-in zoom-in-95 duration-100">
+              <div className="px-3 py-1 text-[10px] font-black uppercase tracking-wider text-zinc-500 border-b border-white/10">
+                Cartography Mode
+              </div>
+              <button
+                onClick={() => {
+                  setMapStyle('dark');
+                  setShowStyleMenu(false);
+                }}
+                className={`w-full px-3 py-2 text-left flex items-center justify-between hover:bg-white/5 cursor-pointer ${
+                  mapStyle === 'dark' ? 'text-emerald-400 font-black' : ''
+                }`}
+              >
+                <span>Dark Minimalist</span>
+                {mapStyle === 'dark' && <span className="text-emerald-400">✓</span>}
+              </button>
+              <button
+                onClick={() => {
+                  setMapStyle('voyager');
+                  setShowStyleMenu(false);
+                }}
+                className={`w-full px-3 py-2 text-left flex items-center justify-between hover:bg-white/5 cursor-pointer ${
+                  mapStyle === 'voyager' ? 'text-emerald-400 font-black' : ''
+                }`}
+              >
+                <span>Daylight Streets</span>
+                {mapStyle === 'voyager' && <span className="text-emerald-400">✓</span>}
+              </button>
+              <button
+                onClick={() => {
+                  setMapStyle('osm');
+                  setShowStyleMenu(false);
+                }}
+                className={`w-full px-3 py-2 text-left flex items-center justify-between hover:bg-white/5 cursor-pointer ${
+                  mapStyle === 'osm' ? 'text-emerald-400 font-black' : ''
+                }`}
+              >
+                <span>OpenStreetMap</span>
+                {mapStyle === 'osm' && <span className="text-emerald-400">✓</span>}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom Right: Zoom In, Zoom Out, Recenter Buttons */}
+      <div className="absolute bottom-4 right-4 z-30 flex flex-col gap-1.5 bg-zinc-950/90 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 shadow-2xl">
         <button
           id="map-zoom-in-btn"
-          onClick={() => setZoom((z) => Math.min(z * 1.25, 3.0))}
-          className="p-2 rounded-xl text-stone-700 hover:text-stone-950 hover:bg-stone-100 transition-colors cursor-pointer"
-          title="Zoom In"
+          onClick={() => setZoom((z) => Math.min(17, z + 1))}
+          className="p-2 rounded-xl text-zinc-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer active:scale-95"
+          title="Zoom In (+)"
         >
           <Plus className="w-4 h-4" />
         </button>
         <button
           id="map-zoom-out-btn"
-          onClick={() => setZoom((z) => Math.max(z * 0.8, 0.4))}
-          className="p-2 rounded-xl text-stone-700 hover:text-stone-950 hover:bg-stone-100 transition-colors cursor-pointer"
-          title="Zoom Out"
+          onClick={() => setZoom((z) => Math.max(11, z - 1))}
+          className="p-2 rounded-xl text-zinc-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer active:scale-95"
+          title="Zoom Out (-)"
         >
           <Minus className="w-4 h-4" />
         </button>
+        <div className="w-full h-px bg-white/10 my-0.5" />
         <button
           id="map-recenter-btn"
           onClick={() => {
-            setOffset({ x: 0, y: 0 });
-            setZoom(1);
+            setCenter({ lat: city.lat, lng: city.lng });
+            setPanOffset({ x: 0, y: 0 });
+            setZoom(city.zoom || 14);
           }}
-          className="p-2 rounded-xl text-emerald-600 hover:bg-emerald-50 transition-colors cursor-pointer"
-          title="Recenter City Zone"
+          className="p-2 rounded-xl text-emerald-400 hover:text-emerald-300 hover:bg-white/10 transition-colors cursor-pointer active:scale-95"
+          title="Recenter Map (🧭)"
         >
           <Navigation className="w-4 h-4" />
         </button>
       </div>
-
-      {/* Hover Dish Tooltip */}
-      {hoveredDish && (
-        <div className="absolute top-5 left-5 z-20 p-3.5 rounded-2xl bg-white/95 border border-stone-200 text-stone-900 shadow-xl backdrop-blur-md max-w-xs space-y-1.5 pointer-events-none">
-          <div className="flex items-center justify-between gap-2">
-            <span className="font-extrabold text-xs text-stone-900 truncate">
-              {hoveredDish.name}
-            </span>
-            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-              {hoveredDish.protein}g Protein
-            </span>
-          </div>
-          <p className="text-[11px] text-stone-500 font-semibold">
-            {hoveredDish.restaurant} • {hoveredDish.cookingFat}
-          </p>
-        </div>
-      )}
     </div>
   );
 }
-
-
