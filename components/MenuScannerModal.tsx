@@ -161,22 +161,22 @@ export default function MenuScannerModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
       <div
         id="menu-scanner-modal"
-        className="relative w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl border border-stone-200 my-8 flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-2xl glass-panel text-stone-100 rounded-3xl overflow-hidden my-8 flex flex-col max-h-[90vh]"
       >
         {/* Modal Header */}
-        <div className="p-5 sm:p-6 border-b border-stone-200 flex items-center justify-between bg-[#FAF8F5]">
+        <div className="p-5 sm:p-6 border-b border-white/15 flex items-center justify-between bg-black/40 backdrop-blur-md">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-700 shadow-xs">
+            <div className="w-10 h-10 rounded-2xl glass-pill text-[#b6f7c1] flex items-center justify-center border border-[#b6f7c1]/30 shrink-0">
               <ScanLine className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-extrabold text-stone-900 text-base">
+              <h3 className="font-extrabold text-white text-base">
                 AI Menu Vision &amp; Macro Auditor
               </h3>
-              <p className="text-xs text-stone-500 font-medium">
+              <p className="text-xs text-emerald-200/70 font-medium">
                 OCR scanned ingredients, cooking oils &amp; macro breakdown for {city.name}
               </p>
             </div>
@@ -185,17 +185,17 @@ export default function MenuScannerModal({
           <button
             id="close-menu-scanner-btn"
             onClick={onClose}
-            className="p-2 rounded-full bg-white hover:bg-stone-100 text-stone-700 transition-colors cursor-pointer border border-stone-200 shadow-xs"
+            className="p-2 rounded-xl glass-pill hover:bg-white/15 text-emerald-100 border border-white/20 transition-all cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 overflow-y-auto space-y-5 text-stone-800">
+        <div className="p-6 overflow-y-auto space-y-5 text-stone-200">
           {/* Sample Prompts */}
           <div>
-            <span className="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">
+            <span className="block text-xs font-bold text-emerald-300/80 uppercase tracking-wider mb-2">
               Quick Try Sample Menus:
             </span>
             <div className="flex flex-wrap gap-2">
@@ -209,9 +209,9 @@ export default function MenuScannerModal({
                     setImagePreview(null);
                     setImageBase64(null);
                   }}
-                  className="px-3 py-1.5 rounded-xl bg-[#FAF8F5] hover:bg-emerald-50 border border-stone-200 text-stone-700 hover:text-emerald-800 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
+                  className="px-3 py-1.5 rounded-xl glass-pill hover:bg-white/15 border border-white/15 text-stone-200 hover:text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
                 >
-                  <FileText className="w-3.5 h-3.5 text-emerald-600" />
+                  <FileText className="w-3.5 h-3.5 text-[#b6f7c1]" />
                   <span>{sample.title}</span>
                 </button>
               ))}
@@ -220,12 +220,12 @@ export default function MenuScannerModal({
 
           {/* File Upload Area */}
           <div>
-            <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-emerald-200/90 uppercase tracking-wider mb-2">
               1. Upload Menu Photo (JPG / PNG)
             </label>
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-stone-300 hover:border-emerald-500 rounded-2xl p-5 text-center cursor-pointer transition-all bg-[#FAF8F5] hover:bg-emerald-50/40 group"
+              className="border-2 border-dashed border-white/20 hover:border-[#b6f7c1]/60 rounded-2xl p-5 text-center cursor-pointer transition-all glass-pill-dark hover:bg-white/5 group"
             >
               <input
                 ref={fileInputRef}
@@ -237,7 +237,7 @@ export default function MenuScannerModal({
 
               {imagePreview ? (
                 <div className="flex flex-col items-center gap-2">
-                  <div className="relative w-32 h-24 rounded-lg overflow-hidden border border-stone-300 shadow-sm">
+                  <div className="relative w-32 h-24 rounded-lg overflow-hidden border border-white/20 shadow-sm">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={imagePreview}
@@ -245,19 +245,19 @@ export default function MenuScannerModal({
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-bold text-emerald-700">
+                  <span className="text-xs font-bold text-[#b6f7c1]">
                     Image ready for AI OCR analysis (Click to change)
                   </span>
                 </div>
               ) : (
-                <div className="flex flex-col items-center gap-1.5 text-stone-500 group-hover:text-emerald-700">
-                  <div className="w-9 h-9 rounded-full bg-white border border-stone-200 group-hover:border-emerald-300 flex items-center justify-center transition-colors shadow-xs">
-                    <Upload className="w-4 h-4" />
+                <div className="flex flex-col items-center gap-1.5 text-stone-400 group-hover:text-emerald-200">
+                  <div className="w-9 h-9 rounded-full glass-pill border border-white/20 group-hover:border-[#b6f7c1]/40 flex items-center justify-center transition-colors">
+                    <Upload className="w-4 h-4 text-[#b6f7c1]" />
                   </div>
-                  <span className="text-xs font-bold text-stone-800 group-hover:text-emerald-700">
+                  <span className="text-xs font-bold text-white group-hover:text-[#b6f7c1]">
                     Click to browse or drop menu image here
                   </span>
-                  <span className="text-[10px] text-stone-400 font-medium">
+                  <span className="text-[10px] text-emerald-300/60 font-medium">
                     Supports high-resolution menus, chalkboards &amp; PDF snapshots
                   </span>
                 </div>
@@ -267,7 +267,7 @@ export default function MenuScannerModal({
 
           {/* Paste Menu Text Area */}
           <div>
-            <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-emerald-200/90 uppercase tracking-wider mb-2">
               2. Or Paste Menu Text / Dish Description
             </label>
             <textarea
@@ -276,13 +276,13 @@ export default function MenuScannerModal({
               onChange={(e) => setMenuText(e.target.value)}
               placeholder="e.g. 8oz Grass Fed Ribeye cooked over oak with chimichurri sauce, broccolini in beef tallow. Or paste an entire dinner menu section..."
               rows={3}
-              className="w-full p-3.5 rounded-2xl bg-[#FAF8F5] border border-stone-200 text-xs font-semibold text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+              className="w-full p-3.5 rounded-2xl glass-pill-dark border border-white/20 text-xs font-medium text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#b6f7c1]/40 focus:border-[#b6f7c1]"
             />
           </div>
 
           {error && (
-            <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 shrink-0 text-red-600" />
+            <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-500/40 text-rose-200 text-xs font-bold flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0 text-rose-400" />
               <span>{error}</span>
             </div>
           )}
@@ -292,7 +292,7 @@ export default function MenuScannerModal({
             id="run-menu-scan-btn"
             onClick={handleScan}
             disabled={isScanning}
-            className="w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 disabled:bg-stone-300 disabled:text-stone-500 text-slate-950 font-black text-sm transition-all shadow-md shadow-emerald-500/25 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+            className="w-full py-3.5 rounded-2xl glass-btn-plus disabled:opacity-50 text-slate-950 font-black text-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
           >
             {isScanning ? (
               <>
@@ -309,19 +309,19 @@ export default function MenuScannerModal({
 
           {/* Results Display */}
           {results && (
-            <div className="space-y-4 pt-4 border-t border-stone-200">
+            <div className="space-y-4 pt-4 border-t border-white/15">
               <div className="flex items-center justify-between">
-                <h4 className="font-extrabold text-stone-900 text-sm flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <h4 className="font-extrabold text-white text-sm flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#b6f7c1]" />
                   <span>Discovered Clean-Fuel Dishes ({results.length})</span>
                 </h4>
-                <span className="text-[10px] uppercase font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
+                <span className="text-[10px] uppercase font-bold text-[#b6f7c1] glass-pill-dark px-2 py-0.5 rounded-md border border-[#b6f7c1]/30">
                   OCR Verified
                 </span>
               </div>
 
               {summary && (
-                <p className="text-xs text-stone-700 bg-[#FAF8F5] p-3 rounded-xl border border-stone-200 italic">
+                <p className="text-xs text-stone-200 glass-card p-3 rounded-xl border border-white/15 italic">
                   &ldquo;{summary}&rdquo;
                 </p>
               )}
@@ -330,12 +330,12 @@ export default function MenuScannerModal({
                 {results.map((dish, idx) => (
                   <div
                     key={idx}
-                    className="p-4 rounded-2xl bg-[#FAF8F5] border border-stone-200 hover:border-emerald-300 shadow-xs space-y-2.5 transition-all"
+                    className="p-4 rounded-2xl glass-card space-y-2.5 transition-all"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <h5 className="font-extrabold text-stone-900 text-sm">{dish.name}</h5>
-                        <p className="text-xs text-stone-500 font-semibold">
+                        <h5 className="font-extrabold text-white text-sm">{dish.name}</h5>
+                        <p className="text-xs text-emerald-300/80 font-semibold">
                           {dish.restaurant || `${city.name} Kitchen`}
                         </p>
                       </div>
@@ -343,7 +343,7 @@ export default function MenuScannerModal({
                       <button
                         id={`add-scanned-dish-btn-${idx}`}
                         onClick={() => handleAddDiscoveredDish(dish)}
-                        className="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black transition-all flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs active:scale-95"
+                        className="px-3.5 py-1.5 rounded-xl glass-btn-plus text-slate-950 text-xs font-black transition-all flex items-center gap-1.5 shrink-0 cursor-pointer active:scale-95"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Add to {city.name} Map</span>
@@ -351,40 +351,40 @@ export default function MenuScannerModal({
                     </div>
 
                     {/* Macros Grid */}
-                    <div className="grid grid-cols-4 gap-2 text-center bg-white border border-stone-200 p-2.5 rounded-xl text-xs font-sans">
+                    <div className="grid grid-cols-4 gap-2 text-center glass-pill p-2.5 rounded-xl text-xs font-sans">
                       <div>
                         <span className="text-[9px] font-bold text-stone-400 block uppercase">
                           Calories
                         </span>
-                        <span className="font-extrabold text-stone-900">{dish.calories}</span>
+                        <span className="font-extrabold text-white">{dish.calories}</span>
                       </div>
                       <div>
-                        <span className="text-[9px] font-bold text-emerald-700 block uppercase">
+                        <span className="text-[9px] font-bold text-[#b6f7c1] block uppercase">
                           Protein
                         </span>
-                        <span className="font-extrabold text-emerald-700">{dish.protein}g</span>
+                        <span className="font-extrabold text-[#b6f7c1]">{dish.protein}g</span>
                       </div>
                       <div>
-                        <span className="text-[9px] font-bold text-sky-700 block uppercase">
+                        <span className="text-[9px] font-bold text-sky-400 block uppercase">
                           Carbs
                         </span>
-                        <span className="font-extrabold text-sky-700">{dish.carbs}g</span>
+                        <span className="font-extrabold text-sky-300">{dish.carbs}g</span>
                       </div>
                       <div>
-                        <span className="text-[9px] font-bold text-amber-700 block uppercase">
+                        <span className="text-[9px] font-bold text-amber-400 block uppercase">
                           Fat
                         </span>
-                        <span className="font-extrabold text-amber-700">{dish.fat}g</span>
+                        <span className="font-extrabold text-amber-300">{dish.fat}g</span>
                       </div>
                     </div>
 
-                    <div className="text-[11px] text-stone-700">
-                      <strong className="text-stone-500">Cooking Fat: </strong>
-                      <span className="text-emerald-700 font-bold">{dish.cookingFat}</span>
+                    <div className="text-[11px] text-stone-300">
+                      <strong className="text-stone-400">Cooking Fat: </strong>
+                      <span className="text-[#b6f7c1] font-bold">{dish.cookingFat}</span>
                     </div>
 
                     {dish.analysisNotes && (
-                      <p className="text-[11px] text-stone-700 italic bg-emerald-50/70 p-2.5 rounded-xl border border-emerald-200">
+                      <p className="text-[11px] text-emerald-100 italic glass-pill p-2.5 rounded-xl border border-white/10">
                         {dish.analysisNotes}
                       </p>
                     )}

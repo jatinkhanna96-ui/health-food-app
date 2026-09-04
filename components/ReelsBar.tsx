@@ -105,10 +105,10 @@ export default function ReelsBar({
     <section
       id="kitchen-reels-section"
       aria-label="Kitchen Proof & Sizzle Reels Live Proof"
-      className="w-full space-y-4 rounded-3xl bg-[#0a2e1f] text-stone-100 p-5 sm:p-6 lg:p-7 border border-[#b6f7c1]/20 shadow-2xl relative overflow-hidden"
+      className="w-full space-y-4 rounded-3xl glass-panel text-stone-100 p-5 sm:p-6 lg:p-7 relative overflow-hidden"
     >
       {/* Background Ambience Glow */}
-      <div className="absolute -right-20 -top-20 w-80 h-80 bg-[#134631]/40 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -right-20 -top-20 w-80 h-80 bg-[#134631]/30 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-[#52b788]/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* ======================================================================= */}
@@ -127,7 +127,7 @@ export default function ReelsBar({
                 <h2 className="text-base sm:text-lg lg:text-xl font-black text-white tracking-tight leading-none">
                   Kitchen Proof &amp; Sizzle Reels Live Proof
                 </h2>
-                <span className="px-2 py-0.5 rounded-full bg-[#b6f7c1]/15 text-[#b6f7c1] text-[10px] font-black uppercase tracking-wider border border-[#b6f7c1]/30">
+                <span className="px-2.5 py-0.5 rounded-full glass-pill-dark text-[#b6f7c1] text-[10px] font-black uppercase tracking-wider border border-[#b6f7c1]/30">
                   {selectedCity}
                 </span>
               </div>
@@ -144,17 +144,17 @@ export default function ReelsBar({
             </span>
 
             {/* Scroll buttons for desktop */}
-            <div className="hidden sm:flex items-center gap-1 bg-[#082419] p-1 rounded-xl border border-[#b6f7c1]/15">
+            <div className="hidden sm:flex items-center gap-1 glass-pill p-1 rounded-xl border border-white/15">
               <button
                 onClick={() => handleScroll('left')}
-                className="p-1.5 rounded-lg hover:bg-[#134631] text-emerald-200 hover:text-white transition-all cursor-pointer"
+                className="p-1.5 rounded-lg hover:bg-white/10 text-emerald-200 hover:text-white transition-all cursor-pointer"
                 title="Scroll Left"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
                 onClick={() => handleScroll('right')}
-                className="p-1.5 rounded-lg hover:bg-[#134631] text-emerald-200 hover:text-white transition-all cursor-pointer"
+                className="p-1.5 rounded-lg hover:bg-white/10 text-emerald-200 hover:text-white transition-all cursor-pointer"
                 title="Scroll Right"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -165,7 +165,7 @@ export default function ReelsBar({
             <button
               id="add-reel-ugc-btn"
               onClick={() => setIsAddReelOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#b6f7c1] hover:bg-[#a0f3ae] text-[#0a2e1f] text-xs font-black transition-all shadow-md shadow-[#b6f7c1]/15 cursor-pointer active:scale-95 shrink-0"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl glass-btn-plus text-[#0a2e1f] text-xs font-black transition-all cursor-pointer active:scale-95 shrink-0"
               title="Submit a seed-oil-free reel from Instagram or Facebook"
             >
               <Plus className="w-3.5 h-3.5 stroke-[3]" />
@@ -186,8 +186,8 @@ export default function ReelsBar({
               onClick={() => setSelectedFatFilter(tag.value)}
               className={`px-3 py-1.5 rounded-full text-xs font-black whitespace-nowrap transition-all cursor-pointer shrink-0 ${
                 selectedFatFilter === tag.value
-                  ? 'bg-[#b6f7c1] text-[#0a2e1f] shadow-sm shadow-[#b6f7c1]/20 font-extrabold'
-                  : 'bg-[#134631]/80 hover:bg-[#1a5a40] text-emerald-100 border border-[#b6f7c1]/20'
+                  ? 'bg-gradient-to-b from-[#b6f7c1] to-[#80ed99] text-[#0a2e1f] shadow-md shadow-[#b6f7c1]/20 font-extrabold border border-white/70'
+                  : 'glass-pill hover:bg-white/[0.14] text-emerald-100 border border-white/15'
               }`}
             >
               {tag.label}
@@ -202,10 +202,10 @@ export default function ReelsBar({
       {!hasCityReels && (
         <div
           id="scout-city-placeholder"
-          className="relative z-10 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[#0e3827] via-[#12422f] to-[#0a2e1f] border border-[#b6f7c1]/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left"
+          className="relative z-10 p-5 sm:p-6 rounded-2xl glass-card border border-white/20 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left"
         >
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-[#134631] text-[#b6f7c1] flex items-center justify-center shrink-0 border border-[#b6f7c1]/30">
+            <div className="w-12 h-12 rounded-2xl glass-pill text-[#b6f7c1] flex items-center justify-center shrink-0 border border-[#b6f7c1]/30">
               <Video className="w-6 h-6 animate-pulse" />
             </div>
             <div>
@@ -220,7 +220,7 @@ export default function ReelsBar({
 
           <button
             onClick={() => setIsAddReelOpen(true)}
-            className="px-5 py-2.5 rounded-xl bg-[#b6f7c1] hover:bg-[#a0f3ae] text-[#0a2e1f] text-xs font-black transition-all shadow-md shadow-[#b6f7c1]/20 cursor-pointer active:scale-95 shrink-0 flex items-center gap-2"
+            className="px-5 py-2.5 rounded-xl glass-btn-plus text-[#0a2e1f] text-xs font-black transition-all cursor-pointer active:scale-95 shrink-0 flex items-center gap-2"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
             <span>Add Reel for {selectedCity.split(',')[0]}</span>
@@ -242,7 +242,7 @@ export default function ReelsBar({
             <div
               key={reel.id}
               onClick={() => setActiveModalReel(reel)}
-              className="group relative w-[220px] sm:w-[240px] md:w-[260px] aspect-[9/16] shrink-0 rounded-2xl overflow-hidden bg-[#0e3827] border border-[#b6f7c1]/20 hover:border-[#b6f7c1]/60 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer snap-start flex flex-col justify-between"
+              className="group relative w-[220px] sm:w-[240px] md:w-[260px] aspect-[9/16] shrink-0 rounded-2xl overflow-hidden glass-card cursor-pointer snap-start flex flex-col justify-between"
             >
               {/* Card Image Thumbnail */}
               {reel.thumbnail ? (
@@ -266,7 +266,7 @@ export default function ReelsBar({
               {/* Card Top Header: Creator Handle + Fat Pill */}
               <div className="relative z-10 p-3 flex items-start justify-between gap-2">
                 {/* Creator Avatar / Handle */}
-                <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10">
+                <div className="flex items-center gap-1.5 glass-pill-dark px-2.5 py-1 rounded-full border border-white/15">
                   <div className="w-4 h-4 rounded-full bg-[#134631] text-[#b6f7c1] text-[9px] font-black flex items-center justify-center uppercase">
                     {reel.creator_handle.replace('@', '').charAt(0) || 'C'}
                   </div>
@@ -276,7 +276,7 @@ export default function ReelsBar({
                 </div>
 
                 {/* Cooking Fat Green Pill */}
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#0a2e1f]/90 backdrop-blur-md text-[#b6f7c1] text-[10px] font-extrabold border border-[#b6f7c1]/40 shadow-xs">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full glass-pill-dark text-[#b6f7c1] text-[10px] font-extrabold border border-[#b6f7c1]/40 shadow-xs">
                   <Flame className="w-3 h-3 text-[#b6f7c1]" />
                   <span className="truncate max-w-[85px]">{reel.cooking_fat}</span>
                 </span>
@@ -284,7 +284,7 @@ export default function ReelsBar({
 
               {/* Center Floating Play Button */}
               <div className="relative z-10 self-center my-auto">
-                <div className="w-11 h-11 rounded-full bg-[#b6f7c1]/90 group-hover:bg-[#b6f7c1] text-[#0a2e1f] flex items-center justify-center shadow-xl group-hover:scale-115 transition-all duration-300">
+                <div className="w-12 h-12 rounded-full glass-btn-plus text-[#0a2e1f] flex items-center justify-center font-black transition-all duration-300">
                   <Play className="w-5 h-5 fill-current ml-0.5" />
                 </div>
               </div>
@@ -293,7 +293,7 @@ export default function ReelsBar({
               <div className="relative z-10 p-3.5 space-y-1.5">
                 {/* Views and Verified Clean Badge */}
                 <div className="flex items-center justify-between text-[11px]">
-                  <span className="inline-flex items-center gap-1 text-white/80 font-medium">
+                  <span className="inline-flex items-center gap-1 text-white/90 font-medium">
                     <Eye className="w-3.5 h-3.5 text-[#b6f7c1]" />
                     <span>{reel.views}</span>
                   </span>
@@ -314,7 +314,7 @@ export default function ReelsBar({
                   <span className="font-bold truncate max-w-[130px]">
                     {reel.restaurant}
                   </span>
-                  <span className="text-[10px] text-white/60 shrink-0 font-medium">
+                  <span className="text-[10px] text-white/70 shrink-0 font-medium">
                     {reel.macros_text}
                   </span>
                 </div>

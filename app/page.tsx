@@ -216,14 +216,14 @@ export default function HomePage() {
 
       <aside
         id="vicinity-map-drawer"
-        className={`fixed inset-y-0 left-0 z-50 w-full sm:w-[500px] md:w-[560px] lg:w-[620px] bg-[#082419] text-white shadow-[12px_0_40px_rgba(0,0,0,0.5)] flex flex-col border-r border-[#b6f7c1]/20 transition-transform duration-300 ease-out transform ${
+        className={`fixed inset-y-0 left-0 z-50 w-full sm:w-[500px] md:w-[560px] lg:w-[620px] bg-[#082419]/90 backdrop-blur-2xl text-white shadow-[12px_0_40px_rgba(0,0,0,0.65)] flex flex-col border-r border-white/20 transition-transform duration-300 ease-out transform ${
           isMapOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Drawer Header */}
-        <div className="p-4 sm:p-5 bg-[#0a2e1f] border-b border-[#b6f7c1]/20 flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 bg-black/40 backdrop-blur-md border-b border-white/15 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#134631] text-[#b6f7c1] flex items-center justify-center shadow-md border border-[#b6f7c1]/30">
+            <div className="w-10 h-10 rounded-2xl glass-pill text-[#b6f7c1] flex items-center justify-center shadow-md border border-[#b6f7c1]/30">
               <Radar className={`w-5 h-5 ${isRadarScanning ? 'animate-spin text-[#b6f7c1]' : ''}`} />
             </div>
             <div>
@@ -243,7 +243,7 @@ export default function HomePage() {
             <button
               id="close-map-drawer-btn"
               onClick={() => setIsMapOpen(false)}
-              className="p-2 rounded-xl bg-[#134631] hover:bg-[#1a5a40] text-emerald-100 border border-[#b6f7c1]/20 transition-colors shadow-xs cursor-pointer active:scale-95"
+              className="p-2 rounded-xl glass-pill hover:bg-white/20 text-emerald-100 border border-white/20 transition-colors shadow-xs cursor-pointer active:scale-95"
               title="Close Map Slider"
             >
               <X className="w-4 h-4" />
@@ -252,21 +252,21 @@ export default function HomePage() {
         </div>
 
         {/* Drawer Options & Filter Deck */}
-        <div className="p-3.5 bg-[#0e3827] border-b border-[#b6f7c1]/15 space-y-3 shrink-0">
+        <div className="p-3.5 bg-black/30 backdrop-blur-md border-b border-white/10 space-y-3 shrink-0">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] font-black uppercase text-emerald-400/80 tracking-wider flex items-center gap-1">
+            <span className="text-[11px] font-black uppercase text-emerald-300/90 tracking-wider flex items-center gap-1">
               <MapPin className="w-3.5 h-3.5 text-[#b6f7c1]" />
               <span>Search Perimeter:</span>
             </span>
 
-            <div className="inline-flex rounded-xl bg-[#082419] p-1 border border-[#b6f7c1]/20">
+            <div className="inline-flex rounded-xl glass-pill p-1 border border-white/15">
               {[1, 3, 5, 10].map((radius) => (
                 <button
                   key={radius}
                   onClick={() => setMapRadius(radius)}
                   className={`px-3 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
                     mapRadius === radius
-                      ? 'bg-[#b6f7c1] text-[#0a2e1f] shadow-xs'
+                      ? 'glass-btn-plus text-[#0a2e1f]'
                       : 'text-emerald-200/80 hover:text-white'
                   }`}
                 >
@@ -295,11 +295,11 @@ export default function HomePage() {
       {/* ========================================================================= */}
       <header
         id="main-app-header"
-        className="sticky top-0 z-30 px-4 sm:px-6 lg:px-8 py-3.5 bg-[#082419]/95 backdrop-blur-md border-b border-[#b6f7c1]/15 flex flex-wrap items-center justify-between gap-3 shadow-md"
+        className="sticky top-0 z-30 px-4 sm:px-6 lg:px-8 py-3.5 bg-[#082419]/80 backdrop-blur-2xl border-b border-white/15 flex flex-wrap items-center justify-between gap-3 shadow-[0_8px_30px_rgba(0,0,0,0.35)]"
       >
         {/* Left Brand Identity */}
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-[#134631] flex items-center justify-center text-[#b6f7c1] shadow-md border border-[#b6f7c1]/30 shrink-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl glass-pill flex items-center justify-center text-[#b6f7c1] shadow-md border border-[#b6f7c1]/35 shrink-0">
             <Compass className="w-5 h-5" />
           </div>
           <div>
@@ -307,7 +307,7 @@ export default function HomePage() {
               <span className="font-black text-base sm:text-lg lg:text-xl tracking-tight text-white leading-none">
                 Healthy Vicinity
               </span>
-              <span className="px-2 py-0.5 rounded-full bg-[#b6f7c1]/15 text-[#b6f7c1] text-[10px] font-black tracking-wider uppercase border border-[#b6f7c1]/35 flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded-full glass-pill-dark text-[#b6f7c1] text-[10px] font-black tracking-wider uppercase border border-[#b6f7c1]/35 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#b6f7c1] animate-ping" />
                 <span>LIVE</span>
               </span>
@@ -320,13 +320,13 @@ export default function HomePage() {
 
         {/* Right Header Navigation Actions */}
         <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-          {/* City Dropdown: Austin TX (default), New York NY, Los Angeles CA, San Francisco CA, Miami FL, Chicago IL, Denver CO, Seattle WA, San Diego CA, Nashville TN, Washington DC */}
+          {/* City Dropdown */}
           <div className="relative">
             <select
               id="header-city-selector"
               value={selectedReelCity}
               onChange={(e) => handleCitySelect(e.target.value as ReelCity)}
-              className="appearance-none bg-[#0e3827] hover:bg-[#134631] text-white font-black text-xs pl-3.5 pr-8 py-2.5 rounded-2xl border border-[#b6f7c1]/30 focus:outline-none focus:ring-2 focus:ring-[#b6f7c1]/40 cursor-pointer transition-all shadow-xs"
+              className="appearance-none glass-pill-dark hover:bg-white/10 text-white font-black text-xs pl-3.5 pr-8 py-2.5 rounded-2xl border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#b6f7c1]/40 cursor-pointer transition-all shadow-xs"
             >
               {CITIES_DROPDOWN.map((c) => (
                 <option key={c.id} value={c.id} className="bg-[#082419] text-white">
@@ -341,12 +341,12 @@ export default function HomePage() {
           <button
             id="header-open-map-btn"
             onClick={() => setIsMapOpen(true)}
-            className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-2xl bg-[#0e3827] hover:bg-[#134631] text-[#b6f7c1] text-xs font-black border border-[#b6f7c1]/30 transition-all shadow-xs cursor-pointer group active:scale-95"
+            className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-2xl glass-pill hover:bg-white/15 text-[#b6f7c1] text-xs font-black border border-white/20 transition-all shadow-xs cursor-pointer group active:scale-95"
             title="Open Map Radar"
           >
             <Radar className="w-4 h-4 text-[#b6f7c1] group-hover:rotate-45 transition-transform" />
             <span>Map Radar</span>
-            <span className="px-1.5 py-0.5 rounded-md bg-[#134631] text-[#b6f7c1] font-black text-[10px] border border-[#b6f7c1]/30">
+            <span className="px-1.5 py-0.5 rounded-md glass-pill-dark text-[#b6f7c1] font-black text-[10px] border border-[#b6f7c1]/30">
               {filteredDishes.length}
             </span>
           </button>
@@ -355,7 +355,7 @@ export default function HomePage() {
           <button
             id="open-menu-scanner-btn"
             onClick={() => setIsScannerOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#b6f7c1] hover:bg-[#a0f3ae] text-[#0a2e1f] text-xs font-black transition-all shadow-md shadow-[#b6f7c1]/20 cursor-pointer group active:scale-95"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl glass-btn-plus text-[#0a2e1f] text-xs font-black transition-all cursor-pointer group active:scale-95"
           >
             <ScanLine className="w-4 h-4 text-[#0a2e1f] group-hover:rotate-12 transition-transform" />
             <span className="hidden sm:inline">AI Menu Scanner</span>
@@ -383,12 +383,12 @@ export default function HomePage() {
         {/* ========================================================================= */}
         {/* GUARANTEE SPOTLIGHT & QUICK FUEL PRESETS                                  */}
         {/* ========================================================================= */}
-        <section className="relative rounded-3xl bg-gradient-to-r from-[#082419] via-[#0e3827] to-[#124632] text-white p-6 sm:p-9 overflow-hidden shadow-2xl border border-[#b6f7c1]/25">
+        <section className="relative rounded-3xl glass-panel text-white p-6 sm:p-9 overflow-hidden">
           <div className="absolute -right-16 -bottom-16 w-80 h-80 bg-[#b6f7c1]/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute top-0 right-1/4 w-72 h-72 bg-[#134631]/50 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-1/4 w-72 h-72 bg-[#134631]/40 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 max-w-2xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#134631] backdrop-blur-md text-[11px] font-black text-[#b6f7c1] uppercase tracking-wider border border-[#b6f7c1]/30">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-pill text-[11px] font-black text-[#b6f7c1] uppercase tracking-wider border border-[#b6f7c1]/30">
               <Sparkles className="w-3.5 h-3.5 text-[#b6f7c1]" />
               <span>100% Seed-Oil-Free &bull; Pure Animal &amp; Fruit Fats</span>
             </div>
@@ -422,7 +422,7 @@ export default function HomePage() {
                   <button
                     key={vibe.id}
                     onClick={() => applyVibePreset(vibe.tag)}
-                    className="px-3 py-1.5 rounded-xl bg-[#0a2e1f] hover:bg-[#134631] text-emerald-100 text-xs font-bold transition-all border border-[#b6f7c1]/20 active:scale-95 cursor-pointer shadow-xs"
+                    className="px-3 py-1.5 rounded-xl glass-pill hover:bg-white/15 text-emerald-100 text-xs font-bold transition-all border border-white/15 active:scale-95 cursor-pointer shadow-xs"
                   >
                     {vibe.label}
                   </button>
@@ -435,7 +435,7 @@ export default function HomePage() {
               <button
                 id="hero-open-map-btn"
                 onClick={() => setIsMapOpen(true)}
-                className="px-6 py-3 rounded-2xl bg-[#b6f7c1] hover:bg-[#a0f3ae] text-[#0a2e1f] font-black text-xs sm:text-sm transition-all shadow-xl shadow-[#b6f7c1]/20 active:scale-95 cursor-pointer inline-flex items-center gap-2 group"
+                className="px-6 py-3 rounded-2xl glass-btn-plus text-[#0a2e1f] font-black text-xs sm:text-sm transition-all active:scale-95 cursor-pointer inline-flex items-center gap-2 group"
               >
                 <Radar className="w-4 h-4 text-[#0a2e1f] group-hover:rotate-45 transition-transform" />
                 <span>Explore Map Radar</span>
@@ -444,7 +444,7 @@ export default function HomePage() {
 
               <button
                 onClick={() => setIsScannerOpen(true)}
-                className="px-5 py-3 rounded-2xl bg-[#134631] hover:bg-[#1a5a40] text-emerald-100 font-bold text-xs sm:text-sm transition-all border border-[#b6f7c1]/25 active:scale-95 cursor-pointer inline-flex items-center gap-2"
+                className="px-5 py-3 rounded-2xl glass-pill hover:bg-white/15 text-emerald-100 font-bold text-xs sm:text-sm transition-all border border-white/20 active:scale-95 cursor-pointer inline-flex items-center gap-2"
               >
                 <ScanLine className="w-4 h-4 text-[#b6f7c1]" />
                 <span>Scan Physical Menu</span>
@@ -504,8 +504,8 @@ export default function HomePage() {
               ))}
             </div>
           ) : (
-            <div className="p-12 text-center bg-[#0e3827] rounded-3xl border border-[#b6f7c1]/20 space-y-3 shadow-xl">
-              <div className="w-12 h-12 rounded-2xl bg-[#134631] text-[#b6f7c1] flex items-center justify-center mx-auto border border-[#b6f7c1]/30">
+            <div className="p-12 text-center glass-panel rounded-3xl space-y-3">
+              <div className="w-12 h-12 rounded-2xl glass-pill text-[#b6f7c1] flex items-center justify-center mx-auto border border-[#b6f7c1]/30">
                 <Compass className="w-6 h-6" />
               </div>
               <h3 className="font-extrabold text-white text-sm">
@@ -517,7 +517,7 @@ export default function HomePage() {
               <button
                 id="empty-reset-filters-btn"
                 onClick={resetFilters}
-                className="px-5 py-2.5 rounded-xl bg-[#b6f7c1] hover:bg-[#a0f3ae] text-[#0a2e1f] text-xs font-black transition-all cursor-pointer shadow-md shadow-[#b6f7c1]/20 active:scale-95"
+                className="px-5 py-2.5 rounded-xl glass-btn-plus text-[#0a2e1f] text-xs font-black transition-all cursor-pointer active:scale-95"
               >
                 Reset Veto Filters
               </button>
@@ -528,9 +528,9 @@ export default function HomePage() {
         {/* ========================================================================= */}
         {/* BOTTOM BANNER: 100% SEED-OIL-FREE & CLEAN FUEL. NUTRITION OPTIMIZED.     */}
         {/* ========================================================================= */}
-        <footer className="p-6 sm:p-7 rounded-3xl bg-[#082419] border border-[#b6f7c1]/25 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-5">
+        <footer className="p-6 sm:p-7 rounded-3xl glass-panel flex flex-col sm:flex-row items-center justify-between gap-5">
           <div className="flex items-center gap-4 text-center sm:text-left">
-            <div className="w-12 h-12 rounded-2xl bg-[#134631] flex items-center justify-center text-[#b6f7c1] shrink-0 border border-[#b6f7c1]/30">
+            <div className="w-12 h-12 rounded-2xl glass-pill flex items-center justify-center text-[#b6f7c1] shrink-0 border border-[#b6f7c1]/30">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
@@ -550,7 +550,7 @@ export default function HomePage() {
             <button
               id="footer-explore-map-btn"
               onClick={() => setIsMapOpen(true)}
-              className="px-5 py-2.5 rounded-2xl bg-[#b6f7c1] hover:bg-[#a0f3ae] text-[#0a2e1f] text-xs font-black transition-all cursor-pointer shadow-md shadow-[#b6f7c1]/20 active:scale-95 flex items-center gap-1.5"
+              className="px-5 py-2.5 rounded-2xl glass-btn-plus text-[#0a2e1f] text-xs font-black transition-all cursor-pointer active:scale-95 flex items-center gap-1.5"
             >
               <Radar className="w-4 h-4 text-[#0a2e1f]" />
               <span>Explore Map</span>
@@ -566,7 +566,7 @@ export default function HomePage() {
         <button
           id="floating-map-toggle-btn"
           onClick={() => setIsMapOpen(true)}
-          className="group px-5 py-3 rounded-full bg-[#082419] hover:bg-[#0e3827] text-white font-black text-xs shadow-2xl flex items-center gap-2.5 border border-[#b6f7c1]/40 hover:border-[#b6f7c1] transition-all cursor-pointer active:scale-95"
+          className="group px-5 py-3 rounded-full glass-panel text-white font-black text-xs shadow-2xl flex items-center gap-2.5 border border-white/25 hover:border-white/40 transition-all cursor-pointer active:scale-95"
           title="Slide out the interactive map from the left"
         >
           <span className="relative flex h-2.5 w-2.5">
@@ -574,7 +574,7 @@ export default function HomePage() {
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#52b788]" />
           </span>
           <span>Explore Map</span>
-          <span className="px-1.5 py-0.5 rounded-md bg-[#134631] text-[#b6f7c1] text-[10px] font-black border border-[#b6f7c1]/30">
+          <span className="px-1.5 py-0.5 rounded-md glass-pill-dark text-[#b6f7c1] text-[10px] font-black border border-[#b6f7c1]/30">
             {filteredDishes.length}
           </span>
           <ChevronRight className="w-3.5 h-3.5 text-[#b6f7c1] group-hover:translate-x-0.5 transition-transform" />
