@@ -1,49 +1,13 @@
 import { GoogleGenAI } from '@google/genai';
 import { NextRequest, NextResponse } from 'next/server';
 
-// 4MB maximum payload limit to prevent large payloads from crashing serverless/container functions
-const MAX_PAYLOAD_BYTES = 4 * 1024 * 1024; // 4MB
-
 export async function POST(req: NextRequest) {
   try {
-    // 1. Request Body Size Guard: Check Content-Length header or clone body size
-    const contentLength = req.headers.get('content-length');
-    if (contentLength && parseInt(contentLength, 10) > MAX_PAYLOAD_BYTES) {
-      return NextResponse.json(
-        {
-          error: 'Payload Too Large: The menu upload exceeds the 4MB limit.',
-          code: 'PAYLOAD_TOO_LARGE',
-        },
-        { status: 413 }
-      );
-    }
-
-    const bodyText = await req.text();
-    if (new TextEncoder().encode(bodyText).length > MAX_PAYLOAD_BYTES) {
-      return NextResponse.json(
-        {
-          error: 'Payload Too Large: The request payload exceeds the 4MB limit.',
-          code: 'PAYLOAD_TOO_LARGE',
-        },
-        { status: 413 }
-      );
-    }
-
-    let parsedBody: any = {};
-    try {
-      parsedBody = JSON.parse(bodyText);
-    } catch {
-      return NextResponse.json(
-        { error: 'Invalid JSON request body.', code: 'INVALID_JSON_BODY' },
-        { status: 400 }
-      );
-    }
-
-    const { menuText, imageBase64, mimeType } = parsedBody;
+    const { menuText, imageBase64, mimeType } = await req.json();
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      // Fallback structured simulation if API key is not configured
+      // Fallback structured simulation if key not configured yet
       return NextResponse.json({
         dishes: [
           {
@@ -107,7 +71,7 @@ Pay special attention to:
 3. Cooking medium (e.g., Grass-fed Beef Tallow, Duck Fat, Butter/Ghee, Extra Virgin Olive Oil, Avocado Oil vs Industrial Canola/Soy/Corn Seed Oils)
 4. Dietary compliance: isSeedOilFree (true/false), isGlutenFree (true/false), isKeto (true/false), isGrassFed (true/false), isDairyFree (true/false)
 
-Return a JSON object with discovered dishes matching this exact schema:
+Return a JSON array of discovered dishes with this exact schema:
 {
   "dishes": [
     {
@@ -149,43 +113,20 @@ Only output valid JSON.`;
     }
 
     const response = await ai.models.generateContent({
-      model: 'gemini-3.8-flash',
+      model: 'gemini-3.7-flash',
       contents: { parts: contents },
       config: {
         responseMimeType: 'application/json',
       },
     });
 
-    const rawText = response.text || '{}';
-
-    // 2. Fault-Tolerant Markdown Strip & Parsing Guard
-    // Strip markdown code fences (e.g. ```json ... ``` or ``` ...)
-    const sanitizedText = rawText
-      .replace(/^```(?:json)?\s*/i, '')
-      .replace(/\s*```$/i, '')
-      .trim();
-
-    try {
-      const parsed = JSON.parse(sanitizedText);
-      return NextResponse.json(parsed);
-    } catch (parseErr: any) {
-      console.error('Failed to parse Gemini JSON output:', parseErr, 'Raw Output:', rawText);
-      return NextResponse.json(
-        {
-          error: 'The AI model returned an unparseable response format. Please try again.',
-          code: 'JSON_PARSE_ERROR',
-          rawSnippet: sanitizedText.slice(0, 300),
-        },
-        { status: 500 }
-      );
-    }
+    const text = response.text || '{}';
+    const parsed = JSON.parse(text);
+    return NextResponse.json(parsed);
   } catch (error: any) {
     console.error('Gemini Menu Scanner Error:', error);
     return NextResponse.json(
-      {
-        error: error?.message || 'Failed to scan menu',
-        code: 'SCANNER_INTERNAL_ERROR',
-      },
+      { error: error?.message || 'Failed to scan menu' },
       { status: 500 }
     );
   }
