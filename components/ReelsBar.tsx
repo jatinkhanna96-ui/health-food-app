@@ -72,7 +72,7 @@ export const REELS_DATA: ReelItem[] = [
     cookingFat: 'Grass-Fed Ghee',
     protein: '39g Protein',
     calories: '480 kcal',
-    image: 'https://images.unsplash.com/photo-1514944298352-f472851a7e44?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1543339308-43e59d6b73a6?auto=format&fit=crop&w=800&q=80',
     chefQuote: 'Slow-simmered organic butter with milk solids removed, yielding a nutty high-heat cooking medium.',
     avatar: 'https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?auto=format&fit=crop&w=200&q=80',
   },
@@ -114,7 +114,7 @@ export const REELS_DATA: ReelItem[] = [
     cookingFat: 'Pure Beef Tallow',
     protein: '44g Protein',
     calories: '610 kcal',
-    image: 'https://images.unsplash.com/photo-1527477378370-520593b48227?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=800&q=80',
     chefQuote: 'No seed oils ever touch our fryers. Triple-dipped in clarified grass-fed tallow for supreme crunch.',
     avatar: 'https://images.unsplash.com/photo-1581299894007-aaa50297cf16?auto=format&fit=crop&w=200&q=80',
   },
@@ -229,6 +229,7 @@ export default function ReelsBar({ onOpenMap }: ReelsBarProps) {
                 fill
                 className="object-cover group-hover:scale-110 transition-transform duration-500"
                 sizes="(max-width: 640px) 130px, 145px"
+                referrerPolicy="no-referrer"
               />
 
               {/* Ambient Dark Gradient for Contrast */}
@@ -237,7 +238,7 @@ export default function ReelsBar({ onOpenMap }: ReelsBarProps) {
               {/* Top Row: Avatar & Cooking Fat Badge */}
               <div className="relative z-10 flex items-center justify-between w-full">
                 <div className="w-6 h-6 rounded-full overflow-hidden border border-white/80 shrink-0 relative shadow-sm">
-                  <Image src={reel.avatar} alt={reel.restaurant} fill className="object-cover" />
+                  <Image src={reel.avatar} alt={reel.restaurant} fill className="object-cover" referrerPolicy="no-referrer" />
                 </div>
                 <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-emerald-300 border border-emerald-400/40">
                   {reel.cookingFat}
@@ -284,6 +285,7 @@ export default function ReelsBar({ onOpenMap }: ReelsBarProps) {
                 fill
                 className={`object-cover ${isPlaying ? 'scale-105 transition-transform duration-7000' : ''}`}
                 priority
+                referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/70 pointer-events-none" />
             </div>
@@ -333,7 +335,7 @@ export default function ReelsBar({ onOpenMap }: ReelsBarProps) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-emerald-400 relative">
-                    <Image src={activeReel.avatar} alt={activeReel.restaurant} fill className="object-cover" />
+                    <Image src={activeReel.avatar} alt={activeReel.restaurant} fill className="object-cover" referrerPolicy="no-referrer" />
                   </div>
                   <div>
                     <div className="flex items-center gap-1.5">
