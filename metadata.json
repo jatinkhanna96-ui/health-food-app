@@ -1,6 +1,6 @@
 {
-  "name": "Healthy Food & Dish Finder",
-  "description": "Discover healthy, macro-targeted, seed-oil-free, and keto dishes at local independent restaurants with interactive maps and AI menu analysis.",
+  "name": "Healthy Vicinity",
+  "description": "Bio-Individual Dining Engine • Zero Seed Oils. Live kitchen proof reels, certified seed-oil-free restaurants, and macro-optimized dishes.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import Image from 'next/image';
 import {
   Dish,
   INITIAL_DISHES,
@@ -14,6 +13,7 @@ import MenuScannerModal from '@/components/MenuScannerModal';
 import InteractiveMap from '@/components/InteractiveMap';
 import BentoFilters, { FilterState } from '@/components/BentoFilters';
 import ReelsBar from '@/components/ReelsBar';
+import { Reel, ReelCity } from '@/lib/reelsData';
 import {
   Compass,
   MapPin,
@@ -24,26 +24,38 @@ import {
   ShieldCheck,
   X,
   Radar,
-  SlidersHorizontal,
   ChevronRight,
   ArrowRight,
-  Zap,
-  Beef,
-  WheatOff,
-  CheckCircle2,
-  Navigation,
+  Plus,
 } from 'lucide-react';
+
+const CITIES_DROPDOWN: { id: ReelCity; label: string; cityName: string; state: string }[] = [
+  { id: 'Austin, TX', label: 'Austin TX', cityName: 'Austin', state: 'TX' },
+  { id: 'New York, NY', label: 'New York NY', cityName: 'New York', state: 'NY' },
+  { id: 'Los Angeles, CA', label: 'Los Angeles CA', cityName: 'Los Angeles', state: 'CA' },
+  { id: 'San Francisco, CA', label: 'San Francisco CA', cityName: 'San Francisco', state: 'CA' },
+  { id: 'Miami, FL', label: 'Miami FL', cityName: 'Miami', state: 'FL' },
+  { id: 'Chicago, IL', label: 'Chicago IL', cityName: 'Chicago', state: 'IL' },
+  { id: 'Denver, CO', label: 'Denver CO', cityName: 'Denver', state: 'CO' },
+  { id: 'Seattle, WA', label: 'Seattle WA', cityName: 'Seattle', state: 'WA' },
+  { id: 'San Diego, CA', label: 'San Diego CA', cityName: 'San Diego', state: 'CA' },
+  { id: 'Nashville, TN', label: 'Nashville TN', cityName: 'Nashville', state: 'TN' },
+  { id: 'Washington, DC', label: 'Washington DC', cityName: 'Washington', state: 'DC' },
+];
 
 export default function HomePage() {
   const [dishes, setDishes] = useState<Dish[]>(INITIAL_DISHES);
-  const [selectedCity, setSelectedCity] = useState<CityLocation>(CITY_LOCATIONS[0]);
+  const [selectedCity, setSelectedCity] = useState<CityLocation>(() => {
+    return CITY_LOCATIONS.find((c) => c.name === 'Austin') || CITY_LOCATIONS[0];
+  });
   const [selectedDish, setSelectedDish] = useState<Dish | null>(INITIAL_DISHES[0]);
   const [detailDish, setDetailDish] = useState<Dish | null>(null);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
+  const [customReels, setCustomReels] = useState<Reel[]>([]);
 
   // Map Drawer & Radius Controls
   const [isMapOpen, setIsMapOpen] = useState(false);
-  const [mapRadius, setMapRadius] = useState<number>(5); // 1, 3, 5, 10 miles
+  const [mapRadius, setMapRadius] = useState<number>(5);
   const [selectedCookingFat, setSelectedCookingFat] = useState<string>('all');
   const [isRadarScanning, setIsRadarScanning] = useState(false);
 
@@ -58,12 +70,22 @@ export default function HomePage() {
     maxCarbs: 50,
   });
 
-  // When city changes, auto-select first dish in that city
-  const handleCityChange = (city: CityLocation) => {
-    setSelectedCity(city);
-    const cityDishes = dishes.filter((d) => d.city === city.name);
-    if (cityDishes.length > 0) {
-      setSelectedDish(cityDishes[0]);
+  const selectedReelCity: ReelCity = useMemo(() => {
+    const match = CITIES_DROPDOWN.find((c) => c.cityName === selectedCity.name);
+    return match ? match.id : (`${selectedCity.name}, ${selectedCity.state}` as ReelCity);
+  }, [selectedCity]);
+
+  // When city changes via dropdown
+  const handleCitySelect = (cityId: ReelCity) => {
+    const item = CITIES_DROPDOWN.find((c) => c.id === cityId);
+    if (!item) return;
+    const found = CITY_LOCATIONS.find((c) => c.name === item.cityName);
+    if (found) {
+      setSelectedCity(found);
+      const cityDishes = dishes.filter((d) => d.city === found.name);
+      if (cityDishes.length > 0) {
+        setSelectedDish(cityDishes[0]);
+      }
     }
   };
 
@@ -81,7 +103,7 @@ export default function HomePage() {
     setSelectedCookingFat('all');
   };
 
-  // Quick Vibe Presets for high interactivity
+  // Quick Vibe Presets
   const applyVibePreset = (preset: 'high-protein' | 'carnivore' | 'keto' | 'celiac' | 'detox') => {
     switch (preset) {
       case 'high-protein':
@@ -103,7 +125,6 @@ export default function HomePage() {
     }
   };
 
-  // Trigger temporary radar pulse
   const triggerRadarScan = () => {
     setIsRadarScanning(true);
     setTimeout(() => {
@@ -160,73 +181,69 @@ export default function HomePage() {
     setDetailDish(newDish);
   };
 
+  const handleInspectDishFromReel = (restaurant: string, dishName?: string) => {
+    const match = dishes.find(
+      (d) =>
+        d.restaurant.toLowerCase().includes(restaurant.toLowerCase()) ||
+        restaurant.toLowerCase().includes(d.restaurant.toLowerCase()) ||
+        (dishName && d.name.toLowerCase().includes(dishName.toLowerCase()))
+    );
+    if (match) {
+      const cityLoc = CITY_LOCATIONS.find((c) => c.name === match.city);
+      if (cityLoc && cityLoc.name !== selectedCity.name) {
+        setSelectedCity(cityLoc);
+      }
+      setSelectedDish(match);
+      setDetailDish(match);
+    } else {
+      setIsMapOpen(true);
+    }
+  };
+
   const allCityDishesCount = dishes.filter((d) => d.city === selectedCity.name).length;
 
   return (
-    <div className="min-h-screen w-full bg-[#F2F6F3] font-sans text-stone-900 relative selection:bg-[#2D6A4F]/20 selection:text-[#1B4332]">
+    <div className="min-h-screen bg-[#0a2e1f] text-[#e8f5ed] flex flex-col font-sans selection:bg-[#b6f7c1]/30 selection:text-[#0a2e1f]">
       {/* ========================================================================= */}
-      {/* 1. SLIDE-OUT LEFT MAP DRAWER (Interactive Vicinity Radar & Controls)     */}
+      {/* 1. SLIDE-OUT CARTOGRAPHY RADAR DRAWER                                      */}
       {/* ========================================================================= */}
-      {/* Dimmed backdrop overlay when map drawer is open */}
       <div
-        className={`fixed inset-0 z-40 bg-black/50 backdrop-blur-xs transition-opacity duration-300 ${
+        className={`fixed inset-0 z-40 bg-black/65 backdrop-blur-xs transition-opacity duration-300 ${
           isMapOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setIsMapOpen(false)}
       />
 
-      {/* Drawer Panel sliding from left */}
       <aside
         id="vicinity-map-drawer"
-        className={`fixed inset-y-0 left-0 z-50 w-full sm:w-[500px] md:w-[560px] lg:w-[620px] bg-white shadow-[12px_0_40px_rgba(0,0,0,0.18)] flex flex-col border-r border-[#DCE6DE] transition-transform duration-300 ease-out transform ${
+        className={`fixed inset-y-0 left-0 z-50 w-full sm:w-[500px] md:w-[560px] lg:w-[620px] bg-[#082419] text-white shadow-[12px_0_40px_rgba(0,0,0,0.5)] flex flex-col border-r border-[#b6f7c1]/20 transition-transform duration-300 ease-out transform ${
           isMapOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Drawer Header */}
-        <div className="p-4 sm:p-5 bg-[#F8FAF8] border-b border-[#DCE6DE] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 bg-[#0a2e1f] border-b border-[#b6f7c1]/20 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#2D6A4F] text-white flex items-center justify-center shadow-md shadow-[#2D6A4F]/20">
-              <Radar className={`w-5 h-5 ${isRadarScanning ? 'animate-spin text-[#A7D7B5]' : ''}`} />
+            <div className="w-10 h-10 rounded-2xl bg-[#134631] text-[#b6f7c1] flex items-center justify-center shadow-md border border-[#b6f7c1]/30">
+              <Radar className={`w-5 h-5 ${isRadarScanning ? 'animate-spin text-[#b6f7c1]' : ''}`} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-black text-stone-900 text-base leading-tight">
+                <h3 className="font-black text-white text-base leading-tight">
                   Vicinity Radar
                 </h3>
-                <span className="w-2 h-2 rounded-full bg-[#2D6A4F] animate-ping" />
+                <span className="w-2 h-2 rounded-full bg-[#b6f7c1] animate-ping" />
               </div>
-              <p className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">
+              <p className="text-[11px] font-bold text-emerald-300/70 uppercase tracking-wider">
                 {filteredDishes.length} Verified Kitchens in Range
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            {/* City Selector */}
-            <div className="relative">
-              <select
-                id="drawer-city-selector"
-                value={selectedCity.name}
-                onChange={(e) => {
-                  const found = CITY_LOCATIONS.find((c) => c.name === e.target.value);
-                  if (found) handleCityChange(found);
-                }}
-                className="appearance-none bg-white hover:bg-stone-50 text-stone-800 font-extrabold text-xs pl-3 pr-7 py-2 rounded-xl border border-[#DCE6DE] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/25 cursor-pointer transition-all shadow-xs"
-              >
-                {CITY_LOCATIONS.map((c) => (
-                  <option key={c.name} value={c.name}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-3.5 h-3.5 text-stone-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
-            </div>
-
-            {/* Close Drawer Button */}
             <button
               id="close-map-drawer-btn"
               onClick={() => setIsMapOpen(false)}
-              className="p-2 rounded-xl bg-white hover:bg-stone-100 text-stone-700 border border-[#DCE6DE] transition-colors shadow-xs cursor-pointer active:scale-95"
+              className="p-2 rounded-xl bg-[#134631] hover:bg-[#1a5a40] text-emerald-100 border border-[#b6f7c1]/20 transition-colors shadow-xs cursor-pointer active:scale-95"
               title="Close Map Slider"
             >
               <X className="w-4 h-4" />
@@ -235,183 +252,101 @@ export default function HomePage() {
         </div>
 
         {/* Drawer Options & Filter Deck */}
-        <div className="p-3.5 bg-white border-b border-[#DCE6DE] space-y-3 shrink-0">
-          {/* Radius Selector Options */}
+        <div className="p-3.5 bg-[#0e3827] border-b border-[#b6f7c1]/15 space-y-3 shrink-0">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] font-black uppercase text-stone-500 tracking-wider flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5 text-[#2D6A4F]" />
+            <span className="text-[11px] font-black uppercase text-emerald-400/80 tracking-wider flex items-center gap-1">
+              <MapPin className="w-3.5 h-3.5 text-[#b6f7c1]" />
               <span>Search Perimeter:</span>
             </span>
 
-            <div className="inline-flex rounded-xl bg-[#F2F6F3] p-1 border border-[#DCE6DE]">
+            <div className="inline-flex rounded-xl bg-[#082419] p-1 border border-[#b6f7c1]/20">
               {[1, 3, 5, 10].map((radius) => (
                 <button
                   key={radius}
                   onClick={() => setMapRadius(radius)}
                   className={`px-3 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
                     mapRadius === radius
-                      ? 'bg-[#2D6A4F] text-white shadow-xs'
-                      : 'text-stone-600 hover:text-stone-900'
+                      ? 'bg-[#b6f7c1] text-[#0a2e1f] shadow-xs'
+                      : 'text-emerald-200/80 hover:text-white'
                   }`}
                 >
                   {radius} mi
                 </button>
               ))}
             </div>
-
-            {/* Radar Scan Action */}
-            <button
-              id="drawer-radar-scan-btn"
-              onClick={triggerRadarScan}
-              disabled={isRadarScanning}
-              className="px-3 py-1.5 rounded-xl bg-[#1C2E24] hover:bg-[#14231B] text-[#A7D7B5] text-xs font-extrabold transition-all shadow-xs flex items-center gap-1.5 active:scale-95 cursor-pointer disabled:opacity-50 shrink-0"
-              title="Trigger animated radar sweep"
-            >
-              <Radar className={`w-3.5 h-3.5 text-[#A7D7B5] ${isRadarScanning ? 'animate-spin' : ''}`} />
-              <span>{isRadarScanning ? 'Sweeping...' : 'Radar Sweep'}</span>
-            </button>
-          </div>
-
-          {/* Quick Cooking Fat Filter Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
-            <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider shrink-0 mr-1">
-              Fat Type:
-            </span>
-            {[
-              { id: 'all', label: 'All Verified Fats' },
-              { id: 'Tallow', label: '🥩 Beef Tallow' },
-              { id: 'Olive Oil', label: '🫒 Cold-Pressed EVOO' },
-              { id: 'Ghee', label: '🧈 Grass-Fed Ghee' },
-              { id: 'Duck Fat', label: '🦆 Duck Fat' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setSelectedCookingFat(tab.id)}
-                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
-                  selectedCookingFat === tab.id
-                    ? 'bg-[#E8F3EC] text-[#1B4332] border border-[#2D6A4F]/40 shadow-xs'
-                    : 'bg-[#F9FBF9] text-stone-600 hover:bg-stone-100 border border-[#DCE6DE]'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
           </div>
         </div>
 
-        {/* Map Canvas Component inside Left Slider */}
-        <div className="flex-1 relative overflow-hidden bg-[#EBF1EC]">
+        {/* Interactive Map Area */}
+        <div className="relative flex-1 bg-[#0a2e1f] overflow-hidden min-h-[300px]">
           <InteractiveMap
             dishes={filteredDishes}
-            selectedDish={selectedDish}
-            onSelectDish={(dish) => {
-              setSelectedDish(dish);
-              setDetailDish(dish);
-            }}
             city={selectedCity}
+            selectedDish={selectedDish}
+            onSelectDish={(d) => setSelectedDish(d)}
             radiusMiles={mapRadius}
             isRadarScanning={isRadarScanning}
           />
         </div>
-
-        {/* Selected Dish Drawer Bottom Bar */}
-        {selectedDish && (
-          <div className="p-4 bg-white border-t border-[#DCE6DE] shrink-0 flex items-center justify-between gap-3 shadow-lg">
-            <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-[#DCE6DE]">
-              <Image
-                src={selectedDish.image}
-                alt={selectedDish.name}
-                fill
-                className="object-cover"
-                sizes="48px"
-              />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-extrabold uppercase text-[#2D6A4F] tracking-wider">
-                  Target Pin
-                </span>
-                <span className="text-[10px] font-bold text-stone-400">• {selectedDish.calories} kcal</span>
-              </div>
-              <h4 className="text-xs font-black text-stone-900 truncate leading-tight">
-                {selectedDish.name}
-              </h4>
-              <p className="text-[11px] text-stone-500 truncate">
-                {selectedDish.restaurant} • <strong className="text-[#2D6A4F] font-bold">{selectedDish.protein}g Protein</strong>
-              </p>
-            </div>
-            <button
-              id="drawer-inspect-dish-btn"
-              onClick={() => setDetailDish(selectedDish)}
-              className="px-4 py-2 rounded-xl bg-[#2D6A4F] hover:bg-[#22543D] text-white text-xs font-black shrink-0 transition-all cursor-pointer shadow-md shadow-[#2D6A4F]/20 active:scale-95"
-            >
-              Inspect Dish
-            </button>
-          </div>
-        )}
       </aside>
 
       {/* ========================================================================= */}
-      {/* 2. EXPANSIVE FULL-WIDTH LANDING PAGE EXPERIENCE                         */}
+      {/* 2. TOP APP HEADER                                                         */}
       {/* ========================================================================= */}
-      {/* Top Main Navigation */}
       <header
         id="main-app-header"
-        className="sticky top-0 z-30 px-6 py-4 bg-[#F8FAF8]/95 backdrop-blur-md border-b border-[#DCE6DE] flex flex-wrap items-center justify-between gap-4"
+        className="sticky top-0 z-30 px-4 sm:px-6 lg:px-8 py-3.5 bg-[#082419]/95 backdrop-blur-md border-b border-[#b6f7c1]/15 flex flex-wrap items-center justify-between gap-3 shadow-md"
       >
         {/* Left Brand Identity */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#2D6A4F] flex items-center justify-center text-white shadow-md shadow-[#2D6A4F]/25 shrink-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-[#134631] flex items-center justify-center text-[#b6f7c1] shadow-md border border-[#b6f7c1]/30 shrink-0">
             <Compass className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-black text-lg md:text-xl tracking-tight text-stone-900 leading-none">
+              <span className="font-black text-base sm:text-lg lg:text-xl tracking-tight text-white leading-none">
                 Healthy Vicinity
               </span>
-              <span className="px-2 py-0.5 rounded-full bg-[#E8F3EC] text-[#1B4332] text-[10px] font-black tracking-wider uppercase border border-[#B7E4C7]">
-                Live
+              <span className="px-2 py-0.5 rounded-full bg-[#b6f7c1]/15 text-[#b6f7c1] text-[10px] font-black tracking-wider uppercase border border-[#b6f7c1]/35 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#b6f7c1] animate-ping" />
+                <span>LIVE</span>
               </span>
             </div>
-            <p className="text-stone-500 font-semibold text-xs mt-0.5 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#2D6A4F] animate-pulse" />
+            <p className="text-emerald-300/70 font-semibold text-[11px] sm:text-xs mt-0.5 flex items-center gap-1.5">
               <span>Bio-Individual Dining Engine &bull; Zero Seed Oils</span>
             </p>
           </div>
         </div>
 
         {/* Right Header Navigation Actions */}
-        <div className="flex items-center gap-3">
-          {/* City Dropdown Pill */}
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          {/* City Dropdown: Austin TX (default), New York NY, Los Angeles CA, San Francisco CA, Miami FL, Chicago IL, Denver CO, Seattle WA, San Diego CA, Nashville TN, Washington DC */}
           <div className="relative">
             <select
               id="header-city-selector"
-              value={selectedCity.name}
-              onChange={(e) => {
-                const found = CITY_LOCATIONS.find((c) => c.name === e.target.value);
-                if (found) handleCityChange(found);
-              }}
-              className="appearance-none bg-white hover:bg-stone-50 text-stone-800 font-extrabold text-xs pl-3.5 pr-8 py-2 rounded-2xl border border-[#DCE6DE] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/25 cursor-pointer transition-all shadow-xs"
+              value={selectedReelCity}
+              onChange={(e) => handleCitySelect(e.target.value as ReelCity)}
+              className="appearance-none bg-[#0e3827] hover:bg-[#134631] text-white font-black text-xs pl-3.5 pr-8 py-2.5 rounded-2xl border border-[#b6f7c1]/30 focus:outline-none focus:ring-2 focus:ring-[#b6f7c1]/40 cursor-pointer transition-all shadow-xs"
             >
-              {CITY_LOCATIONS.map((c) => (
-                <option key={c.name} value={c.name}>
-                  📍 {c.name}, {c.state}
+              {CITIES_DROPDOWN.map((c) => (
+                <option key={c.id} value={c.id} className="bg-[#082419] text-white">
+                  📍 {c.label}
                 </option>
               ))}
             </select>
-            <ChevronDown className="w-3.5 h-3.5 text-stone-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <ChevronDown className="w-3.5 h-3.5 text-[#b6f7c1] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
 
-          {/* Interactive Map Slider Trigger Button */}
+          {/* Map Radar Button */}
           <button
             id="header-open-map-btn"
             onClick={() => setIsMapOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white hover:bg-stone-100 text-stone-900 text-xs font-black border border-[#DCE6DE] hover:border-[#2D6A4F] transition-all shadow-xs cursor-pointer group active:scale-95"
-            title="Slide out the interactive cartography radar from the left"
+            className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-2xl bg-[#0e3827] hover:bg-[#134631] text-[#b6f7c1] text-xs font-black border border-[#b6f7c1]/30 transition-all shadow-xs cursor-pointer group active:scale-95"
+            title="Open Map Radar"
           >
-            <Radar className="w-4 h-4 text-[#2D6A4F] group-hover:rotate-45 transition-transform" />
+            <Radar className="w-4 h-4 text-[#b6f7c1] group-hover:rotate-45 transition-transform" />
             <span>Map Radar</span>
-            <span className="px-1.5 py-0.5 rounded-md bg-[#2D6A4F] text-white font-black text-[10px]">
+            <span className="px-1.5 py-0.5 rounded-md bg-[#134631] text-[#b6f7c1] font-black text-[10px] border border-[#b6f7c1]/30">
               {filteredDishes.length}
             </span>
           </button>
@@ -420,53 +355,60 @@ export default function HomePage() {
           <button
             id="open-menu-scanner-btn"
             onClick={() => setIsScannerOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#2D6A4F] hover:bg-[#22543D] text-white text-xs font-black transition-all shadow-md shadow-[#2D6A4F]/20 cursor-pointer group active:scale-95"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#b6f7c1] hover:bg-[#a0f3ae] text-[#0a2e1f] text-xs font-black transition-all shadow-md shadow-[#b6f7c1]/20 cursor-pointer group active:scale-95"
           >
-            <ScanLine className="w-4 h-4 text-white group-hover:rotate-12 transition-transform" />
+            <ScanLine className="w-4 h-4 text-[#0a2e1f] group-hover:rotate-12 transition-transform" />
             <span className="hidden sm:inline">AI Menu Scanner</span>
             <span className="sm:hidden">Scan</span>
           </button>
         </div>
       </header>
 
-      {/* Main Landing Page Content Container */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-7">
+      {/* ========================================================================= */}
+      {/* MAIN VIEWPORT CONTENT                                                     */}
+      {/* ========================================================================= */}
+      <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-7 flex-1">
         {/* ========================================================================= */}
-        {/* INSTAGRAM-STYLE KITCHEN REELS / PROOF SECTION (POPS OUT ON TOP)          */}
+        {/* KITCHEN PROOF & SIZZLE REELS LIVE PROOF SECTION                            */}
         {/* ========================================================================= */}
-        <ReelsBar onOpenMap={() => setIsMapOpen(true)} />
+        <ReelsBar
+          selectedCity={selectedReelCity}
+          onSelectCity={handleCitySelect}
+          onOpenMap={() => setIsMapOpen(true)}
+          onInspectDish={handleInspectDishFromReel}
+          customReels={customReels}
+          onAddReel={(newReel) => setCustomReels((prev) => [newReel, ...prev])}
+        />
 
         {/* ========================================================================= */}
-        {/* Hero Spotlight: Refined Botanical Green Energy + Interactive Presets      */}
+        {/* GUARANTEE SPOTLIGHT & QUICK FUEL PRESETS                                  */}
         {/* ========================================================================= */}
-        <section className="relative rounded-3xl bg-gradient-to-r from-[#0C2419] via-[#143827] to-[#1B2D23] text-white p-6 sm:p-10 overflow-hidden shadow-2xl border border-[#2D6A4F]/40">
-          {/* Ambient Lighting & Botanical Glows */}
-          <div className="absolute -right-16 -bottom-16 w-96 h-96 bg-[#2D6A4F]/25 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute top-0 right-1/4 w-72 h-72 bg-[#52B788]/15 rounded-full blur-3xl pointer-events-none" />
+        <section className="relative rounded-3xl bg-gradient-to-r from-[#082419] via-[#0e3827] to-[#124632] text-white p-6 sm:p-9 overflow-hidden shadow-2xl border border-[#b6f7c1]/25">
+          <div className="absolute -right-16 -bottom-16 w-80 h-80 bg-[#b6f7c1]/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-1/4 w-72 h-72 bg-[#134631]/50 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 max-w-2xl space-y-4">
-            {/* Guarantee Tag */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#2D6A4F]/30 backdrop-blur-md text-[11px] font-black text-[#A7D7B5] uppercase tracking-wider border border-[#52B788]/30">
-              <Sparkles className="w-3.5 h-3.5 text-[#A7D7B5]" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#134631] backdrop-blur-md text-[11px] font-black text-[#b6f7c1] uppercase tracking-wider border border-[#b6f7c1]/30">
+              <Sparkles className="w-3.5 h-3.5 text-[#b6f7c1]" />
               <span>100% Seed-Oil-Free &bull; Pure Animal &amp; Fruit Fats</span>
             </div>
 
-            {/* Headline */}
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.1] text-white">
               CLEAN FUEL. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#D8F3DC] to-[#A7D7B5]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#b6f7c1] to-[#80ed99]">
                 NUTRITION OPTIMIZED.
               </span>
             </h1>
 
-            <p className="text-sm sm:text-base text-[#D8EADB]/90 font-medium leading-relaxed max-w-xl">
-              Dine out without inflammatory industrial oils. Curating independent kitchens
-              cooking exclusively in <strong>beef tallow, cold-pressed extra virgin olive oil</strong>, and <strong>grass-fed ghee</strong> across {selectedCity.name}.
+            <p className="text-sm sm:text-base text-emerald-100/90 font-medium leading-relaxed max-w-xl">
+              Dine out without inflammatory industrial oils. Curating independent kitchens cooking exclusively in{' '}
+              <strong className="text-white">beef tallow, cold-pressed extra virgin olive oil</strong>, and{' '}
+              <strong className="text-white">grass-fed ghee</strong> across {selectedCity.name}.
             </p>
 
-            {/* Interactive Vibe Quick-Presets */}
+            {/* Quick Fuel Presets */}
             <div className="pt-2 space-y-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#A7D7B5]/90 block">
+              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-300/80 block">
                 ⚡ Quick Fuel Presets (1-Click Tune):
               </span>
               <div className="flex flex-wrap gap-2">
@@ -480,7 +422,7 @@ export default function HomePage() {
                   <button
                     key={vibe.id}
                     onClick={() => applyVibePreset(vibe.tag)}
-                    className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-[#2D6A4F]/50 hover:border-[#A7D7B5] text-white text-xs font-bold transition-all border border-white/15 backdrop-blur-md active:scale-95 cursor-pointer shadow-xs"
+                    className="px-3 py-1.5 rounded-xl bg-[#0a2e1f] hover:bg-[#134631] text-emerald-100 text-xs font-bold transition-all border border-[#b6f7c1]/20 active:scale-95 cursor-pointer shadow-xs"
                   >
                     {vibe.label}
                   </button>
@@ -488,24 +430,23 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Hero CTAs */}
+            {/* CTAs */}
             <div className="pt-3 flex flex-wrap items-center gap-3 sm:gap-4">
-              {/* Button to open Left Map Slider */}
               <button
                 id="hero-open-map-btn"
                 onClick={() => setIsMapOpen(true)}
-                className="px-6 py-3.5 rounded-2xl bg-[#2D6A4F] hover:bg-[#24583C] text-white font-black text-xs sm:text-sm transition-all shadow-xl shadow-[#2D6A4F]/30 active:scale-95 cursor-pointer inline-flex items-center gap-2 group border border-[#52B788]/40"
+                className="px-6 py-3 rounded-2xl bg-[#b6f7c1] hover:bg-[#a0f3ae] text-[#0a2e1f] font-black text-xs sm:text-sm transition-all shadow-xl shadow-[#b6f7c1]/20 active:scale-95 cursor-pointer inline-flex items-center gap-2 group"
               >
-                <Radar className="w-4 h-4 text-[#A7D7B5] group-hover:rotate-45 transition-transform" />
-                <span>Slide Open Vicinity Map</span>
-                <ChevronRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
+                <Radar className="w-4 h-4 text-[#0a2e1f] group-hover:rotate-45 transition-transform" />
+                <span>Explore Map Radar</span>
+                <ChevronRight className="w-4 h-4 text-[#0a2e1f] group-hover:translate-x-0.5 transition-transform" />
               </button>
 
               <button
                 onClick={() => setIsScannerOpen(true)}
-                className="px-5 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-black text-xs sm:text-sm transition-all border border-white/20 backdrop-blur-md active:scale-95 cursor-pointer inline-flex items-center gap-2"
+                className="px-5 py-3 rounded-2xl bg-[#134631] hover:bg-[#1a5a40] text-emerald-100 font-bold text-xs sm:text-sm transition-all border border-[#b6f7c1]/25 active:scale-95 cursor-pointer inline-flex items-center gap-2"
               >
-                <ScanLine className="w-4 h-4 text-[#A7D7B5]" />
+                <ScanLine className="w-4 h-4 text-[#b6f7c1]" />
                 <span>Scan Physical Menu</span>
               </button>
             </div>
@@ -513,7 +454,7 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* Bento Filter Matrix: Squircles & Macro Sliders                            */}
+        {/* BENTO FILTERS MATRIX                                                      */}
         {/* ========================================================================= */}
         <section aria-label="Filters">
           <BentoFilters
@@ -526,22 +467,21 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* Clean Dishes Grid Feed                                                    */}
+        {/* VERIFIED CLEAN DISHES GRID FEED                                           */}
         {/* ========================================================================= */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-black text-stone-900 flex items-center gap-2.5">
-              <Flame className="w-5 h-5 text-[#2D6A4F]" />
+            <h2 className="text-lg sm:text-xl font-black text-white flex items-center gap-2.5">
+              <Flame className="w-5 h-5 text-[#b6f7c1]" />
               <span>Verified Clean Dishes in {selectedCity.name}, {selectedCity.state}</span>
-              <span className="text-xs font-black text-[#1B4332] bg-[#E8F3EC] px-2.5 py-0.5 rounded-full border border-[#C8E2D1]">
+              <span className="text-xs font-black text-[#0a2e1f] bg-[#b6f7c1] px-2.5 py-0.5 rounded-full">
                 {filteredDishes.length} Matches
               </span>
             </h2>
 
-            {/* Quick Map Toggle button */}
             <button
               onClick={() => setIsMapOpen(true)}
-              className="text-xs font-extrabold text-[#2D6A4F] hover:text-[#1B4332] flex items-center gap-1 cursor-pointer"
+              className="text-xs font-extrabold text-[#b6f7c1] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>View Map Radar</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -555,9 +495,7 @@ export default function HomePage() {
                   key={dish.id}
                   dish={dish}
                   isSelected={selectedDish?.id === dish.id}
-                  onSelect={(d) => {
-                    setSelectedDish(d);
-                  }}
+                  onSelect={(d) => setSelectedDish(d)}
                   onOpenDetails={(d) => {
                     setSelectedDish(d);
                     setDetailDish(d);
@@ -566,20 +504,20 @@ export default function HomePage() {
               ))}
             </div>
           ) : (
-            <div className="p-12 text-center bg-white rounded-3xl border border-[#DCE6DE] space-y-3 shadow-xs">
-              <div className="w-12 h-12 rounded-full bg-[#EBF5EF] text-[#2D6A4F] flex items-center justify-center mx-auto border border-[#C5DDCB]">
+            <div className="p-12 text-center bg-[#0e3827] rounded-3xl border border-[#b6f7c1]/20 space-y-3 shadow-xl">
+              <div className="w-12 h-12 rounded-2xl bg-[#134631] text-[#b6f7c1] flex items-center justify-center mx-auto border border-[#b6f7c1]/30">
                 <Compass className="w-6 h-6" />
               </div>
-              <h3 className="font-extrabold text-stone-900 text-sm">
+              <h3 className="font-extrabold text-white text-sm">
                 No dishes match all active vetoes in {selectedCity.name}
               </h3>
-              <p className="text-xs text-stone-500 max-w-md mx-auto font-medium">
+              <p className="text-xs text-emerald-200/70 max-w-md mx-auto font-medium">
                 Try loosening your protein/carb thresholds or reset filters to see all clean dishes.
               </p>
               <button
                 id="empty-reset-filters-btn"
                 onClick={resetFilters}
-                className="px-5 py-2.5 rounded-xl bg-[#2D6A4F] hover:bg-[#22543D] text-white text-xs font-extrabold transition-all cursor-pointer shadow-md shadow-[#2D6A4F]/20 active:scale-95"
+                className="px-5 py-2.5 rounded-xl bg-[#b6f7c1] hover:bg-[#a0f3ae] text-[#0a2e1f] text-xs font-black transition-all cursor-pointer shadow-md shadow-[#b6f7c1]/20 active:scale-95"
               >
                 Reset Veto Filters
               </button>
@@ -588,59 +526,58 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* Vicinity Guarantee & Audit Badge                                         */}
+        {/* BOTTOM BANNER: 100% SEED-OIL-FREE & CLEAN FUEL. NUTRITION OPTIMIZED.     */}
         {/* ========================================================================= */}
-        <footer className="p-5 sm:p-6 rounded-3xl bg-white border border-[#DCE6DE] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-[#E8F3EC] flex items-center justify-center text-[#2D6A4F] shrink-0 border border-[#C8E2D1]">
+        <footer className="p-6 sm:p-7 rounded-3xl bg-[#082419] border border-[#b6f7c1]/25 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-5">
+          <div className="flex items-center gap-4 text-center sm:text-left">
+            <div className="w-12 h-12 rounded-2xl bg-[#134631] flex items-center justify-center text-[#b6f7c1] shrink-0 border border-[#b6f7c1]/30">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-black text-stone-900 text-sm sm:text-base">
-                100% VICINITY SEED-OIL AUDIT
+              <h4 className="font-black text-white text-sm sm:text-base tracking-wider uppercase">
+                100% SEED-OIL-FREE &bull; PURE ANIMAL &amp; FRUIT FATS
               </h4>
-              <p className="text-xs text-stone-500 font-medium">
-                Every restaurant listed is manually vetted for authentic grass-fed butter, cold-pressed EVOO, and rendered beef tallow.
+              <p className="text-xs text-[#b6f7c1] font-extrabold mt-0.5">
+                CLEAN FUEL. NUTRITION OPTIMIZED.
+              </p>
+              <p className="text-[11px] text-emerald-300/70 mt-0.5">
+                Every restaurant verified for authentic beef tallow, single-estate EVOO, and grass-fed ghee.
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
             <button
+              id="footer-explore-map-btn"
               onClick={() => setIsMapOpen(true)}
-              className="px-4 py-2.5 rounded-full bg-[#F2F6F3] hover:bg-stone-100 text-stone-800 text-xs font-black border border-[#DCE6DE] transition-all cursor-pointer shadow-xs active:scale-95"
+              className="px-5 py-2.5 rounded-2xl bg-[#b6f7c1] hover:bg-[#a0f3ae] text-[#0a2e1f] text-xs font-black transition-all cursor-pointer shadow-md shadow-[#b6f7c1]/20 active:scale-95 flex items-center gap-1.5"
             >
-              Explore Map Radar
-            </button>
-            <button
-              onClick={() => setIsScannerOpen(true)}
-              className="px-4 py-2.5 rounded-full bg-slate-950 hover:bg-slate-800 text-white text-xs font-black transition-all cursor-pointer shadow-xs active:scale-95"
-            >
-              Verify A Menu
+              <Radar className="w-4 h-4 text-[#0a2e1f]" />
+              <span>Explore Map</span>
             </button>
           </div>
         </footer>
       </main>
 
       {/* ========================================================================= */}
-      {/* 3. FLOATING STICKY MAP TRIGGER (Summons Left Drawer from Anywhere)        */}
+      {/* FLOATING MAP TRIGGER BUTTON                                               */}
       {/* ========================================================================= */}
       <div className="fixed bottom-6 right-6 z-30 flex items-center gap-2">
         <button
           id="floating-map-toggle-btn"
           onClick={() => setIsMapOpen(true)}
-          className="group px-5 py-3 rounded-full bg-slate-950 hover:bg-stone-900 text-white font-black text-xs shadow-2xl flex items-center gap-2.5 border border-[#52B788]/40 hover:border-[#A7D7B5] transition-all cursor-pointer active:scale-95"
+          className="group px-5 py-3 rounded-full bg-[#082419] hover:bg-[#0e3827] text-white font-black text-xs shadow-2xl flex items-center gap-2.5 border border-[#b6f7c1]/40 hover:border-[#b6f7c1] transition-all cursor-pointer active:scale-95"
           title="Slide out the interactive map from the left"
         >
           <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#52B788] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#2D6A4F]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#b6f7c1] opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#52b788]" />
           </span>
           <span>Explore Map</span>
-          <span className="px-1.5 py-0.5 rounded-md bg-[#2D6A4F] text-white text-[10px] font-black">
+          <span className="px-1.5 py-0.5 rounded-md bg-[#134631] text-[#b6f7c1] text-[10px] font-black border border-[#b6f7c1]/30">
             {filteredDishes.length}
           </span>
-          <ChevronRight className="w-3.5 h-3.5 text-[#A7D7B5] group-hover:translate-x-0.5 transition-transform" />
+          <ChevronRight className="w-3.5 h-3.5 text-[#b6f7c1] group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
 
@@ -660,5 +597,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-

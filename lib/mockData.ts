@@ -108,6 +108,13 @@ export const CITY_LOCATIONS: CityLocation[] = [
     "lat": 36.1627,
     "lng": -86.7816,
     "zoom": 13
+  },
+  {
+    "name": "Washington",
+    "state": "DC",
+    "lat": 38.9072,
+    "lng": -77.0369,
+    "zoom": 13
   }
 ];
 
@@ -4660,5 +4667,94 @@ export const INITIAL_DISHES: Dish[] = [
       "Roasted Leeks"
     ],
     "chefNotes": "Spit-roasted with fresh herbs and rendered duck fat. No industrial frying or seed oil baste."
+  },
+  {
+    "id": "dish-dc-1",
+    "name": "Wild Salmon & Sourdough Avocado Toast",
+    "restaurant": "AMA",
+    "restaurantAddress": "1400 K St NW, Washington, DC",
+    "city": "Washington",
+    "coordinates": {
+      "lat": 38.9026,
+      "lng": -77.0332
+    },
+    "price": 26,
+    "rating": 4.9,
+    "reviewsCount": 312,
+    "image": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=800&q=80",
+    "calories": 540,
+    "protein": 39,
+    "carbs": 32,
+    "fat": 28,
+    "fiber": 6,
+    "dietTags": [
+      "Seed Oil Free",
+      "Cold-Pressed EVOO",
+      "Wild Caught",
+      "High Protein"
+    ],
+    "cookingFat": "Cold-Pressed EVOO",
+    "isSeedOilFree": true,
+    "isGlutenFree": false,
+    "isKeto": false,
+    "isGrassFed": true,
+    "isDairyFree": true,
+    "highlights": [
+      "Certified Zero Seed Oils",
+      "Wild-Caught Alaskan King Salmon",
+      "Cold-Pressed Single-Estate EVOO"
+    ],
+    "ingredients": [
+      "Wild Alaskan Salmon",
+      "Fermented Organic Sourdough",
+      "Hass Avocado",
+      "Single-Estate EVOO",
+      "Maldon Flake Salt"
+    ],
+    "chefNotes": "Toasted on cast iron in cold-pressed Greek olive oil. Never uses spray oils or industrial margarine."
+  },
+  {
+    "id": "dish-dc-2",
+    "name": "Double Cheeseburger & Tallow Fries",
+    "restaurant": "Char'd",
+    "restaurantAddress": "1409 T St NW, Washington, DC",
+    "city": "Washington",
+    "coordinates": {
+      "lat": 38.9157,
+      "lng": -77.0334
+    },
+    "price": 22,
+    "rating": 4.8,
+    "reviewsCount": 420,
+    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80",
+    "calories": 780,
+    "protein": 48,
+    "carbs": 42,
+    "fat": 46,
+    "fiber": 3,
+    "dietTags": [
+      "Seed Oil Free",
+      "Beef Tallow",
+      "Grass-Fed Beef"
+    ],
+    "cookingFat": "100% Beef Tallow",
+    "isSeedOilFree": true,
+    "isGlutenFree": false,
+    "isKeto": false,
+    "isGrassFed": true,
+    "isDairyFree": false,
+    "highlights": [
+      "Double Grass-Fed Smash Patties",
+      "Hand-Cut Fries in 100% Beef Tallow",
+      "No Canola, Soy, or Vegetable Blends"
+    ],
+    "ingredients": [
+      "Grass-Fed Ground Chuck",
+      "Raw Milk Cheddar",
+      "Idaho Russet Potatoes",
+      "Rendered Wagyu Beef Tallow",
+      "Brioche Bun"
+    ],
+    "chefNotes": "Deep-fried exclusively in pure filtered beef tallow at 365°F for maximum crunch and zero toxic aldehydes."
   }
 ];

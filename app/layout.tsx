@@ -2,13 +2,13 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Healthy Food & Dish Finder',
+  title: 'Healthy Vicinity — Bio-Individual Dining Engine • Zero Seed Oils',
   description:
-    'Discover healthy, macro-targeted, seed-oil-free, and keto dishes at local independent restaurants with interactive maps and AI menu analysis.',
+    'Bio-Individual Dining Engine • Zero Seed Oils. Live kitchen proof reels, certified seed-oil-free restaurants, and macro-optimized dishes.',
   openGraph: {
-    title: 'Healthy Food & Dish Finder',
+    title: 'Healthy Vicinity — Bio-Individual Dining Engine • Zero Seed Oils',
     description:
-      'Discover healthy, macro-targeted, seed-oil-free, and keto dishes at local independent restaurants with interactive maps and AI menu analysis.',
+      'Bio-Individual Dining Engine • Zero Seed Oils. Live kitchen proof reels, certified seed-oil-free restaurants, and macro-optimized dishes.',
     type: 'website',
   },
 };

@@ -9,7 +9,6 @@ import {
   Sparkles,
   Search,
   RotateCcw,
-  SlidersHorizontal,
 } from 'lucide-react';
 
 export interface FilterState {
@@ -56,40 +55,40 @@ export default function BentoFilters({
     filters.search.trim().length > 0;
 
   return (
-    <div className="space-y-4 bg-white/95 backdrop-blur-md p-4 sm:p-5 rounded-3xl border border-stone-200/90 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)]">
+    <div className="space-y-4 bg-[#0e3827] text-white p-4 sm:p-5 rounded-3xl border border-[#b6f7c1]/20 shadow-xl">
       {/* Top Search & Filter Bar */}
       <div className="flex flex-col sm:flex-row items-center gap-3">
         <div className="relative flex-1 w-full">
-          <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-emerald-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             id="dish-search-input"
             type="text"
             value={filters.search}
             onChange={(e) => onChange({ ...filters, search: e.target.value })}
             placeholder="Search healthy dishes, smoked brisket, pasture steak, wild salmon..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-[#F2F6F3] border border-[#DCE6DE] text-xs font-semibold text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/25 focus:border-[#2D6A4F] transition-all shadow-inner"
+            className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-[#0a2e1f] border border-[#b6f7c1]/25 text-xs font-semibold text-white placeholder-emerald-400/60 focus:outline-none focus:ring-2 focus:ring-[#b6f7c1]/30 transition-all shadow-inner"
           />
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end shrink-0">
-          <span className="text-xs font-semibold text-stone-500 whitespace-nowrap">
-            Showing <strong className="text-[#2D6A4F] font-bold">{filteredCount}</strong> of{' '}
-            <span className="text-stone-700 font-bold">{totalDishesCount}</span>
+          <span className="text-xs font-semibold text-emerald-200/80 whitespace-nowrap">
+            Showing <strong className="text-[#b6f7c1] font-black">{filteredCount}</strong> of{' '}
+            <span className="text-emerald-100 font-bold">{totalDishesCount}</span>
           </span>
           {hasActiveFilters && (
             <button
               id="reset-filters-btn"
               onClick={onReset}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold transition-all cursor-pointer shadow-xs"
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#134631] hover:bg-[#1a5a40] text-[#b6f7c1] text-xs font-bold transition-all cursor-pointer border border-[#b6f7c1]/30 shadow-xs"
             >
-              <RotateCcw className="w-3 h-3 text-stone-500" />
+              <RotateCcw className="w-3 h-3 text-[#b6f7c1]" />
               <span>Reset</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* Category Squircles Row (Refined Botanical Palette) */}
+      {/* Category Squircles Row */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3">
         {/* Seed-Oil Free */}
         <button
@@ -97,28 +96,28 @@ export default function BentoFilters({
           onClick={() => toggleFilter('seedOilFree')}
           className={`p-3 rounded-2xl border transition-all cursor-pointer flex flex-col items-center justify-center text-center gap-2 group ${
             filters.seedOilFree
-              ? 'bg-[#EBF5EF] border-2 border-[#2D6A4F] shadow-sm shadow-[#2D6A4F]/10 ring-1 ring-[#2D6A4F]/20'
-              : 'bg-[#F9FBF9] border border-[#DCE6DE] hover:border-[#2D6A4F]/40 hover:bg-white'
+              ? 'bg-[#134631] border-2 border-[#b6f7c1] shadow-md shadow-[#b6f7c1]/20 ring-1 ring-[#b6f7c1]/30'
+              : 'bg-[#0a2e1f] border border-[#b6f7c1]/15 hover:border-[#b6f7c1]/40'
           }`}
         >
           <div
             className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${
               filters.seedOilFree
-                ? 'bg-[#2D6A4F] text-white shadow-md shadow-[#2D6A4F]/20 scale-105 font-bold'
-                : 'bg-white border border-[#DCE6DE] text-stone-600 group-hover:scale-105 shadow-xs'
+                ? 'bg-[#b6f7c1] text-[#0a2e1f] shadow-md shadow-[#b6f7c1]/30 scale-105 font-black'
+                : 'bg-[#082419] border border-[#b6f7c1]/20 text-[#b6f7c1] group-hover:scale-105 shadow-xs'
             }`}
           >
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
             <span
-              className={`text-xs font-extrabold block leading-tight ${
-                filters.seedOilFree ? 'text-[#1B4332]' : 'text-stone-800'
+              className={`text-xs font-black block leading-tight ${
+                filters.seedOilFree ? 'text-[#b6f7c1]' : 'text-stone-200'
               }`}
             >
               Seed-Oil Free
             </span>
-            <span className="text-[10px] text-stone-400 font-medium">Zero Canola/Soy</span>
+            <span className="text-[10px] text-emerald-300/60 font-medium">Zero Canola/Soy</span>
           </div>
         </button>
 
@@ -128,28 +127,28 @@ export default function BentoFilters({
           onClick={() => toggleFilter('grassFed')}
           className={`p-3 rounded-2xl border transition-all cursor-pointer flex flex-col items-center justify-center text-center gap-2 group ${
             filters.grassFed
-              ? 'bg-teal-50/90 border-2 border-teal-500 shadow-md shadow-teal-500/20 ring-2 ring-teal-500/20'
-              : 'bg-[#FAF8F5] border border-stone-200 hover:border-stone-300 hover:bg-white'
+              ? 'bg-[#134631] border-2 border-[#b6f7c1] shadow-md shadow-[#b6f7c1]/20 ring-1 ring-[#b6f7c1]/30'
+              : 'bg-[#0a2e1f] border border-[#b6f7c1]/15 hover:border-[#b6f7c1]/40'
           }`}
         >
           <div
             className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${
               filters.grassFed
-                ? 'bg-teal-500 text-slate-950 shadow-md shadow-teal-500/30 scale-105 font-bold'
-                : 'bg-white border border-stone-200/80 text-stone-600 group-hover:scale-105 shadow-xs'
+                ? 'bg-[#b6f7c1] text-[#0a2e1f] shadow-md shadow-[#b6f7c1]/30 scale-105 font-black'
+                : 'bg-[#082419] border border-[#b6f7c1]/20 text-[#b6f7c1] group-hover:scale-105 shadow-xs'
             }`}
           >
             <Beef className="w-5 h-5" />
           </div>
           <div>
             <span
-              className={`text-xs font-extrabold block leading-tight ${
-                filters.grassFed ? 'text-teal-900' : 'text-stone-800'
+              className={`text-xs font-black block leading-tight ${
+                filters.grassFed ? 'text-[#b6f7c1]' : 'text-stone-200'
               }`}
             >
               Grass-Fed
             </span>
-            <span className="text-[10px] text-stone-400 font-medium">100% Pasture</span>
+            <span className="text-[10px] text-emerald-300/60 font-medium">100% Pasture</span>
           </div>
         </button>
 
@@ -159,28 +158,28 @@ export default function BentoFilters({
           onClick={() => toggleFilter('glutenFree')}
           className={`p-3 rounded-2xl border transition-all cursor-pointer flex flex-col items-center justify-center text-center gap-2 group ${
             filters.glutenFree
-              ? 'bg-amber-50/90 border-2 border-amber-500 shadow-md shadow-amber-500/20 ring-2 ring-amber-500/20'
-              : 'bg-[#FAF8F5] border border-stone-200 hover:border-stone-300 hover:bg-white'
+              ? 'bg-[#134631] border-2 border-[#b6f7c1] shadow-md shadow-[#b6f7c1]/20 ring-1 ring-[#b6f7c1]/30'
+              : 'bg-[#0a2e1f] border border-[#b6f7c1]/15 hover:border-[#b6f7c1]/40'
           }`}
         >
           <div
             className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${
               filters.glutenFree
-                ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30 scale-105 font-bold'
-                : 'bg-white border border-stone-200/80 text-stone-600 group-hover:scale-105 shadow-xs'
+                ? 'bg-[#b6f7c1] text-[#0a2e1f] shadow-md shadow-[#b6f7c1]/30 scale-105 font-black'
+                : 'bg-[#082419] border border-[#b6f7c1]/20 text-[#b6f7c1] group-hover:scale-105 shadow-xs'
             }`}
           >
             <WheatOff className="w-5 h-5" />
           </div>
           <div>
             <span
-              className={`text-xs font-extrabold block leading-tight ${
-                filters.glutenFree ? 'text-amber-900' : 'text-stone-800'
+              className={`text-xs font-black block leading-tight ${
+                filters.glutenFree ? 'text-[#b6f7c1]' : 'text-stone-200'
               }`}
             >
               Gluten-Free
             </span>
-            <span className="text-[10px] text-stone-400 font-medium">Strict Celiac</span>
+            <span className="text-[10px] text-emerald-300/60 font-medium">Strict Celiac</span>
           </div>
         </button>
 
@@ -190,28 +189,28 @@ export default function BentoFilters({
           onClick={() => toggleFilter('keto')}
           className={`p-3 rounded-2xl border transition-all cursor-pointer flex flex-col items-center justify-center text-center gap-2 group ${
             filters.keto
-              ? 'bg-cyan-50/90 border-2 border-cyan-500 shadow-md shadow-cyan-500/20 ring-2 ring-cyan-500/20'
-              : 'bg-[#FAF8F5] border border-stone-200 hover:border-stone-300 hover:bg-white'
+              ? 'bg-[#134631] border-2 border-[#b6f7c1] shadow-md shadow-[#b6f7c1]/20 ring-1 ring-[#b6f7c1]/30'
+              : 'bg-[#0a2e1f] border border-[#b6f7c1]/15 hover:border-[#b6f7c1]/40'
           }`}
         >
           <div
             className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${
               filters.keto
-                ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/30 scale-105 font-bold'
-                : 'bg-white border border-stone-200/80 text-stone-600 group-hover:scale-105 shadow-xs'
+                ? 'bg-[#b6f7c1] text-[#0a2e1f] shadow-md shadow-[#b6f7c1]/30 scale-105 font-black'
+                : 'bg-[#082419] border border-[#b6f7c1]/20 text-[#b6f7c1] group-hover:scale-105 shadow-xs'
             }`}
           >
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
             <span
-              className={`text-xs font-extrabold block leading-tight ${
-                filters.keto ? 'text-cyan-900' : 'text-stone-800'
+              className={`text-xs font-black block leading-tight ${
+                filters.keto ? 'text-[#b6f7c1]' : 'text-stone-200'
               }`}
             >
               Keto Ratio
             </span>
-            <span className="text-[10px] text-stone-400 font-medium">High Fuel Fat</span>
+            <span className="text-[10px] text-emerald-300/60 font-medium">High Fuel Fat</span>
           </div>
         </button>
 
@@ -221,38 +220,38 @@ export default function BentoFilters({
           onClick={() => toggleFilter('dairyFree')}
           className={`p-3 rounded-2xl border transition-all cursor-pointer flex flex-col items-center justify-center text-center gap-2 group ${
             filters.dairyFree
-              ? 'bg-indigo-50/90 border-2 border-indigo-500 shadow-md shadow-indigo-500/20 ring-2 ring-indigo-500/20'
-              : 'bg-[#FAF8F5] border border-stone-200 hover:border-stone-300 hover:bg-white'
+              ? 'bg-[#134631] border-2 border-[#b6f7c1] shadow-md shadow-[#b6f7c1]/20 ring-1 ring-[#b6f7c1]/30'
+              : 'bg-[#0a2e1f] border border-[#b6f7c1]/15 hover:border-[#b6f7c1]/40'
           }`}
         >
           <div
             className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${
               filters.dairyFree
-                ? 'bg-indigo-500 text-slate-950 shadow-md shadow-indigo-500/30 scale-105 font-bold'
-                : 'bg-white border border-stone-200/80 text-stone-600 group-hover:scale-105 shadow-xs'
+                ? 'bg-[#b6f7c1] text-[#0a2e1f] shadow-md shadow-[#b6f7c1]/30 scale-105 font-black'
+                : 'bg-[#082419] border border-[#b6f7c1]/20 text-[#b6f7c1] group-hover:scale-105 shadow-xs'
             }`}
           >
             <MilkOff className="w-5 h-5" />
           </div>
           <div>
             <span
-              className={`text-xs font-extrabold block leading-tight ${
-                filters.dairyFree ? 'text-indigo-900' : 'text-stone-800'
+              className={`text-xs font-black block leading-tight ${
+                filters.dairyFree ? 'text-[#b6f7c1]' : 'text-stone-200'
               }`}
             >
               Dairy-Free
             </span>
-            <span className="text-[10px] text-stone-400 font-medium">A2 / Plant Based</span>
+            <span className="text-[10px] text-emerald-300/60 font-medium">A2 / Plant Based</span>
           </div>
         </button>
       </div>
 
       {/* Tactile Sliders for Min Protein & Max Carbs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-        <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-stone-200 flex flex-col justify-between gap-2.5 shadow-xs">
+        <div className="p-3.5 rounded-2xl bg-[#0a2e1f] border border-[#b6f7c1]/20 flex flex-col justify-between gap-2.5 shadow-xs">
           <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-stone-700">Min Protein Threshold</span>
-            <span className="px-2.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 font-bold">
+            <span className="text-emerald-100 font-extrabold">Min Protein Threshold</span>
+            <span className="px-2.5 py-0.5 rounded-lg bg-[#134631] text-[#b6f7c1] font-black border border-[#b6f7c1]/30">
               {filters.minProtein}g+
             </span>
           </div>
@@ -264,15 +263,15 @@ export default function BentoFilters({
             step="5"
             value={filters.minProtein}
             onChange={(e) => onChange({ ...filters, minProtein: Number(e.target.value) })}
-            className="w-full accent-emerald-500 cursor-pointer h-2 bg-stone-200 rounded-lg"
+            className="w-full accent-[#b6f7c1] cursor-pointer h-2 bg-[#134631] rounded-lg"
           />
         </div>
 
-        <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-stone-200 flex flex-col justify-between gap-2.5 shadow-xs">
+        <div className="p-3.5 rounded-2xl bg-[#0a2e1f] border border-[#b6f7c1]/20 flex flex-col justify-between gap-2.5 shadow-xs">
           <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-stone-700">Max Net Carbs Cap</span>
-            <span className="px-2.5 py-0.5 rounded-lg bg-teal-100 text-teal-800 font-bold">
-              ≤ {filters.maxCarbs}g
+            <span className="text-emerald-100 font-extrabold">Max Net Carbs Cap</span>
+            <span className="px-2.5 py-0.5 rounded-lg bg-[#134631] text-[#b6f7c1] font-black border border-[#b6f7c1]/30">
+              &le; {filters.maxCarbs}g
             </span>
           </div>
           <input
@@ -283,13 +282,10 @@ export default function BentoFilters({
             step="5"
             value={filters.maxCarbs}
             onChange={(e) => onChange({ ...filters, maxCarbs: Number(e.target.value) })}
-            className="w-full accent-teal-600 cursor-pointer h-2 bg-stone-200 rounded-lg"
+            className="w-full accent-[#b6f7c1] cursor-pointer h-2 bg-[#134631] rounded-lg"
           />
         </div>
       </div>
     </div>
   );
 }
-
-
-
