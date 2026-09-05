@@ -1,69 +1,68 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand-dark: #07130F;
+  --color-brand-surface: #0B1A14;
+  --color-brand-surface-raised: #0F231B;
+  --color-brand-border: #1B3B2F;
+  --color-brand-green: #35E27F;
+  --color-brand-green-secondary: #123D2A;
+  --color-brand-mint: #DDFBE9;
+  --color-brand-offwhite: #F5F7F3;
+  --color-brand-muted: #A8B5AE;
+}
+
 @layer base {
   * {
-    border-color: rgba(255, 255, 255, 0.08);
+    border-color: #1B3B2F;
+  }
+  img {
+    object-fit: cover;
   }
   body {
-    background-color: #09090b; /* zinc-950 */
-    color: #f4f4f5; /* zinc-100 */
+    background-color: #07130F; /* Deep charcoal/green-black technology foundation */
+    color: #F5F7F3; /* Off-white primary text */
     font-feature-settings: "rlig" 1, "calt" 1, "cv11" 1;
     letter-spacing: -0.015em;
   }
   ::selection {
-    background-color: rgba(16, 185, 129, 0.25);
-    color: #34d399;
+    background-color: rgba(53, 226, 127, 0.25);
+    color: #35E27F;
   }
 }
 
-/* Exclusive Biohacker & Health Oasis Glassmorphism */
-.glass-oasis {
-  background: rgba(24, 24, 27, 0.65);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 
-    0 8px 32px 0 rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+/* Modern Tech Card Surfaces */
+.tech-card {
+  background: #0B1A14;
+  border: 1px solid #1B3B2F;
+  border-radius: 20px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.glass-card-clean {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 
-    0 10px 30px -5px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+.tech-card:hover {
+  border-color: rgba(53, 226, 127, 0.4);
+  background: #0E2019;
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5), 0 0 20px -6px rgba(53, 226, 127, 0.12);
 }
 
-.glass-card-clean:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(16, 185, 129, 0.35);
-  box-shadow: 
-    0 20px 40px -10px rgba(0, 0, 0, 0.7),
-    0 0 30px -5px rgba(16, 185, 129, 0.2);
+/* Radial Glows */
+.hero-ambient-glow {
+  background: radial-gradient(circle at 50% 30%, rgba(53, 226, 127, 0.08) 0%, transparent 70%);
 }
 
-/* Emerald Beacon Glows */
-.glow-emerald {
-  box-shadow: 0 0 25px -3px rgba(16, 185, 129, 0.35);
+.vicinity-radial-glow {
+  background: radial-gradient(circle, rgba(53, 226, 127, 0.12) 0%, rgba(18, 61, 42, 0.05) 50%, transparent 70%);
 }
 
-.glow-emerald-strong {
-  box-shadow: 0 0 35px -2px rgba(16, 185, 129, 0.55);
-}
-
-.glow-amber {
-  box-shadow: 0 0 20px -3px rgba(251, 191, 36, 0.3);
+.tech-glow-marker {
+  box-shadow: 0 0 16px 2px rgba(53, 226, 127, 0.5);
 }
 
 /* Radar Sweep Keyframe */
 @keyframes radar-pulse {
   0% {
     transform: scale(0.9);
-    opacity: 0.9;
+    opacity: 0.8;
   }
   70% {
     transform: scale(2.2);
@@ -79,21 +78,22 @@
   animation: radar-pulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
-/* Sleek Dark Scrollbars */
+/* Modern Dark Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #09090b;
+  background: #07130F;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(63, 63, 70, 0.7);
+  background: #1B3B2F;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(16, 185, 129, 0.5);
+  background: #35E27F;
 }
+
 
 
 

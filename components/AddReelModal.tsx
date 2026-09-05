@@ -102,25 +102,25 @@ export default function AddReelModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#07130F]/80 backdrop-blur-md overflow-y-auto">
       <div
         id="add-reel-modal"
-        className="relative w-full max-w-xl bg-zinc-950 border border-white/10 text-zinc-100 rounded-3xl overflow-hidden my-8 flex flex-col shadow-[0_0_50px_rgba(0,0,0,0.9)]"
+        className="relative w-full max-w-xl bg-[#0B1A14] border border-[#1B3B2F] text-[#F5F7F3] rounded-2xl overflow-hidden my-8 flex flex-col shadow-2xl"
       >
         {/* Header */}
-        <div className="p-5 sm:p-6 bg-zinc-900/90 border-b border-white/10 flex items-center justify-between">
+        <div className="p-5 sm:p-6 bg-[#07130F] border-b border-[#1B3B2F] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
-              <Video className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-[#123D2A] text-[#35E27F] flex items-center justify-center border border-[#1B3B2F]">
+              <Video className="w-5 h-5 text-[#35E27F]" />
             </div>
             <div>
-              <h3 className="text-lg font-black text-white flex items-center gap-2">
-                <span>Submit Live Proof Reel</span>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 text-[10px] font-bold uppercase tracking-wider border border-emerald-500/40">
+              <h3 className="text-base sm:text-lg font-bold text-[#F5F7F3] flex items-center gap-2">
+                <span>Submit Proof Reel</span>
+                <span className="px-2 py-0.5 rounded-full bg-[#123D2A] text-[#35E27F] text-[10px] font-bold uppercase tracking-wider border border-[#1B3B2F]">
                   UGC Scout
                 </span>
               </h3>
-              <p className="text-xs text-zinc-400">
+              <p className="text-xs text-[#A8B5AE]">
                 Add an authentic viral kitchen proof reel of clean seed-oil-free dining.
               </p>
             </div>
@@ -128,7 +128,7 @@ export default function AddReelModal({
           <button
             id="close-add-reel-btn"
             onClick={onClose}
-            className="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-white/10 transition-all cursor-pointer hover:scale-[1.02]"
+            className="p-2 rounded-xl bg-[#0F231B] hover:bg-[#123D2A] text-[#A8B5AE] hover:text-[#F5F7F3] border border-[#1B3B2F] transition-all cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -137,15 +137,15 @@ export default function AddReelModal({
         {/* Content Body */}
         <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-4">
           {error && (
-            <div className="p-3.5 rounded-2xl bg-red-950/80 border border-red-500/40 text-red-300 text-xs flex items-center gap-2">
+            <div className="p-3.5 rounded-xl bg-red-950/40 border border-red-800/60 text-red-300 text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
               <span>{error}</span>
             </div>
           )}
 
           {success && (
-            <div className="p-3.5 rounded-2xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2 font-bold animate-pulse">
-              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+            <div className="p-3.5 rounded-xl bg-[#123D2A] border border-[#35E27F]/40 text-[#35E27F] text-xs flex items-center gap-2 font-bold animate-pulse">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-[#35E27F]" />
               <span>Live reel published successfully to {city}!</span>
             </div>
           )}
@@ -153,17 +153,17 @@ export default function AddReelModal({
           {/* City & Restaurant Row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-zinc-300 mb-1">
+              <label className="block text-xs font-semibold text-[#F5F7F3] mb-1">
                 City *
               </label>
               <select
                 suppressHydrationWarning
                 value={city}
                 onChange={(e) => setCity(e.target.value as ReelCity)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 text-white border border-white/10 text-xs font-bold focus:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60 cursor-pointer"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F231B] text-[#F5F7F3] border border-[#1B3B2F] text-xs font-semibold focus:outline-none focus:border-[#35E27F] cursor-pointer shadow-xs"
               >
                 {CITIES_LIST.map((c) => (
-                  <option key={c.id} value={c.id} className="bg-zinc-950 text-white">
+                  <option key={c.id} value={c.id} className="bg-[#0B1A14] text-[#F5F7F3]">
                     {c.id}
                   </option>
                 ))}
@@ -171,7 +171,7 @@ export default function AddReelModal({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-zinc-300 mb-1">
+              <label className="block text-xs font-semibold text-[#F5F7F3] mb-1">
                 Restaurant Name *
               </label>
               <input
@@ -180,14 +180,14 @@ export default function AddReelModal({
                 value={restaurant}
                 onChange={(e) => setRestaurant(e.target.value)}
                 placeholder="e.g. Talo Organic"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 text-white border border-white/10 text-xs font-medium placeholder:text-zinc-500 focus:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F231B] text-[#F5F7F3] border border-[#1B3B2F] text-xs font-medium placeholder:text-[#A8B5AE]/60 focus:outline-none focus:border-[#35E27F] shadow-xs"
               />
             </div>
           </div>
 
           {/* Reel URL */}
           <div>
-            <label className="block text-xs font-bold text-zinc-300 mb-1">
+            <label className="block text-xs font-semibold text-[#F5F7F3] mb-1">
               Instagram / Facebook Public Reel URL *
             </label>
             <input
@@ -196,9 +196,9 @@ export default function AddReelModal({
               value={reelUrl}
               onChange={(e) => setReelUrl(e.target.value)}
               placeholder="https://www.instagram.com/reel/DXwyzu3xkTK/"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 text-white border border-white/10 text-xs font-mono placeholder:text-zinc-500 focus:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F231B] text-[#F5F7F3] border border-[#1B3B2F] text-xs font-mono placeholder:text-[#A8B5AE]/60 focus:outline-none focus:border-[#35E27F] shadow-xs"
             />
-            <p className="text-[11px] text-zinc-400 mt-1">
+            <p className="text-[11px] text-[#A8B5AE] mt-1">
               Public reels only. We embed via Instagram / Facebook oEmbed without re-hosting.
             </p>
           </div>
@@ -206,17 +206,17 @@ export default function AddReelModal({
           {/* Cooking Fat & Creator Handle */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-zinc-300 mb-1">
+              <label className="block text-xs font-semibold text-[#F5F7F3] mb-1">
                 Certified Cooking Fat *
               </label>
               <select
                 suppressHydrationWarning
                 value={cookingFat}
                 onChange={(e) => setCookingFat(e.target.value as CookingFat)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 text-white border border-white/10 text-xs font-bold focus:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60 cursor-pointer"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F231B] text-[#F5F7F3] border border-[#1B3B2F] text-xs font-semibold focus:outline-none focus:border-[#35E27F] cursor-pointer shadow-xs"
               >
                 {COOKING_FATS.map((fat) => (
-                  <option key={fat} value={fat} className="bg-zinc-950 text-white">
+                  <option key={fat} value={fat} className="bg-[#0B1A14] text-[#F5F7F3]">
                     {fat}
                   </option>
                 ))}
@@ -224,7 +224,7 @@ export default function AddReelModal({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-zinc-300 mb-1">
+              <label className="block text-xs font-semibold text-[#F5F7F3] mb-1">
                 Creator Handle
               </label>
               <input
@@ -233,7 +233,7 @@ export default function AddReelModal({
                 value={creatorHandle}
                 onChange={(e) => setCreatorHandle(e.target.value)}
                 placeholder="@handle"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 text-white border border-white/10 text-xs font-medium placeholder:text-zinc-500 focus:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F231B] text-[#F5F7F3] border border-[#1B3B2F] text-xs font-medium placeholder:text-[#A8B5AE]/60 focus:outline-none focus:border-[#35E27F] shadow-xs"
               />
             </div>
           </div>
@@ -241,7 +241,7 @@ export default function AddReelModal({
           {/* Eating Type & Macros */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-zinc-300 mb-1">
+              <label className="block text-xs font-semibold text-[#F5F7F3] mb-1">
                 Eating Type / Scene
               </label>
               <input
@@ -250,12 +250,12 @@ export default function AddReelModal({
                 value={eatingType}
                 onChange={(e) => setEatingType(e.target.value)}
                 placeholder="e.g. creator eating tallow burger at table"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 text-white border border-white/10 text-xs font-medium placeholder:text-zinc-500 focus:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F231B] text-[#F5F7F3] border border-[#1B3B2F] text-xs font-medium placeholder:text-[#A8B5AE]/60 focus:outline-none focus:border-[#35E27F] shadow-xs"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-zinc-300 mb-1">
+              <label className="block text-xs font-semibold text-[#F5F7F3] mb-1">
                 Macros Highlight
               </label>
               <input
@@ -264,14 +264,14 @@ export default function AddReelModal({
                 value={macrosText}
                 onChange={(e) => setMacrosText(e.target.value)}
                 placeholder="e.g. 48g Muscle Protein"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 text-white border border-white/10 text-xs font-medium placeholder:text-zinc-500 focus:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F231B] text-[#F5F7F3] border border-[#1B3B2F] text-xs font-medium placeholder:text-[#A8B5AE]/60 focus:outline-none focus:border-[#35E27F] shadow-xs"
               />
             </div>
           </div>
 
           {/* Caption / Viral Hook */}
           <div>
-            <label className="block text-xs font-bold text-zinc-300 mb-1">
+            <label className="block text-xs font-semibold text-[#F5F7F3] mb-1">
               Viral Hook / Caption *
             </label>
             <textarea
@@ -280,13 +280,13 @@ export default function AddReelModal({
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
               placeholder="e.g. Healthiest zero-seed-oil smash burger in town — 100% tallow fried with raw cheddar"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 text-white border border-white/10 text-xs font-medium placeholder:text-zinc-500 focus:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F231B] text-[#F5F7F3] border border-[#1B3B2F] text-xs font-medium placeholder:text-[#A8B5AE]/60 focus:outline-none focus:border-[#35E27F] shadow-xs"
             />
           </div>
 
           {/* Tags */}
           <div>
-            <label className="block text-xs font-bold text-zinc-300 mb-1">
+            <label className="block text-xs font-semibold text-[#F5F7F3] mb-1">
               Diet &amp; Quality Tags (comma separated)
             </label>
             <input
@@ -295,7 +295,7 @@ export default function AddReelModal({
               value={tagsInput}
               onChange={(e) => setTagsInput(e.target.value)}
               placeholder="seed-oil-free, grass-fed, pasture-raised"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 text-white border border-white/10 text-xs font-medium placeholder:text-zinc-500 focus:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F231B] text-[#F5F7F3] border border-[#1B3B2F] text-xs font-medium placeholder:text-[#A8B5AE]/60 focus:outline-none focus:border-[#35E27F] shadow-xs"
             />
           </div>
 
@@ -304,16 +304,16 @@ export default function AddReelModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl bg-transparent hover:bg-white/10 text-zinc-400 hover:text-white text-xs font-bold transition-all cursor-pointer hover:scale-[1.02]"
+              className="px-4 py-2.5 rounded-xl bg-transparent hover:bg-[#0F231B] text-[#A8B5AE] hover:text-[#F5F7F3] text-xs font-semibold transition-all cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={success}
-              className="px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-xs font-black transition-all cursor-pointer flex items-center gap-2 active:scale-95 disabled:opacity-50 shadow-lg shadow-emerald-500/25 hover:scale-[1.02]"
+              className="px-6 py-2.5 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all cursor-pointer flex items-center gap-2 active:scale-95 disabled:opacity-50"
             >
-              <Sparkles className="w-4 h-4 text-zinc-950" />
+              <Sparkles className="w-4 h-4 text-[#07130F]" />
               <span>Publish Reel</span>
             </button>
           </div>

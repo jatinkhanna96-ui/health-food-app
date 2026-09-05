@@ -5,11 +5,26 @@ export type ReelCity =
   | "San Francisco, CA"
   | "Miami, FL"
   | "Chicago, IL"
+  | "Dallas, TX"
+  | "Houston, TX"
+  | "Phoenix, AZ"
+  | "Scottsdale, AZ"
+  | "San Diego, CA"
+  | "Boston, MA"
   | "Denver, CO"
   | "Seattle, WA"
-  | "San Diego, CA"
+  | "Atlanta, GA"
   | "Nashville, TN"
-  | "Washington, DC";
+  | "Washington, DC"
+  | "Portland, OR"
+  | "Charlotte, NC"
+  | "Tampa, FL"
+  | "Orlando, FL"
+  | "Boulder, CO"
+  | "Columbus, OH"
+  | "Salt Lake City, UT"
+  | "Minneapolis, MN"
+  | "Indianapolis, IN";
 
 export type CookingFat =
   | "Beef Tallow"
@@ -415,11 +430,26 @@ export const CITIES_LIST: { id: ReelCity; name: string; state: string }[] = [
   { id: "San Francisco, CA", name: "San Francisco", state: "CA" },
   { id: "Miami, FL", name: "Miami", state: "FL" },
   { id: "Chicago, IL", name: "Chicago", state: "IL" },
+  { id: "Dallas, TX", name: "Dallas", state: "TX" },
+  { id: "Houston, TX", name: "Houston", state: "TX" },
+  { id: "Phoenix, AZ", name: "Phoenix", state: "AZ" },
+  { id: "Scottsdale, AZ", name: "Scottsdale", state: "AZ" },
+  { id: "San Diego, CA", name: "San Diego", state: "CA" },
+  { id: "Boston, MA", name: "Boston", state: "MA" },
   { id: "Denver, CO", name: "Denver", state: "CO" },
   { id: "Seattle, WA", name: "Seattle", state: "WA" },
-  { id: "San Diego, CA", name: "San Diego", state: "CA" },
+  { id: "Atlanta, GA", name: "Atlanta", state: "GA" },
   { id: "Nashville, TN", name: "Nashville", state: "TN" },
   { id: "Washington, DC", name: "Washington", state: "DC" },
+  { id: "Portland, OR", name: "Portland", state: "OR" },
+  { id: "Charlotte, NC", name: "Charlotte", state: "NC" },
+  { id: "Tampa, FL", name: "Tampa", state: "FL" },
+  { id: "Orlando, FL", name: "Orlando", state: "FL" },
+  { id: "Boulder, CO", name: "Boulder", state: "CO" },
+  { id: "Columbus, OH", name: "Columbus", state: "OH" },
+  { id: "Salt Lake City, UT", name: "Salt Lake City", state: "UT" },
+  { id: "Minneapolis, MN", name: "Minneapolis", state: "MN" },
+  { id: "Indianapolis, IN", name: "Indianapolis", state: "IN" },
 ];
 
 export function getEmbedUrl(reelUrl: string): string {

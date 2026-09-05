@@ -14,6 +14,7 @@ import {
   Sparkles,
   ChevronRight,
   Zap,
+  ListFilter,
 } from 'lucide-react';
 
 interface InteractiveMapProps {
@@ -24,9 +25,11 @@ interface InteractiveMapProps {
   radiusMiles?: number;
   isRadarScanning?: boolean;
   onViewDetail?: (dish: Dish) => void;
+  onToggleDishList?: () => void;
+  isDishListActive?: boolean;
 }
 
-type MapStyle = 'dark' | 'voyager' | 'osm';
+type MapStyle = 'voyager' | 'light' | 'dark' | 'osm';
 
 // Mercator Projection Math helpers
 function lngToTileX(lng: number, z: number): number {
@@ -53,11 +56,14 @@ function getTileUrl(style: MapStyle, z: number, x: number, y: number): string {
   if (style === 'osm') {
     return `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
   }
-  if (style === 'voyager') {
-    return `https://${s}.basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}.png`;
+  if (style === 'dark') {
+    return `https://${s}.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`;
   }
-  // Default: Dark Minimalist Monochrome CartoDB Dark Matter
-  return `https://${s}.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`;
+  if (style === 'light') {
+    return `https://${s}.basemaps.cartocdn.com/light_all/${z}/${x}/${y}.png`;
+  }
+  // Default: Bright Crisp CartoDB Voyager Streets
+  return `https://${s}.basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}.png`;
 }
 
 export default function InteractiveMap({
@@ -68,6 +74,8 @@ export default function InteractiveMap({
   radiusMiles = 5,
   isRadarScanning = false,
   onViewDetail,
+  onToggleDishList,
+  isDishListActive = false,
 }: InteractiveMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ width: 500, height: 500 });
@@ -306,7 +314,7 @@ export default function InteractiveMap({
     <div
       ref={containerRef}
       id="oasis-cartography-map"
-      className="relative w-full h-full overflow-hidden select-none bg-zinc-950 font-sans"
+      className="relative w-full h-full overflow-hidden select-none bg-[#07130F] font-sans"
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
@@ -318,7 +326,7 @@ export default function InteractiveMap({
       style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
     >
       {/* ===================================================================== */}
-      {/* 1. TILE LAYER: DARK MINIMALIST MONOCHROME CARTOGRAPHY                 */}
+      {/* 1. TILE LAYER                                                        */}
       {/* ===================================================================== */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {visibleTiles.map((tile) => (
@@ -341,11 +349,11 @@ export default function InteractiveMap({
         ))}
       </div>
 
-      {/* Dark Oasis Vignette Ambient Shading */}
-      <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_80px_rgba(0,0,0,0.85)]" />
+      {/* Subtle Map Ambient Edge Vignette */}
+      <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_60px_rgba(7,19,15,0.85)]" />
 
       {/* ===================================================================== */}
-      {/* 2. SVG OVERLAY: GLOWING EMERALD RADAR PERIMETER & SCAN CONE           */}
+      {/* 2. SVG OVERLAY: GLOWING RADAR PERIMETER & SCAN CONE                    */}
       {/* ===================================================================== */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none z-10"
@@ -353,22 +361,22 @@ export default function InteractiveMap({
       >
         <defs>
           <radialGradient id="oasisRadarGradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#10B981" stopOpacity="0.45" />
-            <stop offset="60%" stopColor="#10B981" stopOpacity="0.18" />
-            <stop offset="100%" stopColor="#10B981" stopOpacity="0" />
+            <stop offset="0%" stopColor="#35E27F" stopOpacity="0.45" />
+            <stop offset="60%" stopColor="#123D2A" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#35E27F" stopOpacity="0" />
           </radialGradient>
         </defs>
 
-        {/* Glowing Emerald Search Radius Perimeter Ring */}
+        {/* Glowing Search Radius Perimeter Ring */}
         <circle
           cx={cityCenterCoords.x}
           cy={cityCenterCoords.y}
           r={radiusPixels}
-          fill="rgba(16, 185, 129, 0.04)"
-          stroke="#10b981"
-          strokeWidth="2"
+          fill="rgba(53, 226, 127, 0.04)"
+          stroke="#35E27F"
+          strokeWidth="1.5"
           strokeDasharray="6 6"
-          className="filter drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+          className="filter drop-shadow-[0_0_8px_rgba(53,226,127,0.6)]"
         />
 
         {/* Dynamic Radar Sweeping Beam */}
@@ -385,16 +393,16 @@ export default function InteractiveMap({
         style={{ left: `${cityCenterCoords.x}px`, top: `${cityCenterCoords.y}px` }}
       >
         <span className="relative flex h-5 w-5 items-center justify-center">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80" />
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 border-2 border-zinc-950 shadow-[0_0_12px_rgba(16,185,129,0.9)]" />
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#35E27F] opacity-75" />
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-[#35E27F] border-2 border-[#07130F] shadow-[0_0_12px_rgba(53,226,127,0.9)]" />
         </span>
-        <span className="mt-1 px-2.5 py-0.5 rounded-full bg-zinc-950/90 backdrop-blur-md text-[9px] font-black text-emerald-300 uppercase tracking-widest border border-emerald-500/40 whitespace-nowrap shadow-[0_0_12px_rgba(16,185,129,0.25)]">
+        <span className="mt-1 px-2.5 py-0.5 rounded-full bg-[#0B1A14]/95 backdrop-blur-md text-[9px] font-bold text-[#35E27F] uppercase tracking-widest border border-[#1B3B2F] whitespace-nowrap shadow-md">
           {city.name} Oasis Hub ({radiusMiles}mi)
         </span>
       </div>
 
       {/* ===================================================================== */}
-      {/* 4. CUSTOM GLOWING EMERALD MARKERS (SAFE OASIS IN A DARK CITY)         */}
+      {/* 4. CUSTOM PIN MARKERS                                                 */}
       {/* ===================================================================== */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
         {dishes.map((dish) => {
@@ -410,11 +418,11 @@ export default function InteractiveMap({
           return (
             <div
               key={dish.id}
-              className={`absolute -translate-x-1/2 -translate-y-full pointer-events-auto cursor-pointer group transition-all duration-300 ${
+              className={`absolute -translate-x-1/2 -translate-y-full pointer-events-auto cursor-pointer group transition-all duration-200 ${
                 isSelected
-                  ? 'scale-120 z-35'
+                  ? 'scale-115 z-35'
                   : isHovered
-                  ? 'scale-110 z-30'
+                  ? 'scale-105 z-30'
                   : 'hover:scale-105 z-25'
               }`}
               style={{ left: `${x}px`, top: `${y}px` }}
@@ -425,50 +433,50 @@ export default function InteractiveMap({
               onMouseEnter={() => setHoveredDish(dish)}
               onMouseLeave={() => setHoveredDish(null)}
             >
-              {/* Glowing Emerald Pin Container */}
-              <div className="flex flex-col items-center filter drop-shadow-xl">
-                {/* Glowing Capsule Pill */}
+              {/* Pin Container */}
+              <div className="flex flex-col items-center filter drop-shadow-md">
+                {/* Capsule Pill */}
                 <div
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black border transition-all duration-300 ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border transition-all duration-200 ${
                     isSelected
-                      ? 'bg-emerald-950 text-white border-emerald-400 ring-2 ring-emerald-400/70 shadow-[0_0_24px_rgba(16,185,129,0.85)]'
+                      ? 'bg-[#35E27F] text-[#07130F] border-[#35E27F] ring-2 ring-[#35E27F]/40 shadow-lg'
                       : isHovered
-                      ? 'bg-zinc-950 text-white border-emerald-500 shadow-[0_0_18px_rgba(16,185,129,0.6)]'
-                      : 'bg-zinc-950/95 text-zinc-100 border-emerald-500/50 shadow-[0_0_14px_rgba(16,185,129,0.35)]'
+                      ? 'bg-[#0B1A14] text-[#F5F7F3] border-[#35E27F] shadow-md'
+                      : 'bg-[#0B1A14]/95 text-[#F5F7F3] border-[#1B3B2F] shadow-sm'
                   }`}
                 >
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                  <span className="font-extrabold text-white">{dish.protein}g</span>
-                  <span className="text-[9px] text-zinc-500">&bull;</span>
-                  <span className="text-emerald-300 truncate max-w-[90px] font-bold">
+                  <ShieldCheck className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-[#07130F]' : 'text-[#35E27F]'}`} />
+                  <span className={`font-bold ${isSelected ? 'text-[#07130F]' : 'text-[#F5F7F3]'}`}>{dish.protein}g</span>
+                  <span className={`text-[9px] ${isSelected ? 'text-[#07130F]/60' : 'text-[#A8B5AE]'}`}>&bull;</span>
+                  <span className={`truncate max-w-[90px] font-medium ${isSelected ? 'text-[#07130F]' : 'text-[#35E27F]'}`}>
                     {dish.cookingFat.replace('100% Grass-Fed ', '')}
                   </span>
                 </div>
 
                 {/* Restaurant Label Cardlet */}
                 <div
-                  className={`mt-0.5 px-2 py-0.5 rounded-lg text-[10px] font-black tracking-tight whitespace-nowrap border shadow-lg transition-all duration-300 ${
+                  className={`mt-0.5 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-tight whitespace-nowrap border shadow-sm transition-all duration-200 ${
                     isSelected
-                      ? 'bg-emerald-500 text-zinc-950 border-emerald-300 font-black'
-                      : 'bg-zinc-900/95 backdrop-blur-md text-zinc-200 border-white/15 group-hover:border-emerald-500/50 group-hover:text-white'
+                      ? 'bg-[#123D2A] text-[#35E27F] border-[#35E27F]'
+                      : 'bg-[#0B1A14]/95 backdrop-blur-md text-[#A8B5AE] border-[#1B3B2F] group-hover:border-[#35E27F]/60 group-hover:text-[#F5F7F3]'
                   }`}
                 >
                   {dish.restaurant}
                 </div>
 
-                {/* Glowing Beacon Needle & Glowing Dot */}
+                {/* Beacon Needle & Dot */}
                 <div className="relative flex flex-col items-center mt-0.5">
                   <div
                     className={`w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[6px] ${
-                      isSelected ? 'border-t-emerald-400' : 'border-t-emerald-500/80'
+                      isSelected ? 'border-t-[#35E27F]' : 'border-t-[#1B3B2F]'
                     }`}
                   />
-                  {/* Glowing Emerald Anchor Dot */}
+                  {/* Anchor Dot */}
                   <div className="relative mt-0.5 flex items-center justify-center">
-                    <span className="animate-ping absolute inline-flex h-3.5 w-3.5 rounded-full bg-emerald-400 opacity-75" />
+                    <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-[#35E27F] opacity-75" />
                     <span
-                      className={`relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 border border-zinc-950 shadow-[0_0_12px_rgba(16,185,129,0.9)] ${
-                        isSelected ? 'ring-2 ring-emerald-300 scale-125' : ''
+                      className={`relative inline-flex rounded-full h-2 w-2 bg-[#35E27F] border border-[#07130F] shadow-[0_0_8px_rgba(53,226,127,0.8)] ${
+                        isSelected ? 'scale-125' : ''
                       }`}
                     />
                   </div>
@@ -480,36 +488,62 @@ export default function InteractiveMap({
       </div>
 
       {/* ===================================================================== */}
-      {/* 5. FLOATING MAP CONTROLS & HUD IN DARK GLASS                          */}
+      {/* 5. FLOATING MAP CONTROLS & HUD                                        */}
       {/* ===================================================================== */}
       {/* Top Left: Street Level Indicator Badge */}
       <div className="absolute top-3 left-3 z-30 flex items-center gap-2">
-        <div className="px-3 py-1.5 rounded-xl bg-zinc-950/90 backdrop-blur-md border border-white/10 text-white text-[11px] font-bold flex items-center gap-1.5 shadow-xl">
-          <Compass className="w-3.5 h-3.5 text-emerald-400" />
+        <div className="px-3 py-1.5 rounded-xl bg-[#0B1A14]/90 backdrop-blur-md border border-[#1B3B2F] text-[#F5F7F3] text-[11px] font-medium flex items-center gap-1.5 shadow-sm">
+          <Compass className="w-3.5 h-3.5 text-[#35E27F]" />
           <span>{city.name}</span>
-          <span className="text-zinc-600">&bull;</span>
-          <span className="text-emerald-400 font-extrabold">Oasis Radar Z{zoom}</span>
+          <span className="text-[#1B3B2F]">&bull;</span>
+          <span className="text-[#35E27F] font-bold">Radar Z{zoom}</span>
         </div>
       </div>
 
-      {/* Top Right: Cartography Style Switcher */}
+      {/* Top Right: View Controls & Cartography Style Switcher */}
       <div className="absolute top-3 right-3 z-30 flex items-center gap-1.5">
+        {/* Dish List View Quick Switcher Button */}
+        {onToggleDishList && (
+          <button
+            id="map-toggle-dish-list-btn"
+            onClick={onToggleDishList}
+            className={`px-3 py-1.5 rounded-xl backdrop-blur-md border text-xs font-bold transition-all duration-200 cursor-pointer shadow-sm flex items-center gap-1.5 active:scale-95 ${
+              isDishListActive
+                ? 'bg-[#35E27F] text-[#07130F] border-[#35E27F]'
+                : 'bg-[#0B1A14]/90 text-[#F5F7F3] border-[#1B3B2F] hover:border-[#35E27F]/50 hover:bg-[#0F231B]'
+            }`}
+            title="Toggle Dish List View"
+          >
+            <ListFilter className={`w-3.5 h-3.5 ${isDishListActive ? 'text-[#07130F]' : 'text-[#35E27F]'}`} />
+            <span className="hidden xs:inline">Dish List</span>
+            <span
+              className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold ${
+                isDishListActive
+                  ? 'bg-[#07130F]/20 text-[#07130F]'
+                  : 'bg-[#123D2A] text-[#35E27F] border border-[#1B3B2F]'
+              }`}
+            >
+              {dishes.length}
+            </span>
+          </button>
+        )}
+
         <div className="relative">
           <button
             id="map-style-toggle-btn"
             onClick={() => setShowStyleMenu(!showStyleMenu)}
-            className="px-3 py-1.5 rounded-xl bg-zinc-950/90 backdrop-blur-md border border-white/10 hover:border-emerald-500/40 text-zinc-200 hover:text-white transition-all duration-300 cursor-pointer shadow-xl flex items-center gap-1.5 text-xs font-bold"
-            title="Switch map view"
+            className="px-3 py-1.5 rounded-xl bg-[#0B1A14]/90 backdrop-blur-md border border-[#1B3B2F] hover:border-[#35E27F]/50 text-[#F5F7F3] transition-all duration-200 cursor-pointer shadow-sm flex items-center gap-1.5 text-xs font-medium"
+            title="Switch map cartography style"
           >
-            <Layers className="w-4 h-4 text-emerald-400" />
-            <span className="hidden sm:inline capitalize">
-              {mapStyle === 'dark' ? 'Dark Oasis' : mapStyle === 'voyager' ? 'Day Streets' : 'OSM Roads'}
+            <Layers className="w-3.5 h-3.5 text-[#35E27F]" />
+            <span className="hidden sm:inline capitalize text-[#A8B5AE]">
+              {mapStyle === 'voyager' ? 'Day Streets' : mapStyle === 'light' ? 'Soft Light' : mapStyle === 'dark' ? 'Dark Minimal' : 'OSM Roads'}
             </span>
           </button>
 
           {showStyleMenu && (
-            <div className="absolute right-0 mt-1.5 w-44 bg-zinc-950/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/15 py-1.5 z-40 text-xs font-bold text-zinc-200 animate-in fade-in zoom-in-95 duration-100">
-              <div className="px-3 py-1 text-[10px] font-black uppercase tracking-wider text-zinc-500 border-b border-white/10">
+            <div className="absolute right-0 mt-1.5 w-44 bg-[#0B1A14] backdrop-blur-xl rounded-xl shadow-xl border border-[#1B3B2F] py-1.5 z-40 text-xs font-medium text-[#F5F7F3]">
+              <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#A8B5AE] border-b border-[#1B3B2F]">
                 Cartography Mode
               </div>
               <button
@@ -517,36 +551,48 @@ export default function InteractiveMap({
                   setMapStyle('dark');
                   setShowStyleMenu(false);
                 }}
-                className={`w-full px-3 py-2 text-left flex items-center justify-between hover:bg-white/5 cursor-pointer ${
-                  mapStyle === 'dark' ? 'text-emerald-400 font-black' : ''
+                className={`w-full px-3 py-2 text-left flex items-center justify-between hover:bg-[#0F231B] cursor-pointer ${
+                  mapStyle === 'dark' ? 'text-[#35E27F] font-bold bg-[#123D2A]/50' : 'text-[#F5F7F3]'
                 }`}
               >
                 <span>Dark Minimalist</span>
-                {mapStyle === 'dark' && <span className="text-emerald-400">✓</span>}
+                {mapStyle === 'dark' && <span className="text-[#35E27F] font-bold">✓</span>}
               </button>
               <button
                 onClick={() => {
                   setMapStyle('voyager');
                   setShowStyleMenu(false);
                 }}
-                className={`w-full px-3 py-2 text-left flex items-center justify-between hover:bg-white/5 cursor-pointer ${
-                  mapStyle === 'voyager' ? 'text-emerald-400 font-black' : ''
+                className={`w-full px-3 py-2 text-left flex items-center justify-between hover:bg-[#0F231B] cursor-pointer ${
+                  mapStyle === 'voyager' ? 'text-[#35E27F] font-bold bg-[#123D2A]/50' : 'text-[#F5F7F3]'
                 }`}
               >
                 <span>Daylight Streets</span>
-                {mapStyle === 'voyager' && <span className="text-emerald-400">✓</span>}
+                {mapStyle === 'voyager' && <span className="text-[#35E27F] font-bold">✓</span>}
+              </button>
+              <button
+                onClick={() => {
+                  setMapStyle('light');
+                  setShowStyleMenu(false);
+                }}
+                className={`w-full px-3 py-2 text-left flex items-center justify-between hover:bg-[#0F231B] cursor-pointer ${
+                  mapStyle === 'light' ? 'text-[#35E27F] font-bold bg-[#123D2A]/50' : 'text-[#F5F7F3]'
+                }`}
+              >
+                <span>Clean Monotone</span>
+                {mapStyle === 'light' && <span className="text-[#35E27F] font-bold">✓</span>}
               </button>
               <button
                 onClick={() => {
                   setMapStyle('osm');
                   setShowStyleMenu(false);
                 }}
-                className={`w-full px-3 py-2 text-left flex items-center justify-between hover:bg-white/5 cursor-pointer ${
-                  mapStyle === 'osm' ? 'text-emerald-400 font-black' : ''
+                className={`w-full px-3 py-2 text-left flex items-center justify-between hover:bg-[#0F231B] cursor-pointer ${
+                  mapStyle === 'osm' ? 'text-[#35E27F] font-bold bg-[#123D2A]/50' : 'text-[#F5F7F3]'
                 }`}
               >
                 <span>OpenStreetMap</span>
-                {mapStyle === 'osm' && <span className="text-emerald-400">✓</span>}
+                {mapStyle === 'osm' && <span className="text-[#35E27F] font-bold">✓</span>}
               </button>
             </div>
           )}
@@ -554,11 +600,11 @@ export default function InteractiveMap({
       </div>
 
       {/* Bottom Right: Zoom In, Zoom Out, Recenter Buttons */}
-      <div className="absolute bottom-4 right-4 z-30 flex flex-col gap-1.5 bg-zinc-950/90 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 shadow-2xl">
+      <div className="absolute bottom-4 right-4 z-30 flex flex-col gap-1 bg-[#0B1A14]/90 backdrop-blur-md p-1.5 rounded-xl border border-[#1B3B2F] shadow-lg">
         <button
           id="map-zoom-in-btn"
           onClick={() => setZoom((z) => Math.min(17, z + 1))}
-          className="p-2 rounded-xl text-zinc-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer active:scale-95"
+          className="p-2 rounded-lg text-[#A8B5AE] hover:text-[#35E27F] hover:bg-[#0F231B] transition-colors cursor-pointer active:scale-95"
           title="Zoom In (+)"
         >
           <Plus className="w-4 h-4" />
@@ -566,12 +612,12 @@ export default function InteractiveMap({
         <button
           id="map-zoom-out-btn"
           onClick={() => setZoom((z) => Math.max(11, z - 1))}
-          className="p-2 rounded-xl text-zinc-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer active:scale-95"
+          className="p-2 rounded-lg text-[#A8B5AE] hover:text-[#35E27F] hover:bg-[#0F231B] transition-colors cursor-pointer active:scale-95"
           title="Zoom Out (-)"
         >
           <Minus className="w-4 h-4" />
         </button>
-        <div className="w-full h-px bg-white/10 my-0.5" />
+        <div className="w-full h-px bg-[#1B3B2F] my-0.5" />
         <button
           id="map-recenter-btn"
           onClick={() => {
@@ -579,7 +625,7 @@ export default function InteractiveMap({
             setPanOffset({ x: 0, y: 0 });
             setZoom(city.zoom || 14);
           }}
-          className="p-2 rounded-xl text-emerald-400 hover:text-emerald-300 hover:bg-white/10 transition-colors cursor-pointer active:scale-95"
+          className="p-2 rounded-lg text-[#35E27F] hover:bg-[#0F231B] transition-colors cursor-pointer active:scale-95"
           title="Recenter Map (🧭)"
         >
           <Navigation className="w-4 h-4" />

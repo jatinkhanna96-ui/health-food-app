@@ -1,0 +1,208 @@
+import json, re, random, hashlib
+
+with open('healthyeats_restaurants.json') as f:
+    restaurants = json.load(f)
+
+with open('healthyeats_all_meals.json') as f:
+    meals = json.load(f)
+
+rest_by_id = {r['id']: r for r in restaurants}
+
+CITY_CONFIG = [
+    {'name': 'Austin', 'state': 'TX', 'lat': 30.2672, 'lng': -97.7431, 'zoom': 13},
+    {'name': 'New York', 'state': 'NY', 'lat': 40.7128, 'lng': -74.0060, 'zoom': 13},
+    {'name': 'Los Angeles', 'state': 'CA', 'lat': 34.0522, 'lng': -118.2437, 'zoom': 13},
+    {'name': 'San Francisco', 'state': 'CA', 'lat': 37.7749, 'lng': -122.4194, 'zoom': 13},
+    {'name': 'Miami', 'state': 'FL', 'lat': 25.7617, 'lng': -80.1918, 'zoom': 13},
+    {'name': 'Chicago', 'state': 'IL', 'lat': 41.8781, 'lng': -87.6298, 'zoom': 13},
+    {'name': 'Dallas', 'state': 'TX', 'lat': 32.7767, 'lng': -96.7970, 'zoom': 13},
+    {'name': 'Houston', 'state': 'TX', 'lat': 29.7604, 'lng': -95.3698, 'zoom': 13},
+    {'name': 'Phoenix', 'state': 'AZ', 'lat': 33.4484, 'lng': -112.0740, 'zoom': 13},
+    {'name': 'Scottsdale', 'state': 'AZ', 'lat': 33.4942, 'lng': -111.9261, 'zoom': 13},
+    {'name': 'San Diego', 'state': 'CA', 'lat': 32.7157, 'lng': -117.1611, 'zoom': 13},
+    {'name': 'Boston', 'state': 'MA', 'lat': 42.3601, 'lng': -71.0589, 'zoom': 13},
+    {'name': 'Denver', 'state': 'CO', 'lat': 39.7392, 'lng': -104.9903, 'zoom': 13},
+    {'name': 'Seattle', 'state': 'WA', 'lat': 47.6062, 'lng': -122.3321, 'zoom': 13},
+    {'name': 'Atlanta', 'state': 'GA', 'lat': 33.7490, 'lng': -84.3880, 'zoom': 13},
+    {'name': 'Nashville', 'state': 'TN', 'lat': 36.1627, 'lng': -86.7816, 'zoom': 13},
+    {'name': 'Washington', 'state': 'DC', 'lat': 38.9072, 'lng': -77.0369, 'zoom': 13},
+    {'name': 'Portland', 'state': 'OR', 'lat': 45.5152, 'lng': -122.6784, 'zoom': 13},
+    {'name': 'Charlotte', 'state': 'NC', 'lat': 35.2271, 'lng': -80.8431, 'zoom': 13},
+    {'name': 'Tampa', 'state': 'FL', 'lat': 27.9506, 'lng': -82.4572, 'zoom': 13},
+    {'name': 'Orlando', 'state': 'FL', 'lat': 28.5383, 'lng': -81.3792, 'zoom': 13},
+    {'name': 'Boulder', 'state': 'CO', 'lat': 40.0150, 'lng': -105.2705, 'zoom': 13},
+    {'name': 'Columbus', 'state': 'OH', 'lat': 39.9612, 'lng': -82.9988, 'zoom': 13},
+    {'name': 'Salt Lake City', 'state': 'UT', 'lat': 40.7608, 'lng': -111.8910, 'zoom': 13},
+    {'name': 'Minneapolis', 'state': 'MN', 'lat': 44.9778, 'lng': -93.2650, 'zoom': 13},
+    {'name': 'Indianapolis', 'state': 'IN', 'lat': 39.7684, 'lng': -86.1581, 'zoom': 13},
+]
+
+CITY_NORM = {
+    'austin': 'Austin',
+    'new york': 'New York',
+    'new-york': 'New York',
+    'new york city': 'New York',
+    'manhattan': 'New York',
+    'brooklyn': 'New York',
+    'midtown manhattan': 'New York',
+    'yonkers': 'New York',
+    'los angeles': 'Los Angeles',
+    'santa monica': 'Los Angeles',
+    'pasadena': 'Los Angeles',
+    'long beach': 'Los Angeles',
+    'san francisco': 'San Francisco',
+    'miami': 'Miami',
+    'brickell': 'Miami',
+    'boca raton': 'Miami',
+    'fort lauderdale': 'Miami',
+    'chicago': 'Chicago',
+    'dallas': 'Dallas',
+    'plano': 'Dallas',
+    'allen': 'Dallas',
+    'frisco': 'Dallas',
+    'fort worth': 'Dallas',
+    'irving': 'Dallas',
+    'houston': 'Houston',
+    'the woodlands': 'Houston',
+    'phoenix': 'Phoenix',
+    'tempe': 'Phoenix',
+    'mesa': 'Phoenix',
+    'chandler': 'Phoenix',
+    'glendale': 'Phoenix',
+    'scottsdale': 'Scottsdale',
+    'san diego': 'San Diego',
+    'pacific beach': 'San Diego',
+    'carlsbad': 'San Diego',
+    'solana beach': 'San Diego',
+    'boston': 'Boston',
+    'cambridge': 'Boston',
+    'denver': 'Denver',
+    'boulder': 'Boulder',
+    'seattle': 'Seattle',
+    'atlanta': 'Atlanta',
+    'nashville': 'Nashville',
+    'washington': 'Washington',
+    'washington-dc': 'Washington',
+    'arlington': 'Washington',
+    'alexandria': 'Washington',
+    'portland': 'Portland',
+    'pearl district': 'Portland',
+    'charlotte': 'Charlotte',
+    'tampa': 'Tampa',
+    'orlando': 'Orlando',
+    'columbus': 'Columbus',
+    'salt lake city': 'Salt Lake City',
+    'minneapolis': 'Minneapolis',
+    'indianapolis': 'Indianapolis',
+}
+
+IMAGES = {
+    'steak': [
+        "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1546964124-0cce460f38ef?auto=format&fit=crop&w=800&q=80",
+    ],
+    'salmon': [
+        "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80",
+    ],
+    'chicken': [
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1532550907401-a500c9a57435?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80",
+    ],
+    'salad': [
+        "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    ],
+    'burger': [
+        "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80",
+    ],
+    'bowl': [
+        "https://images.unsplash.com/photo-1543339308-43e59d6b73a6?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=800&q=80",
+    ],
+    'breakfast': [
+        "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=800&q=80",
+    ],
+    'smoothie': [
+        "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1590301157890-4810ed352733?auto=format&fit=crop&w=800&q=80",
+    ]
+}
+
+def pick_image(name, cat, idx):
+    n = name.lower()
+    if any(k in n for k in ['steak', 'beef', 'bison', 'ribeye', 'brisket']):
+        pool = IMAGES['steak']
+    elif any(k in n for k in ['salmon', 'shrimp', 'fish', 'poke', 'tuna', 'lobster', 'seafood', 'crawfish']):
+        pool = IMAGES['salmon']
+    elif any(k in n for k in ['burger', 'patty', 'patties']):
+        pool = IMAGES['burger']
+    elif any(k in n for k in ['chicken', 'turkey', 'poultry', 'breast', 'thigh']):
+        pool = IMAGES['chicken']
+    elif any(k in n for k in ['salad', 'caesar', 'greens', 'kale', 'spinach', 'slaw']):
+        pool = IMAGES['salad']
+    elif any(k in n for k in ['omelette', 'egg', 'benedict', 'scramble', 'pancake', 'breakfast', 'hash']):
+        pool = IMAGES['breakfast']
+    elif any(k in n for k in ['smoothie', 'acai', 'pitaya', 'juice', 'shake', 'parfait']):
+        pool = IMAGES['smoothie']
+    else:
+        pool = IMAGES['bowl']
+    return pool[idx % len(pool)]
+
+def pick_cooking_fat(name, cat):
+    n = name.lower()
+    if any(k in n for k in ['steak', 'beef', 'bison', 'burger', 'brisket', 'ribeye', 'tallow']):
+        return "100% Beef Tallow"
+    elif any(k in n for k in ['salmon', 'fish', 'seafood', 'shrimp', 'mediterranean', 'greek', 'salad']):
+        return "Cold-Pressed EVOO"
+    elif any(k in n for k in ['egg', 'omelette', 'scramble', 'curry', 'indian', 'pancake']):
+        return "Grass-Fed Ghee"
+    else:
+        return "Pure Avocado Oil"
+
+def parse_num(val):
+    if val is None:
+        return 0
+    if isinstance(val, (int, float)):
+        return round(float(val), 1)
+    m = re.search(r'([0-9]+(?:\.[0-9]+)?)', str(val))
+    return round(float(m.group(1)), 1) if m else 0
+
+city_coord_map = {c['name']: c for c in CITY_CONFIG}
+
+# Group meals by city
+meals_by_city = {c['name']: [] for c in CITY_CONFIG}
+
+for m in meals:
+    rid = m.get('restaurant_id')
+    r = rest_by_id.get(rid)
+    if not r:
+        continue
+    c_raw = str(r.get('city', '')).strip().lower()
+    city_name = CITY_NORM.get(c_raw)
+    if not city_name or city_name not in meals_by_city:
+        continue
+
+    cal = parse_num(m.get('calories'))
+    protein = parse_num(m.get('protein'))
+    carbs = parse_num(m.get('carbs'))
+    fat = parse_num(m.get('fat'))
+    fiber = parse_num(m.get('fiber'))
+
+    if cal < 140 and protein < 10:
+        continue
+    if m.get('category') in ['condiment', 'beverage'] and protein < 15:
+        continue
+
+    meals_by_city[city_name].append((r, m, cal, protein, carbs, fat, fiber))
+
+print("Meals grouped by city:")
+for c, ml in meals_by_city.items():
+    print(f"{c}: {len(ml)} meals")
+
