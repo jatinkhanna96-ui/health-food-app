@@ -496,8 +496,9 @@ export default function HomePage() {
         const matchesName = dish.name.toLowerCase().includes(query);
         const matchesRest = dish.restaurant.toLowerCase().includes(query);
         const matchesFat = dish.cookingFat.toLowerCase().includes(query);
+        const matchesAddress = dish.restaurantAddress ? dish.restaurantAddress.toLowerCase().includes(query) : false;
         const matchesIng = dish.ingredients.some((ing) => ing.toLowerCase().includes(query));
-        if (!matchesName && !matchesRest && !matchesFat && !matchesIng) {
+        if (!matchesName && !matchesRest && !matchesFat && !matchesIng && !matchesAddress) {
           return false;
         }
       }
@@ -582,6 +583,7 @@ export default function HomePage() {
         (d) =>
           d.name.toLowerCase().includes(q) ||
           d.restaurant.toLowerCase().includes(q) ||
+          (d.restaurantAddress && d.restaurantAddress.toLowerCase().includes(q)) ||
           d.cookingFat.toLowerCase().includes(q) ||
           d.dietTags.some((t) => t.toLowerCase().includes(q)) ||
           d.ingredients.some((ing) => ing.toLowerCase().includes(q))
