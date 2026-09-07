@@ -186,18 +186,31 @@ allDishes.forEach(dish => {
 
 const csvContent = rows.join('\r\n');
 
+function safeWrite(filePath, content) {
+  try {
+    fs.writeFileSync(filePath, content, 'utf8');
+    console.log(`Saved ${content.split('\r\n').length - 1} rows to ${filePath}`);
+  } catch (err) {
+    if (err.code === 'EBUSY') {
+      console.warn(`File ${filePath} is temporarily busy/locked, writing to temp copy.`);
+      try {
+        const tempPath = filePath + '.new';
+        fs.writeFileSync(tempPath, content, 'utf8');
+      } catch (e) {
+        console.error('Error writing temp file:', e.message);
+      }
+    } else {
+      console.error(`Error saving ${filePath}:`, err.message);
+    }
+  }
+}
+
 // 4. Save to multiple locations
-// Root project path
 const projectRootCsv = path.join(__dirname, '../all_healthy_dishes_categorized.csv');
-fs.writeFileSync(projectRootCsv, csvContent, 'utf8');
-console.log(`Saved ${rows.length - 1} rows to ${projectRootCsv}`);
+safeWrite(projectRootCsv, csvContent);
 
-// Public web folder path (so users/browser can download it directly at /all_healthy_dishes_categorized.csv)
 const publicCsv = path.join(__dirname, '../public/all_healthy_dishes_categorized.csv');
-fs.writeFileSync(publicCsv, csvContent, 'utf8');
-console.log(`Saved to public directory at ${publicCsv}`);
+safeWrite(publicCsv, csvContent);
 
-// Artifacts directory
 const artifactCsv = 'C:/Users/dell/.gemini/antigravity/brain/e25e9b6a-4ddc-4e50-9b4c-9d9837250fc4/all_healthy_dishes_categorized.csv';
-fs.writeFileSync(artifactCsv, csvContent, 'utf8');
-console.log(`Saved to artifacts directory at ${artifactCsv}`);
+safeWrite(artifactCsv, csvContent);
