@@ -79,6 +79,7 @@ export default function LocationSelectorModal({
       message: reason || 'Detecting location via network/IP address...',
     });
 
+    // 1. Try server locate API (reads reverse proxy headers & client IP)
     try {
       const res = await fetch('/api/locate');
       if (res.ok) {
@@ -107,7 +108,7 @@ export default function LocationSelectorModal({
       console.warn('Network location API error:', e);
     }
 
-    // Direct browser fallback to ipwho.is if server route fails
+    // 2. Direct browser fallback to ipwho.is (direct client ISP IP)
     try {
       const directRes = await fetch('https://ipwho.is/', {
         signal: AbortSignal.timeout(3500),
@@ -136,6 +137,33 @@ export default function LocationSelectorModal({
       }
     } catch (e) {
       console.warn('Direct IP location error:', e);
+    }
+
+    // 3. Fast direct fallback to api.country.is
+    try {
+      const countryRes = await fetch('https://api.country.is/', {
+        signal: AbortSignal.timeout(2500),
+      });
+      if (countryRes.ok) {
+        const countryData = await countryRes.json();
+        if (countryData && countryData.country) {
+          const resolvedCountry: CountryCode = countryData.country === 'IN' ? 'IN' : 'US';
+          const defaultCity = resolvedCountry === 'IN' ? INDIAN_CITIES[0] : US_CITIES[0];
+          setActiveCountry(resolvedCountry);
+          setLocationStatus({
+            type: 'success',
+            message: `📍 Country detected via IP: ${resolvedCountry === 'IN' ? 'India' : 'USA'}`,
+          });
+          setTimeout(() => {
+            setIsLocating(false);
+            onSelectCity(defaultCity);
+            onClose();
+          }, 700);
+          return true;
+        }
+      }
+    } catch (e) {
+      console.warn('Country.is location error:', e);
     }
 
     setIsLocating(false);

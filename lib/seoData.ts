@@ -424,3 +424,91 @@ export function generateCityJsonLd(
     ],
   };
 }
+
+/**
+ * Google-compliant Schema.org Structured Data for the Main Directory Page
+ * Includes WebSite, Organization, DataCatalog/CollectionPage ItemList directory of cities and dishes, and Breadcrumbs
+ */
+export function generateDirectoryJsonLd(baseUrl = SITE_URL) {
+  const hubs = getAllCityHubs();
+  const allDishes = getAllDishes();
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': `${baseUrl}/#website`,
+        url: baseUrl,
+        name: 'Healthy Vicinity',
+        description:
+          'Find food that fits your diet. Discover verified healthy dishes and restaurants near you with nutrition, ingredients, cooking methods, and information you can trust.',
+        publisher: {
+          '@id': `${baseUrl}/#organization`,
+        },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${baseUrl}/?search={search_term_string}`,
+          },
+          'query-input': 'required name=search_term_string',
+        },
+      },
+      {
+        '@type': 'Organization',
+        '@id': `${baseUrl}/#organization`,
+        name: 'Healthy Vicinity',
+        url: baseUrl,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${baseUrl}/icon.png`,
+          caption: 'Healthy Vicinity Logo',
+        },
+        description:
+          'Independent clean dining index vetting restaurant cooking oils, ingredients, and nutrition profiles.',
+      },
+      {
+        '@type': ['CollectionPage', 'DataCatalog'],
+        '@id': `${baseUrl}/#directory`,
+        url: baseUrl,
+        name: 'Healthy Vicinity — Healthy Food & Restaurant Directory',
+        description: `Verified directory of ${allDishes.length} healthy dishes and clean dining spots across ${hubs.length} cities with verified cooking oils, macro tracking, and allergen transparency.`,
+        isPartOf: {
+          '@id': `${baseUrl}/#website`,
+        },
+        about: [
+          { '@type': 'Thing', name: 'Healthy Food' },
+          { '@type': 'Thing', name: 'Seed Oil Free Dining' },
+          { '@type': 'Thing', name: 'High Protein Diet' },
+          { '@type': 'Thing', name: 'Grass-Fed Tallow & Butter' },
+        ],
+        mainEntity: {
+          '@type': 'ItemList',
+          name: 'City Dining Directories',
+          description: 'Explore healthy dining directories by city',
+          numberOfItems: hubs.length,
+          itemListElement: hubs.map((hub, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            name: `${hub.name}, ${hub.state} Healthy Dining Directory`,
+            url: `${baseUrl}/${hub.slug}`,
+            description: `Discover ${hub.count} verified clean, seed-oil-free restaurants in ${hub.name}, ${hub.state}. Average protein: ${hub.avg_protein}g.`,
+          })),
+        },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${baseUrl}/#breadcrumbs`,
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: baseUrl,
+          },
+        ],
+      },
+    ],
+  };
+}

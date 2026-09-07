@@ -1029,12 +1029,38 @@ export function resolveLocationToCity(
   detectedCity?: string,
   countryCode?: string
 ): CityConfig {
-  const normCountry: CountryCode | undefined =
-    countryCode === 'IN' || countryCode === 'India'
-      ? 'IN'
-      : countryCode === 'US' || countryCode === 'USA'
-      ? 'US'
-      : undefined;
+  const upper = (countryCode || '').trim().toUpperCase();
+  let normCountry: CountryCode | undefined;
+
+  if (
+    upper === 'IN' ||
+    upper === 'IND' ||
+    upper === 'INDIA' ||
+    upper === 'PK' || // Pakistan
+    upper === 'BD' || // Bangladesh
+    upper === 'NP' || // Nepal
+    upper === 'LK' || // Sri Lanka
+    upper === 'BT'    // Bhutan
+  ) {
+    normCountry = 'IN';
+  } else if (
+    upper === 'US' ||
+    upper === 'USA' ||
+    upper === 'UNITED STATES' ||
+    upper === 'CA' || // Canada
+    upper === 'MX'    // Mexico
+  ) {
+    normCountry = 'US';
+  } else if (upper) {
+    // If other international country: test coordinate proximity to India vs US
+    if (typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng)) {
+      const distToIndia = Math.hypot(lat - 20.59, lng - 78.96);
+      const distToUS = Math.hypot(lat - 37.09, lng - (-95.71));
+      normCountry = distToIndia < distToUS ? 'IN' : 'US';
+    } else {
+      normCountry = detectUserCountryFromClient();
+    }
+  }
 
   // If a city name was detected (e.g. from IP or reverse geocode), check for exact or alias match
   if (detectedCity && detectedCity.trim()) {

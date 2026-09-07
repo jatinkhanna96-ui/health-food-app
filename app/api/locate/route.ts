@@ -4,12 +4,15 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
-    // 1. Direct Cloud Provider Headers (e.g. Google Cloud Run, Cloudflare, App Engine)
+    // 1. Direct Cloud Provider Headers (e.g. Cloudflare, GCP, App Engine, Fastly)
     const gcpCountry =
+      req.headers.get('cf-ipcountry') ||
       req.headers.get('x-appengine-country') ||
       req.headers.get('x-country-code') ||
-      req.headers.get('cf-ipcountry');
-    const gcpCity = req.headers.get('x-appengine-city');
+      req.headers.get('x-client-geo-country');
+    const gcpCity =
+      req.headers.get('cf-ipcity') ||
+      req.headers.get('x-appengine-city');
     const gcpCityLatLong = req.headers.get('x-appengine-citylatlong');
 
     let headerLat: number | null = null;
@@ -24,15 +27,21 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // 2. Client IP Resolution
+    // 2. Client IP Resolution across reverse proxy headers
     const forwarded = req.headers.get('x-forwarded-for');
     const realIp = req.headers.get('x-real-ip');
-    let clientIp = '';
+    const cfConnectingIp = req.headers.get('cf-connecting-ip');
+    const xClientIp = req.headers.get('x-client-ip');
 
-    if (forwarded) {
+    let clientIp = '';
+    if (cfConnectingIp) {
+      clientIp = cfConnectingIp.trim();
+    } else if (forwarded) {
       clientIp = forwarded.split(',')[0].trim();
     } else if (realIp) {
       clientIp = realIp.trim();
+    } else if (xClientIp) {
+      clientIp = xClientIp.trim();
     }
 
     // Filter out private / local / loopback IPs
@@ -40,6 +49,7 @@ export async function GET(req: NextRequest) {
       !clientIp ||
       clientIp === '127.0.0.1' ||
       clientIp === '::1' ||
+      clientIp === 'localhost' ||
       clientIp.startsWith('10.') ||
       clientIp.startsWith('192.168.') ||
       clientIp.startsWith('172.16.') ||
@@ -51,10 +61,30 @@ export async function GET(req: NextRequest) {
       clientIp.startsWith('fc00:') ||
       clientIp.startsWith('fe80:');
 
-    // 3. Primary Lookup: ipwho.is (Provides Coordinates, City, Country)
-    const apiUrl = isPrivate ? 'https://ipwho.is/' : `https://ipwho.is/${clientIp}`;
+    // If client IP is private/empty but Cloud headers gave us a country:
+    if (isPrivate && gcpCountry && gcpCountry.length === 2) {
+      return NextResponse.json({
+        success: true,
+        countryCode: gcpCountry.toUpperCase(),
+        city: gcpCity || null,
+        latitude: headerLat,
+        longitude: headerLng,
+        source: 'edge-header',
+      });
+    }
 
+    // If client IP is private and no edge header, tell client to resolve directly
+    if (isPrivate) {
+      return NextResponse.json({
+        success: false,
+        isPrivate: true,
+        message: 'Client IP is local or private; client-side direct IP lookup required',
+      });
+    }
+
+    // 3. Primary Lookup with real Client IP: ipwho.is (Provides Coordinates, City, Country)
     try {
+      const apiUrl = `https://ipwho.is/${clientIp}`;
       const res = await fetch(apiUrl, {
         signal: AbortSignal.timeout(3500),
         headers: { Accept: 'application/json' },
@@ -62,7 +92,7 @@ export async function GET(req: NextRequest) {
 
       if (res.ok) {
         const data = await res.json();
-        if (data && data.success && typeof data.latitude === 'number' && typeof data.longitude === 'number') {
+        if (data && data.success) {
           return NextResponse.json({
             success: true,
             latitude: data.latitude,
@@ -82,7 +112,7 @@ export async function GET(req: NextRequest) {
 
     // 4. Secondary Fast Lookup: api.country.is
     try {
-      const countryUrl = isPrivate ? 'https://api.country.is' : `https://api.country.is/${clientIp}`;
+      const countryUrl = `https://api.country.is/${clientIp}`;
       const countryRes = await fetch(countryUrl, {
         signal: AbortSignal.timeout(2500),
         headers: { Accept: 'application/json' },
@@ -105,31 +135,7 @@ export async function GET(req: NextRequest) {
       // Proceed to third fallback
     }
 
-    // 5. Third Lookup: ipapi.co
-    try {
-      const ipapiUrl = isPrivate ? 'https://ipapi.co/json/' : `https://ipapi.co/${clientIp}/json/`;
-      const ipapiRes = await fetch(ipapiUrl, {
-        signal: AbortSignal.timeout(2500),
-      });
-      if (ipapiRes.ok) {
-        const ipData = await ipapiRes.json();
-        if (ipData && ipData.country_code) {
-          return NextResponse.json({
-            success: true,
-            latitude: ipData.latitude || headerLat,
-            longitude: ipData.longitude || headerLng,
-            city: ipData.city || gcpCity || null,
-            countryCode: ipData.country_code,
-            ip: ipData.ip || clientIp,
-            source: 'ipapi',
-          });
-        }
-      }
-    } catch {
-      // Fall through to header inspection
-    }
-
-    // 6. If Cloud Provider headers identified the country
+    // 5. If Cloud Provider headers identified the country
     if (gcpCountry) {
       return NextResponse.json({
         success: true,
