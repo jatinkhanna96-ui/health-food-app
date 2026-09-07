@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Dish } from '@/lib/mockData';
+import { formatPrice } from '@/lib/utils';
 import {
   Star,
   MapPin,
@@ -179,7 +180,7 @@ export default function DishCard({
       <div className="px-3 sm:px-5 pb-3 sm:pb-4 pt-2.5 sm:pt-3 flex items-center justify-between border-t border-[#1B3B2F] bg-[#07130F]/40 gap-2 sm:gap-3">
         <div>
           <span className="text-base sm:text-lg font-bold text-[#F5F7F3] block leading-tight tracking-tight">
-            ${dish.price.toFixed(2)}
+            {formatPrice(dish.price, dish.city, dish.id)}
           </span>
           <span className="text-[9px] sm:text-[10px] font-medium text-[#A8B5AE] flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-[#35E27F] inline-block" />

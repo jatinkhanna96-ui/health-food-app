@@ -1,19 +1,21 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import {
   Dish,
   INITIAL_DISHES,
   CITY_LOCATIONS,
   CityLocation,
 } from '@/lib/mockData';
+import { formatPrice, getGoogleMapsDirectionsUrl } from '@/lib/utils';
 import DishCard from '@/components/DishCard';
 import DishDetailModal from '@/components/DishDetailModal';
 import MenuScannerModal from '@/components/MenuScannerModal';
 import InteractiveMap from '@/components/InteractiveMap';
 import BentoFilters, { FilterState } from '@/components/BentoFilters';
 import ReelsBar from '@/components/ReelsBar';
-import { Reel, ReelCity } from '@/lib/reelsData';
+import { Reel, ReelCity, getCityReels, REELS_DATA } from '@/lib/reelsData';
 import {
   Compass,
   MapPin,
@@ -34,46 +36,50 @@ import {
   Columns,
   Search,
   ArrowUpDown,
+  Navigation,
+  Loader2,
 } from 'lucide-react';
+import {
+  ALL_CITIES,
+  INDIAN_CITIES,
+  US_CITIES,
+  CityConfig,
+  getCityConfigByName,
+  toCityLocation,
+  parseNaturalLanguageQuery,
+  resolveLocationToCity,
+  detectUserCountryFromClient,
+  getDefaultCityForCountry,
+} from '@/lib/locations';
+import LocationSelectorModal from '@/components/LocationSelectorModal';
+import ExploreIndiaSection from '@/components/ExploreIndiaSection';
 
-const CITIES_DROPDOWN: { id: ReelCity; label: string; cityName: string; state: string }[] = [
-  { id: 'Austin, TX', label: 'Austin, TX', cityName: 'Austin', state: 'TX' },
-  { id: 'New York, NY', label: 'New York, NY', cityName: 'New York', state: 'NY' },
-  { id: 'Los Angeles, CA', label: 'Los Angeles, CA', cityName: 'Los Angeles', state: 'CA' },
-  { id: 'San Francisco, CA', label: 'San Francisco, CA', cityName: 'San Francisco', state: 'CA' },
-  { id: 'Miami, FL', label: 'Miami, FL', cityName: 'Miami', state: 'FL' },
-  { id: 'Chicago, IL', label: 'Chicago, IL', cityName: 'Chicago', state: 'IL' },
-  { id: 'Dallas, TX', label: 'Dallas, TX', cityName: 'Dallas', state: 'TX' },
-  { id: 'Houston, TX', label: 'Houston, TX', cityName: 'Houston', state: 'TX' },
-  { id: 'Phoenix, AZ', label: 'Phoenix, AZ', cityName: 'Phoenix', state: 'AZ' },
-  { id: 'Scottsdale, AZ', label: 'Scottsdale, AZ', cityName: 'Scottsdale', state: 'AZ' },
-  { id: 'San Diego, CA', label: 'San Diego, CA', cityName: 'San Diego', state: 'CA' },
-  { id: 'Boston, MA', label: 'Boston, MA', cityName: 'Boston', state: 'MA' },
-  { id: 'Denver, CO', label: 'Denver, CO', cityName: 'Denver', state: 'CO' },
-  { id: 'Seattle, WA', label: 'Seattle, WA', cityName: 'Seattle', state: 'WA' },
-  { id: 'Atlanta, GA', label: 'Atlanta, GA', cityName: 'Atlanta', state: 'GA' },
-  { id: 'Nashville, TN', label: 'Nashville, TN', cityName: 'Nashville', state: 'TN' },
-  { id: 'Washington, DC', label: 'Washington, DC', cityName: 'Washington', state: 'DC' },
-  { id: 'Portland, OR', label: 'Portland, OR', cityName: 'Portland', state: 'OR' },
-  { id: 'Charlotte, NC', label: 'Charlotte, NC', cityName: 'Charlotte', state: 'NC' },
-  { id: 'Tampa, FL', label: 'Tampa, FL', cityName: 'Tampa', state: 'FL' },
-  { id: 'Orlando, FL', label: 'Orlando, FL', cityName: 'Orlando', state: 'FL' },
-  { id: 'Boulder, CO', label: 'Boulder, CO', cityName: 'Boulder', state: 'CO' },
-  { id: 'Columbus, OH', label: 'Columbus, OH', cityName: 'Columbus', state: 'OH' },
-  { id: 'Salt Lake City, UT', label: 'Salt Lake City, UT', cityName: 'Salt Lake City', state: 'UT' },
-  { id: 'Minneapolis, MN', label: 'Minneapolis, MN', cityName: 'Minneapolis', state: 'MN' },
-  { id: 'Indianapolis, IN', label: 'Indianapolis, IN', cityName: 'Indianapolis', state: 'IN' },
-];
+const CITIES_DROPDOWN: {
+  id: ReelCity;
+  label: string;
+  cityName: string;
+  state: string;
+  country: 'US' | 'IN';
+}[] = ALL_CITIES.map((c) => ({
+  id: (c.country === 'IN' ? `${c.city}, IN` : `${c.city}, ${c.state}`) as ReelCity,
+  label: c.country === 'IN' ? `${c.displayName} (IN)` : c.displayName,
+  cityName: c.city,
+  state: c.state,
+  country: c.country,
+}));
 
 export default function HomePage() {
   const [dishes, setDishes] = useState<Dish[]>(INITIAL_DISHES);
+  // Initial state is strictly identical on server and client to prevent hydration mismatch
   const [selectedCity, setSelectedCity] = useState<CityLocation>(() => {
-    return CITY_LOCATIONS.find((c) => c.name === 'Austin') || CITY_LOCATIONS[0];
+    return toCityLocation(getDefaultCityForCountry('US'));
   });
-  const [selectedDish, setSelectedDish] = useState<Dish | null>(INITIAL_DISHES[0]);
+  const [selectedDish, setSelectedDish] = useState<Dish | null>(null);
   const [detailDish, setDetailDish] = useState<Dish | null>(null);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [customReels, setCustomReels] = useState<Reel[]>([]);
+  const [locationBannerText, setLocationBannerText] = useState<string | null>(null);
 
   // Map Drawer, Radius & View Controls
   const [isMapOpen, setIsMapOpen] = useState(false);
@@ -96,6 +102,7 @@ export default function HomePage() {
     lowSugar: false,
     lowCarb: false,
     highFiber: false,
+    vegetarian: false,
     minProtein: 0,
     maxCarbs: 50,
     benefitPostWorkout: false,
@@ -108,18 +115,261 @@ export default function HomePage() {
     return match ? match.id : (`${selectedCity.name}, ${selectedCity.state}` as ReelCity);
   }, [selectedCity]);
 
+  // Map Radar count based on reels available in selected city
+  const cityReelsCount = useMemo(() => {
+    return getCityReels(selectedReelCity, [...customReels, ...REELS_DATA]).length;
+  }, [selectedReelCity, customReels]);
+
+  // Helper to select a city config
+  const handleSelectCityConfig = useCallback((config: CityConfig, isManual = false) => {
+    const loc = toCityLocation(config);
+    setSelectedCity(loc);
+    if (isManual && typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('healthy_vicinity_saved_city', config.city);
+        localStorage.setItem('healthy_vicinity_saved_country', config.country);
+      } catch {
+        // ignore
+      }
+    }
+    const cityDishes = dishes.filter((d) => d.city === loc.name);
+    if (cityDishes.length > 0) {
+      setSelectedDish(cityDishes[0]);
+    } else {
+      setSelectedDish(null);
+    }
+  }, [dishes]);
+
+  // Direct switch between India and United States
+  const handleSwitchCountry = useCallback((country: 'IN' | 'US') => {
+    const defaultCity = getDefaultCityForCountry(country);
+    handleSelectCityConfig(defaultCity, true);
+    const countryLabel = country === 'IN' ? 'India 🇮🇳 (Delhi)' : 'United States 🇺🇸 (Austin)';
+    setLocationBannerText(`Switched country to ${countryLabel}`);
+    setTimeout(() => setLocationBannerText(null), 3500);
+  }, [handleSelectCityConfig]);
+
+  // Auto-detect country & city from user location or IP address on first load (runs purely on client post-hydration)
+  useEffect(() => {
+    // 1. Check if user already explicitly saved a city
+    try {
+      const savedCity = localStorage.getItem('healthy_vicinity_saved_city');
+      if (savedCity) {
+        const matched = ALL_CITIES.find(
+          (c) => c.city.toLowerCase() === savedCity.toLowerCase()
+        );
+        if (matched) {
+          handleSelectCityConfig(matched, false);
+          return;
+        }
+      }
+    } catch {
+      // ignore
+    }
+
+    // 2. Fast zero-latency client heuristic (matches user's browser timezone/locale)
+    const clientCountry = detectUserCountryFromClient();
+    if (clientCountry === 'IN') {
+      const indiaDefault = getDefaultCityForCountry('IN');
+      handleSelectCityConfig(indiaDefault, false);
+    }
+
+    let isCancelled = false;
+
+    async function detectCountryAndLocationFromIP() {
+      // Tier 1: Call internal API endpoint (inspects GCP headers & client IP)
+      try {
+        const res = await fetch('/api/locate');
+        if (res.ok && !isCancelled) {
+          const data = await res.json();
+          if (data.success && (data.countryCode || (typeof data.latitude === 'number' && typeof data.longitude === 'number'))) {
+            const resolved = resolveLocationToCity(
+              data.latitude,
+              data.longitude,
+              data.city,
+              data.countryCode
+            );
+            handleSelectCityConfig(resolved, false);
+            const countryLabel = resolved.country === 'IN' ? 'India 🇮🇳' : 'USA 🇺🇸';
+            setLocationBannerText(`📍 Location detected via IP: ${resolved.displayName} (${countryLabel})`);
+            setTimeout(() => {
+              if (!isCancelled) setLocationBannerText(null);
+            }, 6000);
+            return;
+          }
+        }
+      } catch {
+        // proceed to direct fallback
+      }
+
+      // Tier 2: Client-side browser direct fallback to ipwho.is
+      try {
+        if (!isCancelled) {
+          const directRes = await fetch('https://ipwho.is/', {
+            signal: AbortSignal.timeout(3000),
+          });
+          if (directRes.ok) {
+            const directData = await directRes.json();
+            if (directData && (directData.country_code || directData.success)) {
+              const resolved = resolveLocationToCity(
+                directData.latitude,
+                directData.longitude,
+                directData.city,
+                directData.country_code
+              );
+              handleSelectCityConfig(resolved, false);
+              const countryLabel = resolved.country === 'IN' ? 'India 🇮🇳' : 'USA 🇺🇸';
+              setLocationBannerText(`📍 Location detected via IP: ${resolved.displayName} (${countryLabel})`);
+              setTimeout(() => {
+                if (!isCancelled) setLocationBannerText(null);
+              }, 6000);
+              return;
+            }
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    detectCountryAndLocationFromIP();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [handleSelectCityConfig]);
+
+  const handleSelectCityByName = useCallback((cityName: string) => {
+    const config = getCityConfigByName(cityName);
+    if (config) {
+      handleSelectCityConfig(config, true);
+    } else {
+      const loc = CITY_LOCATIONS.find((c) => c.name.toLowerCase() === cityName.toLowerCase());
+      if (loc) {
+        setSelectedCity(loc);
+        const cityDishes = dishes.filter((d) => d.city === loc.name);
+        setSelectedDish(cityDishes.length > 0 ? cityDishes[0] : null);
+      }
+    }
+  }, [handleSelectCityConfig, dishes]);
+
   // When city changes via dropdown
   const handleCitySelect = (cityId: ReelCity) => {
     const item = CITIES_DROPDOWN.find((c) => c.id === cityId);
     if (!item) return;
-    const found = CITY_LOCATIONS.find((c) => c.name === item.cityName);
-    if (found) {
-      setSelectedCity(found);
-      const cityDishes = dishes.filter((d) => d.city === found.name);
-      if (cityDishes.length > 0) {
-        setSelectedDish(cityDishes[0]);
+    handleSelectCityByName(item.cityName);
+  };
+
+  // Quick auto-locate with multi-tier fallback (GPS + IP/Network)
+  const [isAutoLocating, setIsAutoLocating] = useState(false);
+  const handleQuickLocate = useCallback(() => {
+    setIsAutoLocating(true);
+
+    const fallbackToNetwork = async () => {
+      try {
+        const res = await fetch('/api/locate');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && (data.countryCode || (typeof data.latitude === 'number' && typeof data.longitude === 'number'))) {
+            const resolved = resolveLocationToCity(
+              data.latitude,
+              data.longitude,
+              data.city,
+              data.countryCode
+            );
+            handleSelectCityConfig(resolved, true);
+            const countryLabel = resolved.country === 'IN' ? 'India 🇮🇳' : 'USA 🇺🇸';
+            setLocationBannerText(`📍 Location detected via IP: ${resolved.displayName} (${countryLabel})`);
+            setTimeout(() => setLocationBannerText(null), 5000);
+            setIsAutoLocating(false);
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Network location error:', e);
+      }
+
+      // If network fails as well, open the location modal for manual selection
+      setIsAutoLocating(false);
+      setIsLocationModalOpen(true);
+    };
+
+    if (!navigator.geolocation) {
+      fallbackToNetwork();
+      return;
+    }
+
+    let handled = false;
+    const timeout = setTimeout(() => {
+      if (!handled) {
+        handled = true;
+        fallbackToNetwork();
+      }
+    }, 4500);
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        if (handled) return;
+        handled = true;
+        clearTimeout(timeout);
+        const resolved = resolveLocationToCity(pos.coords.latitude, pos.coords.longitude);
+        handleSelectCityConfig(resolved, true);
+        const countryLabel = resolved.country === 'IN' ? 'India 🇮🇳' : 'USA 🇺🇸';
+        setLocationBannerText(`📍 Pinpointed location via GPS: ${resolved.displayName} (${countryLabel})`);
+        setTimeout(() => setLocationBannerText(null), 5000);
+        setIsAutoLocating(false);
+      },
+      () => {
+        if (handled) return;
+        handled = true;
+        clearTimeout(timeout);
+        fallbackToNetwork();
+      },
+      { timeout: 4000, enableHighAccuracy: false, maximumAge: 300000 }
+    );
+  }, [handleSelectCityConfig]);
+
+  // Natural language search handler
+  const handleFilterChange = (newFilters: FilterState) => {
+    if (newFilters.search !== filters.search && newFilters.search.trim()) {
+      const parsed = parseNaturalLanguageQuery(newFilters.search);
+      if (parsed.city) {
+        handleSelectCityConfig(parsed.city);
+
+        const updated: FilterState = { ...newFilters };
+        if (parsed.healthGoals.highProtein) {
+          updated.highProtein = true;
+          updated.minProtein = Math.max(updated.minProtein, 35);
+          updated.benefitPostWorkout = true;
+        }
+        if (parsed.healthGoals.lowCalorie) {
+          updated.lowCalorie = true;
+        }
+        if (parsed.healthGoals.lowSugar) {
+          updated.lowSugar = true;
+        }
+        if (parsed.healthGoals.lowCarb) {
+          updated.lowCarb = true;
+        }
+        if (parsed.healthGoals.seedOilFree) {
+          updated.seedOilFree = true;
+        }
+        if (parsed.healthGoals.vegetarian) {
+          updated.vegetarian = true;
+        }
+        if (parsed.healthGoals.glutenFree) {
+          updated.glutenFree = true;
+        }
+        if (parsed.healthGoals.dairyFree) {
+          updated.dairyFree = true;
+        }
+
+        updated.search = parsed.cleanedSearch;
+        setFilters(updated);
+        return;
       }
     }
+    setFilters(newFilters);
   };
 
   const resetFilters = () => {
@@ -135,6 +385,7 @@ export default function HomePage() {
       lowSugar: false,
       lowCarb: false,
       highFiber: false,
+      vegetarian: false,
       minProtein: 0,
       maxCarbs: 50,
       benefitPostWorkout: false,
@@ -199,6 +450,17 @@ export default function HomePage() {
       if (filters.keto && !dish.isKeto) return false;
       if (filters.dairyFree && !dish.isDairyFree) return false;
 
+      if (filters.vegetarian) {
+        const isVegDish =
+          dish.dietTags.some((t) => t.toLowerCase().includes('veg')) ||
+          !dish.dietTags.some((t) =>
+            ['meat', 'beef', 'chicken', 'fish', 'pork', 'bacon', 'turkey', 'lamb'].some((m) =>
+              t.toLowerCase().includes(m)
+            )
+          );
+        if (!isVegDish) return false;
+      }
+
       if (dish.protein < filters.minProtein) return false;
       if (dish.carbs > filters.maxCarbs) return false;
 
@@ -206,11 +468,12 @@ export default function HomePage() {
     });
   }, [dishes, filters, selectedCity, selectedCookingFat]);
 
+  // Clear selected dish if it belongs to a different city than currently selected
   useEffect(() => {
-    if (filteredDishes.length > 0 && (!selectedDish || selectedDish.city !== selectedCity.name)) {
-      setSelectedDish(filteredDishes[0]);
+    if (selectedDish && selectedDish.city !== selectedCity.name) {
+      setSelectedDish(null);
     }
-  }, [filteredDishes, selectedDish, selectedCity]);
+  }, [selectedCity.name, selectedDish]);
 
   // Haversine distance calculator for dishes in vicinity
   const calculateDistance = useCallback(
@@ -499,7 +762,7 @@ export default function HomePage() {
                       </span>
                     </div>
                     <p className="text-xs text-[#A8B5AE] font-semibold truncate mt-0.5">
-                      {selectedDish.name} &bull; <span className="text-[#35E27F] font-bold">${selectedDish.price.toFixed(2)}</span>
+                      {selectedDish.name} &bull; <span className="text-[#35E27F] font-bold">{formatPrice(selectedDish.price, selectedDish.city, selectedDish.id)}</span>
                     </p>
                     <p className="text-[10px] text-[#A8B5AE] truncate">
                       {selectedDish.protein}g Protein &bull; {selectedDish.calories} kcal
@@ -521,8 +784,16 @@ export default function HomePage() {
                     onClick={() => setDetailDish(selectedDish)}
                     className="px-3.5 py-2 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 active:scale-95"
                   >
-                    <span>See What&apos;s In It</span>
+                    <span>View Dish Details</span>
                     <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    id="dismiss-bottom-preview-btn"
+                    onClick={() => setSelectedDish(null)}
+                    className="p-2 rounded-xl bg-[#0F231B] hover:bg-[#142C23] text-[#A8B5AE] hover:text-[#F5F7F3] border border-[#1B3B2F] transition-all cursor-pointer active:scale-95"
+                    title="Dismiss selection"
+                  >
+                    <X className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -530,7 +801,7 @@ export default function HomePage() {
               <div className="px-3.5 py-2.5 rounded-xl bg-[#0B1A14] border border-[#1B3B2F] text-[#A8B5AE] text-xs flex items-center justify-between shrink-0">
                 <span className="flex items-center gap-2 text-[11px] font-medium text-[#F5F7F3]">
                   <MapPin className="w-3.5 h-3.5 text-[#35E27F] shrink-0" />
-                  <span>Select any beacon on map to view verified specs</span>
+                  <span>Select any dish on the map to see ingredients and nutrition</span>
                 </span>
                 <button
                   onClick={() => setMapViewMode('list')}
@@ -577,7 +848,7 @@ export default function HomePage() {
                   { id: 'distance', label: 'Nearest' },
                   { id: 'protein', label: 'Protein ↑' },
                   { id: 'calories', label: 'Cal ↓' },
-                  { id: 'price', label: 'Price $' },
+                  { id: 'price', label: selectedCity.country === 'IN' ? 'Price ₹' : 'Price $' },
                 ].map((s) => (
                   <button
                     key={s.id}
@@ -621,7 +892,7 @@ export default function HomePage() {
                           />
                           {dish.isSeedOilFree && (
                             <span className="absolute bottom-0 inset-x-0 bg-[#35E27F] text-[#07130F] text-[8px] font-bold uppercase text-center py-0.5 tracking-wider">
-                              Clean
+                              Oil-Free
                             </span>
                           )}
                         </div>
@@ -645,7 +916,7 @@ export default function HomePage() {
                           </h4>
 
                           <div className="flex items-center gap-2 mt-1 text-[11px] font-medium text-[#A8B5AE] flex-wrap">
-                            <span className="text-[#35E27F] font-bold">${dish.price.toFixed(2)}</span>
+                            <span className="text-[#35E27F] font-bold">{formatPrice(dish.price, dish.city, dish.id)}</span>
                             <span>&bull;</span>
                             <span className="text-[#F5F7F3] font-semibold flex items-center gap-0.5">
                               <Flame className="w-3 h-3 text-[#35E27F]" />
@@ -678,9 +949,9 @@ export default function HomePage() {
                             setDetailDish(dish);
                           }}
                           className="px-3 py-1.5 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-sm"
-                          title="See what's in this dish"
+                          title="View dish details"
                         >
-                          <span>See What&apos;s In It</span>
+                          <span>View Details</span>
                           <ChevronRight className="w-3 h-3" />
                         </button>
                       </div>
@@ -791,7 +1062,7 @@ export default function HomePage() {
                             {dish.name}
                           </p>
                           <p className="text-[10px] text-[#A8B5AE] truncate font-medium">
-                            <span className="text-[#35E27F] font-bold">${dish.price.toFixed(2)}</span> &bull; {dish.protein}g protein &bull; {dish.cookingFat}
+                            <span className="text-[#35E27F] font-bold">{formatPrice(dish.price, dish.city, dish.id)}</span> &bull; {dish.protein}g protein &bull; {dish.cookingFat}
                           </p>
                         </div>
                       </div>
@@ -802,7 +1073,7 @@ export default function HomePage() {
                             e.stopPropagation();
                             setSelectedDish(dish);
                           }}
-                          className={`p-1.5 rounded-lg text-xs font-bold transition-colors ${
+                          className={`p-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
                             isSelected
                               ? 'bg-[#35E27F] text-[#07130F]'
                               : 'bg-[#0F231B] text-[#35E27F] hover:bg-[#142C23] border border-[#1B3B2F]'
@@ -811,12 +1082,29 @@ export default function HomePage() {
                         >
                           <MapIcon className="w-3.5 h-3.5" />
                         </button>
+
+                        <a
+                          href={getGoogleMapsDirectionsUrl({
+                            restaurant: dish.restaurant,
+                            address: dish.restaurantAddress,
+                            city: dish.city,
+                            coordinates: dish.coordinates,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="p-1.5 rounded-lg bg-[#0F231B] hover:bg-[#142C23] text-[#35E27F] hover:text-[#44eb8c] border border-[#1B3B2F] text-xs font-bold transition-colors cursor-pointer"
+                          title={`Get directions to ${dish.restaurant} on Google Maps`}
+                        >
+                          <Navigation className="w-3.5 h-3.5 fill-current" />
+                        </a>
+
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setDetailDish(dish);
                           }}
-                          className="px-2.5 py-1 rounded-lg bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all"
+                          className="px-2.5 py-1 rounded-lg bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all cursor-pointer"
                           title="See what's in this dish"
                         >
                           See Details
@@ -846,55 +1134,101 @@ export default function HomePage() {
             </div>
             <div>
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="font-bold text-sm sm:text-lg lg:text-xl tracking-tight text-[#F5F7F3] leading-none">
-                  Healthy Vicinity
+                <span className="font-extrabold text-sm sm:text-lg lg:text-xl tracking-tight text-[#F5F7F3] leading-none">
+                  Healthy Vicinity <span className="text-[#35E27F]">LIVE</span>
                 </span>
                 <span className="hidden md:inline-flex px-2 py-0.5 rounded-md bg-[#123D2A] text-[#35E27F] text-[10px] font-bold tracking-wider uppercase border border-[#1B3B2F] items-center gap-1 shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#35E27F] animate-pulse" />
-                  <span>Restaurant Confirmed</span>
+                  <span>Verified</span>
                 </span>
               </div>
               <p className="hidden sm:flex text-[#A8B5AE] font-medium text-[11px] sm:text-xs mt-0.5 items-center gap-1.5">
-                <span className="text-[#35E27F] font-semibold">Decide what to order</span>
+                <span className="text-[#35E27F] font-semibold">Bio-Individual Dining Engine</span>
                 <span className="text-[#1B3B2F]">&bull;</span>
-                <span>Dish-level transparency</span>
-                <span className="text-[#1B3B2F]">&bull;</span>
-                <span>26 USA Metros</span>
+                <span className="text-[#F5F7F3] font-medium">Zero Seed Oils</span>
               </p>
             </div>
           </div>
 
-          {/* Controls: City Dropdown, Map Radar, and AI Scanner */}
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-            {/* City Dropdown */}
-            <div className="relative min-w-0">
-              <select
-                id="header-city-selector"
-                suppressHydrationWarning
-                value={selectedReelCity}
-                onChange={(e) => handleCitySelect(e.target.value as ReelCity)}
-                className="appearance-none bg-[#0B1A14] hover:bg-[#0F231B] text-[#F5F7F3] font-bold text-xs pl-2.5 pr-6 sm:pl-3 sm:pr-7 py-1.5 sm:py-2.5 rounded-xl border border-[#1B3B2F] focus:outline-none focus:border-[#35E27F] cursor-pointer transition-all max-w-[105px] sm:max-w-none truncate"
+          {/* Controls: Country Switcher, City Dropdown, Map Radar, and AI Scanner */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            {/* Country Switcher: 🇮🇳 India (INR) | 🇺🇸 USA (USD) */}
+            <div
+              id="header-country-switcher"
+              className="inline-flex items-center rounded-xl bg-[#0B1A14] p-0.5 sm:p-1 border border-[#1B3B2F] shrink-0 shadow-xs"
+              title="Switch country (auto-detected from your IP or location)"
+            >
+              <button
+                id="header-country-btn-in"
+                onClick={() => handleSwitchCountry('IN')}
+                className={`px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  selectedCity.country === 'IN'
+                    ? 'bg-[#35E27F] text-[#07130F] shadow-xs font-extrabold'
+                    : 'text-[#A8B5AE] hover:text-[#F5F7F3]'
+                }`}
+                title="India - 31 cities (₹ INR)"
               >
-                {CITIES_DROPDOWN.map((c) => (
-                  <option key={c.id} value={c.id} className="bg-[#0B1A14] text-[#F5F7F3]">
-                    📍 {c.label}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#A8B5AE] absolute right-2 sm:right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <span>🇮🇳</span>
+                <span className="hidden xs:inline sm:inline">India</span>
+              </button>
+              <button
+                id="header-country-btn-us"
+                onClick={() => handleSwitchCountry('US')}
+                className={`px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  selectedCity.country === 'US'
+                    ? 'bg-[#35E27F] text-[#07130F] shadow-xs font-extrabold'
+                    : 'text-[#A8B5AE] hover:text-[#F5F7F3]'
+                }`}
+                title="United States - 30 cities ($ USD)"
+              >
+                <span>🇺🇸</span>
+                <span className="hidden xs:inline sm:inline">USA</span>
+              </button>
             </div>
 
-            {/* Find Food Near Me (Map Drawer Button) */}
+            {/* City Selector Button (Opens Location UX Modal: "Where are you eating?") */}
+            <button
+              id="header-city-selector-btn"
+              onClick={() => setIsLocationModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2.5 rounded-xl bg-[#0B1A14] hover:bg-[#0F231B] text-[#F5F7F3] font-bold text-xs border border-[#1B3B2F] hover:border-[#35E27F]/60 transition-all cursor-pointer max-w-[135px] sm:max-w-[200px] group active:scale-95 shadow-sm"
+              title="Where are you eating? Click to select city or use location"
+            >
+              <span className="text-xs shrink-0">
+                {selectedCity.country === 'IN' ? '🇮🇳' : '📍'}
+              </span>
+              <span className="truncate text-left font-bold text-[#F5F7F3] group-hover:text-[#35E27F] transition-colors">
+                {selectedCity.name}
+                {selectedCity.country === 'IN' ? ' (IN)' : `, ${selectedCity.state}`}
+              </span>
+              <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#A8B5AE] group-hover:text-[#35E27F] shrink-0 ml-0.5 sm:ml-1 transition-colors" />
+            </button>
+
+            {/* Quick Auto-Locate Button */}
+            <button
+              id="header-quick-locate-btn"
+              onClick={handleQuickLocate}
+              disabled={isAutoLocating}
+              className="p-1.5 sm:p-2.5 rounded-xl bg-[#0B1A14] hover:bg-[#123D2A] text-[#35E27F] border border-[#1B3B2F] hover:border-[#35E27F]/60 transition-all cursor-pointer active:scale-95 shadow-sm shrink-0 disabled:opacity-60"
+              title="Auto-detect location via GPS or IP address"
+            >
+              {isAutoLocating ? (
+                <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin text-[#35E27F]" />
+              ) : (
+                <Navigation className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#35E27F]" />
+              )}
+            </button>
+
+            {/* Map Radar (count) */}
             <button
               id="header-open-map-btn"
               onClick={() => setIsMapOpen(true)}
-              className="inline-flex items-center justify-center gap-1 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2.5 rounded-xl bg-[#0B1A14] hover:bg-[#0F231B] text-[#F5F7F3] text-xs font-semibold border border-[#1B3B2F] hover:border-[#35E27F]/50 transition-all duration-200 cursor-pointer group active:scale-95 shrink-0 whitespace-nowrap"
-              title="Open Nearby Map"
+              className="inline-flex items-center justify-center gap-1 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2.5 rounded-xl bg-[#0B1A14] hover:bg-[#0F231B] text-[#F5F7F3] text-xs font-semibold border border-[#1B3B2F] hover:border-[#35E27F]/50 transition-all duration-200 cursor-pointer group active:scale-95 shrink-0 whitespace-nowrap"
+              title="Map Radar"
             >
               <Radar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#35E27F] group-hover:rotate-45 transition-transform shrink-0" />
-              <span className="hidden sm:inline">Find Food Near Me</span>
+              <span className="hidden sm:inline">Map Radar</span>
               <span className="px-1.5 py-0.5 rounded-md bg-[#123D2A] text-[#35E27F] font-bold text-[10px] border border-[#1B3B2F]">
-                {filteredDishes.length}
+                {cityReelsCount}
               </span>
             </button>
 
@@ -917,6 +1251,33 @@ export default function HomePage() {
       {/* MAIN VIEWPORT CONTENT                                                     */}
       {/* ========================================================================= */}
       <main className="max-w-7xl mx-auto w-full px-3.5 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-5 sm:space-y-7 flex-1 pb-28 sm:pb-8">
+        {/* Automatic Location / IP Detection Notification */}
+        {locationBannerText && (
+          <div
+            id="location-detection-banner"
+            className="px-4 py-2.5 rounded-xl bg-[#0E221A] border border-[#35E27F]/40 text-xs text-[#F5F7F3] flex items-center justify-between gap-3 shadow-md animate-in fade-in slide-in-from-top-2"
+          >
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#35E27F] animate-pulse shrink-0" />
+              <span className="font-semibold text-[#DDFBE9]">{locationBannerText}</span>
+            </div>
+            <div className="flex items-center gap-2.5 shrink-0">
+              <button
+                onClick={() => setIsLocationModalOpen(true)}
+                className="text-[11px] font-bold text-[#35E27F] hover:underline cursor-pointer"
+              >
+                Change city
+              </button>
+              <button
+                onClick={() => setLocationBannerText(null)}
+                className="p-1 rounded-md text-[#A8B5AE] hover:text-[#F5F7F3] cursor-pointer"
+                title="Dismiss banner"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
         {/* ========================================================================= */}
         {/* KITCHEN PROOF & SIZZLE REELS LIVE PROOF SECTION                            */}
         {/* ========================================================================= */}
@@ -944,14 +1305,14 @@ export default function HomePage() {
             </div>
 
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight sm:leading-[1.15] text-[#F5F7F3]">
-              Eat well anywhere, <br />
+              Find food that <br />
               <span className="text-[#35E27F]">
-                without the guesswork.
+                fits your diet.
               </span>
             </h1>
 
             <p className="text-xs sm:text-base text-[#A8B5AE] font-normal leading-relaxed max-w-2xl">
-              Menus tell you what&apos;s available. HealthyVicinity empowers you to choose what fits your body — revealing verified nutrition, ingredients, and cooking methods for dishes near you.
+              Discover healthy dishes near you with nutrition, ingredients, cooking methods, and information you can trust.
             </p>
 
             {/* CTAs */}
@@ -981,7 +1342,7 @@ export default function HomePage() {
             <div className="pt-3 sm:pt-4 border-t border-[#1B3B2F]/60 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 text-[11px] sm:text-xs text-[#A8B5AE]">
               <div className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#35E27F] shrink-0" />
-                <span className="font-medium truncate">Restaurant Details</span>
+                <span className="font-medium truncate">Restaurant-Confirmed</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#35E27F] shrink-0" />
@@ -989,7 +1350,7 @@ export default function HomePage() {
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#35E27F] shrink-0" />
-                <span className="font-medium truncate">Oils &amp; Cooking Fats</span>
+                <span className="font-medium truncate">Cooking Oils &amp; Fats</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#35E27F] shrink-0" />
@@ -1005,12 +1366,23 @@ export default function HomePage() {
         <section aria-label="Benefit-Driven Filters">
           <BentoFilters
             filters={filters}
-            onChange={setFilters}
+            onChange={handleFilterChange}
             onReset={resetFilters}
             totalDishesCount={allCityDishesCount}
             filteredCount={filteredDishes.length}
           />
         </section>
+
+        {/* ========================================================================= */}
+        {/* COMPACT SECTION: EXPLORE HEALTHY FOOD IN INDIA                            */}
+        {/* ========================================================================= */}
+        <ExploreIndiaSection
+          selectedCityName={selectedCity.name}
+          onSelectCityByName={handleSelectCityByName}
+          onOpenLocationModal={() => setIsLocationModalOpen(true)}
+          onUseMyLocation={handleQuickLocate}
+          isLocating={isAutoLocating}
+        />
 
         {/* ========================================================================= */}
         {/* DISHES SECTION / LOCAL DISCOVERY                                          */}
@@ -1055,6 +1427,36 @@ export default function HomePage() {
                   }}
                 />
               ))}
+            </div>
+          ) : allCityDishesCount === 0 ? (
+            <div className="p-8 sm:p-12 text-center bg-[#0B1A14] border border-[#1B3B2F] rounded-2xl space-y-3.5 shadow-md">
+              <div className="w-12 h-12 rounded-xl bg-[#0F231B] text-[#35E27F] flex items-center justify-center mx-auto border border-[#1B3B2F]">
+                <Compass className="w-6 h-6" />
+              </div>
+              <h3 className="font-bold text-[#F5F7F3] text-base sm:text-lg">
+                More healthy options coming soon.
+              </h3>
+              <p className="text-xs sm:text-sm text-[#A8B5AE] max-w-md mx-auto font-medium">
+                We&apos;re building the HealthyVicinity food guide for {selectedCity.name}.
+              </p>
+              <div className="pt-2 flex items-center justify-center gap-2.5 flex-wrap">
+                <button
+                  id="empty-explore-cities-btn"
+                  onClick={() => setIsLocationModalOpen(true)}
+                  className="px-4 py-2.5 rounded-xl bg-[#123D2A] hover:bg-[#184d35] text-[#35E27F] text-xs font-bold border border-[#1B3B2F] transition-all cursor-pointer active:scale-95 flex items-center gap-1.5"
+                >
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>Explore Other Cities</span>
+                </button>
+                <button
+                  id="empty-suggest-menu-btn"
+                  onClick={() => setIsScannerOpen(true)}
+                  className="px-4 py-2.5 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all cursor-pointer active:scale-95 shadow-sm flex items-center gap-1.5"
+                >
+                  <ScanLine className="w-3.5 h-3.5" />
+                  <span>Scan Menu in {selectedCity.name}</span>
+                </button>
+              </div>
             </div>
           ) : (
             <div className="p-10 sm:p-12 text-center bg-[#0B1A14] border border-[#1B3B2F] rounded-2xl space-y-3 shadow-md">
@@ -1188,6 +1590,43 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
+        {/* FOOTER BANNER: HIGH PROTEIN • HIGH FIBER • LOW CAL • LOW SUGAR             */}
+        {/* ========================================================================= */}
+        <section
+          id="clean-fuel-footer-banner"
+          className="rounded-2xl bg-gradient-to-r from-[#0a2e1f] via-[#0F231B] to-[#0a2e1f] border border-[#1B3B2F] p-6 sm:p-8 text-center space-y-4 relative overflow-hidden shadow-xl"
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#35E27F]/15 via-transparent to-transparent pointer-events-none" />
+          <div className="relative z-10 max-w-3xl mx-auto space-y-3">
+            <p className="text-[10px] sm:text-xs font-extrabold uppercase tracking-widest text-[#b6f7c1] flex items-center justify-center gap-2 flex-wrap">
+              <span>HIGH PROTEIN</span>
+              <span className="text-[#35E27F]">&bull;</span>
+              <span>HIGH FIBER</span>
+              <span className="text-[#35E27F]">&bull;</span>
+              <span>LOW CAL</span>
+              <span className="text-[#35E27F]">&bull;</span>
+              <span>LOW SUGAR</span>
+              <span className="text-[#35E27F]">&bull;</span>
+              <span>100% SEED-OIL-FREE</span>
+              <span className="text-[#35E27F]">&bull;</span>
+              <span>PURE ANIMAL &amp; FRUIT FATS</span>
+            </p>
+            <h2 className="text-xl sm:text-3xl font-extrabold tracking-tight text-[#F5F7F3]">
+              CLEAN FUEL. NUTRITION OPTIMIZED.
+            </h2>
+            <div className="pt-2">
+              <button
+                onClick={() => setIsMapOpen(true)}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all shadow-lg active:scale-95 cursor-pointer"
+              >
+                <MapPin className="w-4 h-4" />
+                <span>Explore Map</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
         {/* FOOTER                                                                    */}
         {/* ========================================================================= */}
         <footer className="pt-8 pb-4 border-t border-[#1B3B2F] text-[#F5F7F3] space-y-6">
@@ -1203,6 +1642,38 @@ export default function HomePage() {
 
             <div className="flex items-center gap-2 text-xs text-[#A8B5AE]">
               <span>Better choices start with better information.</span>
+            </div>
+          </div>
+
+          {/* Programmatic SEO City Hub Navigation */}
+          <div className="pt-4 pb-2 border-t border-[#1B3B2F]/60">
+            <p className="text-[11px] font-bold text-[#b6f7c1] uppercase tracking-wider mb-2">
+              Verified Clean Dining City Guides:
+            </p>
+            <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-[#A8B5AE]">
+              <Link href="/austin" className="hover:text-[#35E27F] transition-colors">Austin, TX</Link>
+              <span>&bull;</span>
+              <Link href="/nyc" className="hover:text-[#35E27F] transition-colors">New York, NY</Link>
+              <span>&bull;</span>
+              <Link href="/los-angeles" className="hover:text-[#35E27F] transition-colors">Los Angeles, CA</Link>
+              <span>&bull;</span>
+              <Link href="/san-francisco" className="hover:text-[#35E27F] transition-colors">San Francisco, CA</Link>
+              <span>&bull;</span>
+              <Link href="/miami" className="hover:text-[#35E27F] transition-colors">Miami, FL</Link>
+              <span>&bull;</span>
+              <Link href="/chicago" className="hover:text-[#35E27F] transition-colors">Chicago, IL</Link>
+              <span>&bull;</span>
+              <Link href="/dallas" className="hover:text-[#35E27F] transition-colors">Dallas, TX</Link>
+              <span>&bull;</span>
+              <Link href="/houston" className="hover:text-[#35E27F] transition-colors">Houston, TX</Link>
+              <span>&bull;</span>
+              <Link href="/scottsdale" className="hover:text-[#35E27F] transition-colors">Scottsdale, AZ</Link>
+              <span>&bull;</span>
+              <Link href="/denver" className="hover:text-[#35E27F] transition-colors">Denver, CO</Link>
+              <span>&bull;</span>
+              <Link href="/seattle" className="hover:text-[#35E27F] transition-colors">Seattle, WA</Link>
+              <span>&bull;</span>
+              <Link href="/nashville" className="hover:text-[#35E27F] transition-colors">Nashville, TN</Link>
             </div>
           </div>
 
@@ -1269,6 +1740,14 @@ export default function HomePage() {
         onClose={() => setIsScannerOpen(false)}
         onAddDish={handleAddScannedDish}
         city={selectedCity}
+      />
+
+      {/* Location Selector Modal ("Where are you eating?") */}
+      <LocationSelectorModal
+        isOpen={isLocationModalOpen}
+        onClose={() => setIsLocationModalOpen(false)}
+        selectedCity={selectedCity}
+        onSelectCity={handleSelectCityConfig}
       />
     </div>
   );

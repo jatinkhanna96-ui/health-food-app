@@ -34,7 +34,7 @@ export default function AddReelModal({
   const [cookingFat, setCookingFat] = useState<CookingFat>('Beef Tallow');
   const [tagsInput, setTagsInput] = useState('seed-oil-free, grass-fed');
   const [caption, setCaption] = useState('');
-  const [macrosText, setMacrosText] = useState('42g Muscle Protein');
+  const [macrosText, setMacrosText] = useState('42g Protein');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
@@ -60,7 +60,7 @@ export default function AddReelModal({
       return;
     }
     if (!caption.trim()) {
-      setError('Please provide a short viral hook or caption.');
+      setError('Please provide a short description or caption.');
       return;
     }
 
@@ -75,15 +75,20 @@ export default function AddReelModal({
 
     const newReel: Reel = {
       id: `ugc-${Date.now()}`,
+      type: 'real',
       city,
       restaurant: restaurant.trim(),
       reel_url: reelUrl.trim(),
       creator_handle: cleanHandle,
       eating_type: eatingType.trim() || 'creator eating meal at table',
       cooking_fat: cookingFat,
-      tags: tags.length > 0 ? tags : ['seed-oil-free'],
-      caption_for_app: caption.trim(),
-      macros_text: macrosText.trim() || 'Clean Macros',
+      protein: '48g',
+      fiber: '11g',
+      calories: '540',
+      sugar: '3g',
+      tags: tags.length > 0 ? tags : ['highprotein', 'seed-oil-free'],
+      caption_for_app: caption.trim() || 'Clean high protein meal reviewed on camera.',
+      macros_text: macrosText.trim() || '48g Protein / 11g Fiber / 540 cal / 3g Sugar',
       views: '1.2k',
       verified: true,
       dish_name: `${cookingFat} Kitchen Special`,
@@ -115,13 +120,13 @@ export default function AddReelModal({
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-bold text-[#F5F7F3] flex items-center gap-2">
-                <span>Submit Proof Reel</span>
+                <span>Share a Video</span>
                 <span className="px-2 py-0.5 rounded-full bg-[#123D2A] text-[#35E27F] text-[10px] font-bold uppercase tracking-wider border border-[#1B3B2F]">
-                  UGC Scout
+                  Community Video
                 </span>
               </h3>
               <p className="text-xs text-[#A8B5AE]">
-                Add an authentic viral kitchen proof reel of clean seed-oil-free dining.
+                Share a video showing a great healthy dish or cooking in action.
               </p>
             </div>
           </div>
@@ -146,7 +151,7 @@ export default function AddReelModal({
           {success && (
             <div className="p-3.5 rounded-xl bg-[#123D2A] border border-[#35E27F]/40 text-[#35E27F] text-xs flex items-center gap-2 font-bold animate-pulse">
               <CheckCircle2 className="w-4 h-4 shrink-0 text-[#35E27F]" />
-              <span>Live reel published successfully to {city}!</span>
+              <span>Video shared successfully for {city}!</span>
             </div>
           )}
 
@@ -207,7 +212,7 @@ export default function AddReelModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-[#F5F7F3] mb-1">
-                Certified Cooking Fat *
+                Cooking Oil / Fat *
               </label>
               <select
                 suppressHydrationWarning
@@ -242,28 +247,28 @@ export default function AddReelModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-[#F5F7F3] mb-1">
-                Eating Type / Scene
+                Scene / Setting
               </label>
               <input
                 suppressHydrationWarning
                 type="text"
                 value={eatingType}
                 onChange={(e) => setEatingType(e.target.value)}
-                placeholder="e.g. creator eating tallow burger at table"
+                placeholder="e.g. dining at the patio"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F231B] text-[#F5F7F3] border border-[#1B3B2F] text-xs font-medium placeholder:text-[#A8B5AE]/60 focus:outline-none focus:border-[#35E27F] shadow-xs"
               />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-[#F5F7F3] mb-1">
-                Macros Highlight
+                Nutrition Highlights
               </label>
               <input
                 suppressHydrationWarning
                 type="text"
                 value={macrosText}
                 onChange={(e) => setMacrosText(e.target.value)}
-                placeholder="e.g. 48g Muscle Protein"
+                placeholder="e.g. 48g Protein"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F231B] text-[#F5F7F3] border border-[#1B3B2F] text-xs font-medium placeholder:text-[#A8B5AE]/60 focus:outline-none focus:border-[#35E27F] shadow-xs"
               />
             </div>
@@ -272,14 +277,14 @@ export default function AddReelModal({
           {/* Caption / Viral Hook */}
           <div>
             <label className="block text-xs font-semibold text-[#F5F7F3] mb-1">
-              Viral Hook / Caption *
+              Short Description / Caption *
             </label>
             <textarea
               suppressHydrationWarning
               rows={2}
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
-              placeholder="e.g. Healthiest zero-seed-oil smash burger in town — 100% tallow fried with raw cheddar"
+              placeholder="e.g. Great high-protein burger cooked in beef tallow with fresh avocado"
               className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F231B] text-[#F5F7F3] border border-[#1B3B2F] text-xs font-medium placeholder:text-[#A8B5AE]/60 focus:outline-none focus:border-[#35E27F] shadow-xs"
             />
           </div>
@@ -294,7 +299,7 @@ export default function AddReelModal({
               type="text"
               value={tagsInput}
               onChange={(e) => setTagsInput(e.target.value)}
-              placeholder="seed-oil-free, grass-fed, pasture-raised"
+              placeholder="seed-oil-free, grass-fed, gluten-free"
               className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F231B] text-[#F5F7F3] border border-[#1B3B2F] text-xs font-medium placeholder:text-[#A8B5AE]/60 focus:outline-none focus:border-[#35E27F] shadow-xs"
             />
           </div>
@@ -314,7 +319,7 @@ export default function AddReelModal({
               className="px-6 py-2.5 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all cursor-pointer flex items-center gap-2 active:scale-95 disabled:opacity-50"
             >
               <Sparkles className="w-4 h-4 text-[#07130F]" />
-              <span>Publish Reel</span>
+              <span>Share Video</span>
             </button>
           </div>
         </form>

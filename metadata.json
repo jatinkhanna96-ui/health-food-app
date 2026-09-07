@@ -1,7 +1,9 @@
 {
   "name": "Healthy Vicinity",
-  "description": "Make every meal a choice you can feel good about. HealthyVicinity helps you decide what to order with dish-level transparency on nutrition, ingredients, and cooking methods.",
-  "requestFramePermissions": [],
+  "description": "Find food that fits your diet. Discover healthy dishes and restaurants near you with nutrition, ingredients, cooking methods, and information you can trust.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
   ]

@@ -27,6 +27,7 @@ export interface FilterState {
   lowSugar: boolean;
   lowCarb: boolean;
   highFiber: boolean;
+  vegetarian?: boolean;
   minProtein: number;
   maxCarbs: number;
   benefitPostWorkout?: boolean;
@@ -102,6 +103,7 @@ export default function BentoFilters({
     filters.lowSugar ||
     filters.lowCarb ||
     filters.highFiber ||
+    filters.vegetarian ||
     filters.seedOilFree ||
     filters.grassFed ||
     filters.glutenFree ||
@@ -463,6 +465,20 @@ export default function BentoFilters({
             >
               <span className="truncate">Seed-Oil Free</span>
               <span className={`w-1.5 h-1.5 rounded-full ${filters.seedOilFree ? 'bg-[#07130F]' : 'bg-[#1B3B2F]'}`} />
+            </button>
+
+            {/* Vegetarian */}
+            <button
+              id="filter-vegetarian-toggle"
+              onClick={() => toggleFilter('vegetarian')}
+              className={`px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border transition-all duration-200 flex items-center justify-between text-[11px] sm:text-xs cursor-pointer ${
+                filters.vegetarian
+                  ? 'bg-[#35E27F] border-[#35E27F] text-[#07130F] font-bold shadow-sm'
+                  : 'bg-[#0F231B] border-[#1B3B2F] text-[#F5F7F3] hover:border-[#35E27F]/40'
+              }`}
+            >
+              <span className="truncate">Vegetarian</span>
+              <span className={`w-1.5 h-1.5 rounded-full ${filters.vegetarian ? 'bg-[#07130F]' : 'bg-[#1B3B2F]'}`} />
             </button>
           </div>
         </div>

@@ -1,3 +1,8 @@
+import { ALL_CITIES, toCityLocation } from './locations';
+import { INDIA_DISHES } from './indiaDishesData';
+
+export { INDIA_DISHES } from './indiaDishesData';
+
 export interface Dish {
   id: string;
   name: string;
@@ -36,194 +41,12 @@ export interface CityLocation {
   lat: number;
   lng: number;
   zoom: number;
+  country?: 'US' | 'IN';
 }
 
-export const CITY_LOCATIONS: CityLocation[] = [
-  {
-    "name": "Austin",
-    "state": "TX",
-    "lat": 30.2672,
-    "lng": -97.7431,
-    "zoom": 13
-  },
-  {
-    "name": "New York",
-    "state": "NY",
-    "lat": 40.7128,
-    "lng": -74.006,
-    "zoom": 13
-  },
-  {
-    "name": "Los Angeles",
-    "state": "CA",
-    "lat": 34.0522,
-    "lng": -118.2437,
-    "zoom": 13
-  },
-  {
-    "name": "San Francisco",
-    "state": "CA",
-    "lat": 37.7749,
-    "lng": -122.4194,
-    "zoom": 13
-  },
-  {
-    "name": "Miami",
-    "state": "FL",
-    "lat": 25.7617,
-    "lng": -80.1918,
-    "zoom": 13
-  },
-  {
-    "name": "Chicago",
-    "state": "IL",
-    "lat": 41.8781,
-    "lng": -87.6298,
-    "zoom": 13
-  },
-  {
-    "name": "Dallas",
-    "state": "TX",
-    "lat": 32.7767,
-    "lng": -96.797,
-    "zoom": 13
-  },
-  {
-    "name": "Houston",
-    "state": "TX",
-    "lat": 29.7604,
-    "lng": -95.3698,
-    "zoom": 13
-  },
-  {
-    "name": "Phoenix",
-    "state": "AZ",
-    "lat": 33.4484,
-    "lng": -112.074,
-    "zoom": 13
-  },
-  {
-    "name": "Scottsdale",
-    "state": "AZ",
-    "lat": 33.4942,
-    "lng": -111.9261,
-    "zoom": 13
-  },
-  {
-    "name": "San Diego",
-    "state": "CA",
-    "lat": 32.7157,
-    "lng": -117.1611,
-    "zoom": 13
-  },
-  {
-    "name": "Boston",
-    "state": "MA",
-    "lat": 42.3601,
-    "lng": -71.0589,
-    "zoom": 13
-  },
-  {
-    "name": "Denver",
-    "state": "CO",
-    "lat": 39.7392,
-    "lng": -104.9903,
-    "zoom": 13
-  },
-  {
-    "name": "Seattle",
-    "state": "WA",
-    "lat": 47.6062,
-    "lng": -122.3321,
-    "zoom": 13
-  },
-  {
-    "name": "Atlanta",
-    "state": "GA",
-    "lat": 33.749,
-    "lng": -84.388,
-    "zoom": 13
-  },
-  {
-    "name": "Nashville",
-    "state": "TN",
-    "lat": 36.1627,
-    "lng": -86.7816,
-    "zoom": 13
-  },
-  {
-    "name": "Washington",
-    "state": "DC",
-    "lat": 38.9072,
-    "lng": -77.0369,
-    "zoom": 13
-  },
-  {
-    "name": "Portland",
-    "state": "OR",
-    "lat": 45.5152,
-    "lng": -122.6784,
-    "zoom": 13
-  },
-  {
-    "name": "Charlotte",
-    "state": "NC",
-    "lat": 35.2271,
-    "lng": -80.8431,
-    "zoom": 13
-  },
-  {
-    "name": "Tampa",
-    "state": "FL",
-    "lat": 27.9506,
-    "lng": -82.4572,
-    "zoom": 13
-  },
-  {
-    "name": "Orlando",
-    "state": "FL",
-    "lat": 28.5383,
-    "lng": -81.3792,
-    "zoom": 13
-  },
-  {
-    "name": "Boulder",
-    "state": "CO",
-    "lat": 40.015,
-    "lng": -105.2705,
-    "zoom": 13
-  },
-  {
-    "name": "Columbus",
-    "state": "OH",
-    "lat": 39.9612,
-    "lng": -82.9988,
-    "zoom": 13
-  },
-  {
-    "name": "Salt Lake City",
-    "state": "UT",
-    "lat": 40.7608,
-    "lng": -111.891,
-    "zoom": 13
-  },
-  {
-    "name": "Minneapolis",
-    "state": "MN",
-    "lat": 44.9778,
-    "lng": -93.265,
-    "zoom": 13
-  },
-  {
-    "name": "Indianapolis",
-    "state": "IN",
-    "lat": 39.7684,
-    "lng": -86.1581,
-    "zoom": 13
-  }
-];
+export const CITY_LOCATIONS: CityLocation[] = ALL_CITIES.map(toCityLocation);
 
-export const INITIAL_DISHES: Dish[] = [
+const US_DISHES: Dish[] = [
   {
     "id": "hen-austin-1",
     "name": "Triple Meat Whataburger",
@@ -15408,3 +15231,5 @@ export const INITIAL_DISHES: Dish[] = [
     "chefNotes": "Verified by HealthyEatsNearMe nutrition database (410 kcal, 36g protein). Prepared without refined seed oils, artificial thickeners, or industrial sprays."
   }
 ];
+
+export const INITIAL_DISHES: Dish[] = [...INDIA_DISHES, ...US_DISHES];

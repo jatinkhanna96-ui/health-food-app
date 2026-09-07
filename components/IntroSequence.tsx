@@ -14,6 +14,7 @@ import {
   Star,
 } from 'lucide-react';
 import { INITIAL_DISHES } from '@/lib/mockData';
+import { formatPrice } from '@/lib/utils';
 
 interface IntroSequenceProps {
   onComplete: () => void;
@@ -22,33 +23,39 @@ interface IntroSequenceProps {
 const TOUR_SLIDES = [
   {
     id: 'clean-fuel',
-    badge: 'ZERO REFINED OILS',
-    title: 'Eat Out Without Poisoning Your Body',
+    badge: 'HEALTHY FOOD DISCOVERY',
+    title: 'Find Food That Fits Your Diet',
     subtitle:
-      'Over 90% of restaurant food is cooked in inflammatory industrial seed oils (canola, soybean, corn). We curate local independent kitchens cooking strictly with pure beef tallow, organic ghee, and cold-pressed extra virgin olive oil.',
-    highlight: '100% Verified Seed-Oil-Free',
+      'Discover healthy dishes and restaurants near you with nutrition, ingredients, cooking methods, and information you can trust.',
+    highlight: 'Verified Healthy Options',
     dish: INITIAL_DISHES[0], // Prime Ribeye
-    tag: 'Tallow & EVOO',
+    tag: 'Cooking Details',
+    feature1: 'Clear Ingredients & Cooking Oils',
+    feature2: 'Transparent Nutrition & Macros',
   },
   {
     id: 'macro-veto',
-    badge: 'BIO-INDIVIDUAL DISCOVERY',
-    title: 'Lock In Your Macros & Dietary Vetoes',
+    badge: 'SIMPLE FILTERS',
+    title: 'Choose What Matters to You',
     subtitle:
-      'Filter dishes by high protein thresholds (30g - 60g+), strict celiac gluten-free standards, 100% pasture-raised meats, or zero-carb keto ratios with instant live map updating.',
-    highlight: 'Precision Macro Engine',
+      'Filter dishes easily by high protein, low calorie, low sugar, gluten-free, dairy-free, plant-based, or seed-oil-free with instant updates.',
+    highlight: 'Find What Fits You',
     dish: INITIAL_DISHES[1], // Wild King Salmon
-    tag: '52g Protein • 2g Carbs',
+    tag: '52g Protein • Low Carb',
+    feature1: 'Protein & Calorie Goals',
+    feature2: 'Dietary Preferences',
   },
   {
     id: 'ai-vision',
-    badge: 'GEMINI 3.7 MULTIMODAL OCR',
-    title: 'Scan Any Restaurant Menu in Seconds',
+    badge: 'AI MENU SCANNER',
+    title: 'Understand Any Menu in Seconds',
     subtitle:
-      'Snap a picture of any physical dinner menu or paste text. Our AI vision model audits the ingredients, identifies hidden cooking oils, and calculates exact macro distributions automatically.',
-    highlight: 'Instant AI Menu Analysis',
+      'Snap a photo of any restaurant menu or paste text to see nutrition estimates, ingredients, and cooking methods before you order.',
+    highlight: 'Fast Menu Overview',
     dish: INITIAL_DISHES[2], // Bison Bone Broth
-    tag: 'Instant OCR Audit',
+    tag: 'Quick Menu Scan',
+    feature1: 'Nutrition Breakdown',
+    feature2: 'Cooking Oils & Ingredients',
   },
 ];
 
@@ -79,12 +86,12 @@ export default function IntroSequence({ onComplete }: IntroSequenceProps) {
           <div className="w-10 h-10 rounded-xl bg-[#123D2A] border border-[#1B3B2F] flex items-center justify-center text-[#35E27F]">
             <Compass className="w-5 h-5 text-[#35E27F]" />
           </div>
-          <div>
+            <div>
             <span className="font-bold text-sm sm:text-base text-[#F5F7F3] tracking-tight block leading-tight">
               HEALTHY VICINITY
             </span>
             <span className="text-[10px] font-semibold text-[#35E27F] uppercase tracking-wider">
-              Clean Fuel &amp; Macro Discovery
+              Healthy Food Discovery
             </span>
           </div>
         </div>
@@ -132,7 +139,7 @@ export default function IntroSequence({ onComplete }: IntroSequenceProps) {
                     ✓
                   </div>
                   <span className="text-xs font-semibold text-[#F5F7F3]">
-                    Verified Cooking Fats Only
+                    {slide.feature1}
                   </span>
                 </div>
                 <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#0B1A14] border border-[#1B3B2F]">
@@ -140,7 +147,7 @@ export default function IntroSequence({ onComplete }: IntroSequenceProps) {
                     ★
                   </div>
                   <span className="text-xs font-semibold text-[#F5F7F3]">
-                    High Protein &amp; Low Net Carbs
+                    {slide.feature2}
                   </span>
                 </div>
               </div>
@@ -207,7 +214,7 @@ export default function IntroSequence({ onComplete }: IntroSequenceProps) {
 
                   <div className="pt-1 flex items-center justify-between">
                     <span className="text-lg font-bold text-[#F5F7F3]">
-                      ${slide.dish.price.toFixed(2)}
+                      {formatPrice(slide.dish.price, slide.dish.city, slide.dish.id)}
                     </span>
                     <span className="text-xs font-semibold text-[#35E27F] bg-[#123D2A] px-2.5 py-1 rounded-lg border border-[#1B3B2F]">
                       {slide.highlight}
@@ -254,7 +261,7 @@ export default function IntroSequence({ onComplete }: IntroSequenceProps) {
             onClick={nextSlide}
             className="px-6 py-2.5 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all cursor-pointer flex items-center gap-2 active:scale-95 shadow-md shadow-[#35E27F]/20"
           >
-            <span>{currentSlide === TOUR_SLIDES.length - 1 ? 'Start Exploring Map' : 'Next Step'}</span>
+            <span>{currentSlide === TOUR_SLIDES.length - 1 ? 'Find Food Near Me' : 'Next Step'}</span>
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
