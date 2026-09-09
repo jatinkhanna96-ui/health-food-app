@@ -1,4 +1,5 @@
 import { INITIAL_DISHES, CITY_LOCATIONS, Dish as RawDish } from '@/lib/mockData';
+import { ALL_CITIES } from '@/lib/locations';
 
 export interface Dish {
   id: string;
@@ -36,8 +37,8 @@ export interface CityHubInfo {
   top_fats: string[];
 }
 
-// City slug mapping dictionary including common shortcodes
-const CITY_SLUG_MAP: Record<string, string> = {
+// Common shortcodes and custom overrides
+const BASE_SLUG_OVERRIDES: Record<string, string> = {
   austin: 'Austin',
   'new-york': 'New York',
   nyc: 'New York',
@@ -72,7 +73,66 @@ const CITY_SLUG_MAP: Record<string, string> = {
   detroit: 'Detroit',
   'las-vegas': 'Las Vegas',
   sacramento: 'Sacramento',
+  // Indian city shortcodes & aliases
+  gzb: 'Ghaziabad',
+  ghaziabad: 'Ghaziabad',
+  gurgaon: 'Gurugram',
+  gurugram: 'Gurugram',
+  noida: 'Noida',
+  delhi: 'Delhi',
+  bangalore: 'Bengaluru',
+  bengaluru: 'Bengaluru',
+  bombay: 'Mumbai',
+  mumbai: 'Mumbai',
+  hyderabad: 'Hyderabad',
+  chennai: 'Chennai',
+  madras: 'Chennai',
+  kolkata: 'Kolkata',
+  calcutta: 'Kolkata',
+  pune: 'Pune',
+  poona: 'Pune',
+  ahmedabad: 'Ahmedabad',
+  jaipur: 'Jaipur',
+  chandigarh: 'Chandigarh',
+  lucknow: 'Lucknow',
+  kochi: 'Kochi',
+  coimbatore: 'Coimbatore',
+  mysuru: 'Mysuru',
+  mysore: 'Mysuru',
+  visakhapatnam: 'Visakhapatnam',
+  vizag: 'Visakhapatnam',
+  surat: 'Surat',
+  vadodara: 'Vadodara',
+  baroda: 'Vadodara',
+  indore: 'Indore',
+  nagpur: 'Nagpur',
+  bhopal: 'Bhopal',
+  bhubaneswar: 'Bhubaneswar',
+  patna: 'Patna',
+  amritsar: 'Amritsar',
+  dehradun: 'Dehradun',
+  rishikesh: 'Rishikesh',
+  goa: 'Goa',
+  udaipur: 'Udaipur',
+  nashik: 'Nashik',
 };
+
+// Build comprehensive slug mapping dictionary from ALL_CITIES
+const CITY_SLUG_MAP: Record<string, string> = { ...BASE_SLUG_OVERRIDES };
+
+for (const c of ALL_CITIES) {
+  const cSlug = slugifyCity(c.city);
+  CITY_SLUG_MAP[cSlug] = c.city;
+  CITY_SLUG_MAP[c.city.toLowerCase()] = c.city;
+  if (c.displayName) {
+    CITY_SLUG_MAP[slugifyCity(c.displayName)] = c.city;
+    CITY_SLUG_MAP[c.displayName.toLowerCase()] = c.city;
+  }
+  for (const alias of c.aliases) {
+    CITY_SLUG_MAP[slugifyCity(alias)] = c.city;
+    CITY_SLUG_MAP[alias.toLowerCase()] = c.city;
+  }
+}
 
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || 'https://healthyvicinity.com';
@@ -85,7 +145,27 @@ export function slugifyCity(cityName: string): string {
 
 export function resolveCityNameFromSlug(slug: string): string | null {
   const normalized = slug.toLowerCase().trim();
-  return CITY_SLUG_MAP[normalized] || null;
+  if (CITY_SLUG_MAP[normalized]) return CITY_SLUG_MAP[normalized];
+
+  const slugified = slugifyCity(slug);
+  if (CITY_SLUG_MAP[slugified]) return CITY_SLUG_MAP[slugified];
+
+  // Direct match against ALL_CITIES
+  const matched = ALL_CITIES.find(
+    (c) =>
+      slugifyCity(c.city) === slugified ||
+      c.city.toLowerCase() === normalized ||
+      c.aliases.some((a) => slugifyCity(a) === slugified || a.toLowerCase() === normalized)
+  );
+  if (matched) return matched.city;
+
+  // Direct match against distinct cities in dishes
+  const dishMatch = INITIAL_DISHES.find(
+    (d) => slugifyCity(d.city) === slugified || d.city.toLowerCase() === normalized
+  );
+  if (dishMatch) return dishMatch.city;
+
+  return null;
 }
 
 function resolveStateForCity(cityName: string): string {
@@ -125,6 +205,18 @@ function resolveStateForCity(cityName: string): string {
     Detroit: 'MI',
     'Las Vegas': 'NV',
     Sacramento: 'CA',
+    Ghaziabad: 'Uttar Pradesh',
+    Delhi: 'Delhi',
+    Gurugram: 'Haryana',
+    Noida: 'Uttar Pradesh',
+    Bengaluru: 'Karnataka',
+    Hyderabad: 'Telangana',
+    Mumbai: 'Maharashtra',
+    Pune: 'Maharashtra',
+    Chennai: 'Tamil Nadu',
+    Kolkata: 'West Bengal',
+    Ahmedabad: 'Gujarat',
+    Jaipur: 'Rajasthan',
   };
   return stateMap[cityName] || 'US';
 }
@@ -198,7 +290,15 @@ export function getDishesByCitySlug(citySlug: string): {
 
 export function getAllCitySlugs(): string[] {
   // Return standard primary slugs for static generation
-  return Object.keys(CITY_SLUG_MAP);
+  const set = new Set<string>();
+  const hubs = getAllCityHubs();
+  for (const hub of hubs) {
+    set.add(hub.slug);
+  }
+  for (const key of Object.keys(CITY_SLUG_MAP)) {
+    set.add(key);
+  }
+  return Array.from(set);
 }
 
 export function getAllCityHubs(): CityHubInfo[] {
