@@ -1971,73 +1971,75 @@ export const INDIA_DISHES: Dish[] = [
     "chefNotes": "Cooling powerhouse protein meal with roasted chana flour suspended in churned dahi. Extremely low glycemic index and 100% gluten-free."
   },
   {
-    "id": "in-ghaziabad-201001-1",
-    "name": "Desi Clay Oven Chicken Tikka (Zero Batter)",
-    "restaurant": "Fabcafe (Ghantaghar / Central)",
-    "restaurantAddress": "Ghantaghar Market, Ghaziabad, Uttar Pradesh 201001",
+    "id": "in-ghaziabad-indirapuram-1",
+    "name": "Exotic Greek Salad with Crumbled Feta & Extra Virgin Olive Oil",
+    "restaurant": "Salad Days (Shipra Mall, Indirapuram)",
+    "restaurantAddress": "Upper Ground Floor, Shipra Mall, Indirapuram, Ghaziabad, Uttar Pradesh 201014",
     "city": "Ghaziabad",
     "coordinates": {
-      "lat": 28.67516,
-      "lng": 77.4609
+      "lat": 28.6362,
+      "lng": 77.3695
     },
-    "price": 254,
-    "rating": 4.7,
-    "reviewsCount": 362,
+    "price": 349,
+    "rating": 4.9,
+    "reviewsCount": 420,
     "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
-    "calories": 380,
-    "protein": 46,
+    "calories": 290,
+    "protein": 14,
     "carbs": 12,
-    "fat": 12,
-    "fiber": 4,
+    "fat": 20,
+    "fiber": 8,
     "dietTags": [
       "Seed Oil Free",
       "Gluten-Free",
-      "High Protein",
+      "Low Carb",
       "High Fiber",
       "Low Sugar",
-      "Millet / Whole Grain"
+      "Vegetarian",
+      "Fresh"
     ],
-    "cookingFat": "Pure A2 Desi Cow Ghee",
+    "cookingFat": "Cold-Pressed Extra Virgin Olive Oil",
     "isSeedOilFree": true,
     "isGlutenFree": true,
     "isKeto": true,
     "isGrassFed": true,
     "isDairyFree": false,
     "highlights": [
-      "46g Clean Protein",
+      "Cold-Pressed Olive Oil",
+      "Greek Feta Cheese",
       "Zero Seed Oils",
-      "Clay Oven Roasting",
-      "Zero Added Sugar",
+      "8g Prebiotic Fiber",
       "100% Gluten-Free"
     ],
     "ingredients": [
-      "Pasture-raised chicken breast",
-      "hung cow milk dahi",
-      "Kashmiri degi mirch",
-      "roasted ajwain",
-      "kassori methi",
-      "fresh lemon"
+      "Hydroponic crisp romaine lettuce",
+      "kalamata olives",
+      "diced Persian cucumbers",
+      "vine-ripened cherry tomatoes",
+      "crumbled Greek feta",
+      "extra virgin olive oil vinaigrette",
+      "dried oregano"
     ],
-    "chefNotes": "Boneless chicken breast steeped in hung curd, ginger-garlic, and cold-ground spices. Roasted in traditional clay tandoor without maida or food colors."
+    "chefNotes": "Tossed with authentic Spanish cold-pressed extra virgin olive oil and mineral-rich kalamata olives. Zero refined seed oils, keto-friendly."
   },
   {
-    "id": "in-ghaziabad-201001-2",
-    "name": "Organic Palak Paneer & Foxtail Millet Khichdi",
-    "restaurant": "EatFit Organic (Ghantaghar / Central)",
-    "restaurantAddress": "Ghantaghar Market, Ghaziabad, Uttar Pradesh 201001",
+    "id": "in-ghaziabad-indirapuram-2",
+    "name": "Grilled Herb Chicken & Quinoa Superbowl",
+    "restaurant": "Salad Days (Shipra Mall, Indirapuram)",
+    "restaurantAddress": "Upper Ground Floor, Shipra Mall, Indirapuram, Ghaziabad, Uttar Pradesh 201014",
     "city": "Ghaziabad",
     "coordinates": {
-      "lat": 28.67805,
-      "lng": 77.46596
+      "lat": 28.6365,
+      "lng": 77.3701
     },
-    "price": 224,
+    "price": 399,
     "rating": 4.8,
-    "reviewsCount": 94,
-    "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
-    "calories": 390,
-    "protein": 26,
-    "carbs": 36,
-    "fat": 14,
+    "reviewsCount": 388,
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "calories": 420,
+    "protein": 44,
+    "carbs": 28,
+    "fat": 12,
     "fiber": 9,
     "dietTags": [
       "Seed Oil Free",
@@ -2045,342 +2047,293 @@ export const INDIA_DISHES: Dish[] = [
       "High Protein",
       "High Fiber",
       "Low Sugar",
-      "Millet / Whole Grain"
+      "Clean Whole Food"
     ],
-    "cookingFat": "Pure A2 Desi Cow Ghee",
+    "cookingFat": "Cold-Pressed Extra Virgin Olive Oil",
     "isSeedOilFree": true,
     "isGlutenFree": true,
     "isKeto": false,
-    "isGrassFed": true,
-    "isDairyFree": false,
+    "isGrassFed": false,
+    "isDairyFree": true,
     "highlights": [
-      "26g Dairy & Millet Protein",
-      "Pure A2 Cow Ghee",
+      "44g Lean Protein",
+      "Organic Quinoa",
       "Zero Seed Oils",
       "9g Dietary Fiber",
+      "Dairy-Free"
+    ],
+    "ingredients": [
+      "Herb-marinated chicken breast",
+      "organic tri-color quinoa",
+      "steamed broccoli florets",
+      "charred bell peppers",
+      "pumpkin seeds",
+      "lemon vinaigrette"
+    ],
+    "chefNotes": "Slow pan-roasted chicken breast over Peruvian quinoa and antioxidant-rich greens. Perfect balanced post-workout meal."
+  },
+  {
+    "id": "in-ghaziabad-indirapuram-3",
+    "name": "Air-Crisped Chicken Breast with Zucchini Ribbons (Zoodles)",
+    "restaurant": "Getafix Guilt-Free Cafe (Aditya Mega City, Indirapuram)",
+    "restaurantAddress": "Aditya City Centre Mall, Vaibhav Khand, Indirapuram, Ghaziabad, Uttar Pradesh 201014",
+    "city": "Ghaziabad",
+    "coordinates": {
+      "lat": 28.6412,
+      "lng": 77.3752
+    },
+    "price": 385,
+    "rating": 4.9,
+    "reviewsCount": 295,
+    "image": "https://images.unsplash.com/photo-1547496502-affa22d38842?auto=format&fit=crop&w=800&q=80",
+    "calories": 340,
+    "protein": 42,
+    "carbs": 8,
+    "fat": 14,
+    "fiber": 5,
+    "dietTags": [
+      "Seed Oil Free",
+      "Gluten-Free",
+      "High Protein",
+      "Low Carb",
+      "Keto",
+      "Low Sugar"
+    ],
+    "cookingFat": "Cold-Pressed Extra Virgin Olive Oil",
+    "isSeedOilFree": true,
+    "isGlutenFree": true,
+    "isKeto": true,
+    "isGrassFed": false,
+    "isDairyFree": true,
+    "highlights": [
+      "42g Clean Protein",
+      "Zero Wheat / Zucchini Zoodles",
+      "Zero Seed Oils",
+      "Keto 8g Carbs",
       "100% Gluten-Free"
     ],
     "ingredients": [
-      "Sprouted foxtail millet",
-      "pure cow milk paneer cubes",
-      "slow-simmered spinach purée",
-      "roasted jeera",
-      "pink Himalayan salt"
+      "Sous-vide chicken breast",
+      "hand-spiralized zucchini ribbons",
+      "roasted garlic confit",
+      "cherry tomatoes",
+      "cracked black pepper",
+      "extra virgin olive oil"
     ],
-    "chefNotes": "Prebiotic superfood bowl cooked with mineral-dense foxtail millets and iron-rich baby spinach. Zero refined oils, naturally gluten-free."
+    "chefNotes": "Guilt-free signature zoodle dish prepared without pasta, cream, or commercial seed oils. Pure high-protein satiety."
   },
   {
-    "id": "in-ghaziabad-201001-3",
-    "name": "High-Protein Sprouted Moong & Kala Chana Chaat",
-    "restaurant": "Healthy Bites (Ghantaghar / Central)",
-    "restaurantAddress": "Ghantaghar Market, Ghaziabad, Uttar Pradesh 201001",
+    "id": "in-ghaziabad-indirapuram-4",
+    "name": "Tuscan Cottage Cheese Steak with Rosemary Sweet Potatoes",
+    "restaurant": "Getafix Guilt-Free Cafe (Aditya Mega City, Indirapuram)",
+    "restaurantAddress": "Aditya City Centre Mall, Vaibhav Khand, Indirapuram, Ghaziabad, Uttar Pradesh 201014",
     "city": "Ghaziabad",
     "coordinates": {
-      "lat": 28.66019,
-      "lng": 77.46175
+      "lat": 28.6415,
+      "lng": 77.3756
     },
     "price": 340,
     "rating": 4.8,
-    "reviewsCount": 171,
-    "image": "https://images.unsplash.com/photo-1547496502-affa22d38842?auto=format&fit=crop&w=800&q=80",
-    "calories": 260,
-    "protein": 22,
-    "carbs": 32,
-    "fat": 4,
-    "fiber": 11,
+    "reviewsCount": 240,
+    "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "calories": 380,
+    "protein": 32,
+    "carbs": 24,
+    "fat": 16,
+    "fiber": 8,
     "dietTags": [
       "Seed Oil Free",
       "Gluten-Free",
       "High Protein",
       "High Fiber",
-      "Low Sugar",
-      "Millet / Whole Grain"
+      "Vegetarian"
     ],
-    "cookingFat": "Cold-Pressed Kachi Ghani Mustard Oil",
+    "cookingFat": "Pure A2 Desi Cow Ghee",
     "isSeedOilFree": true,
     "isGlutenFree": true,
     "isKeto": false,
-    "isGrassFed": false,
-    "isDairyFree": true,
-    "highlights": [
-      "22g Clean Pulse Protein",
-      "Raw / Cold-Pressed Mustard Oil",
-      "Zero Seed Oils",
-      "11g High Fiber",
-      "100% Gluten-Free"
-    ],
-    "ingredients": [
-      "Sprouted whole green moong",
-      "boiled black chana",
-      "diced cucumber & tomatoes",
-      "pomegranate arils",
-      "fresh lime juice",
-      "rock salt"
-    ],
-    "chefNotes": "Bioavailable sprouted pulse chaat tossed raw with digestive roasted cumin and cold-pressed Kachi Ghani oil. Zero cooking loss of vitamins."
-  },
-  {
-    "id": "in-ghaziabad-201001-4",
-    "name": "Artisanal Cow Milk Paneer Tikka Salad",
-    "restaurant": "Greenr Cafe (Ghantaghar / Central)",
-    "restaurantAddress": "Ghantaghar Market, Ghaziabad, Uttar Pradesh 201001",
-    "city": "Ghaziabad",
-    "coordinates": {
-      "lat": 28.66562,
-      "lng": 77.44784
-    },
-    "price": 324,
-    "rating": 4.9,
-    "reviewsCount": 252,
-    "image": "https://images.unsplash.com/photo-1505253758473-96b7015fcd40?auto=format&fit=crop&w=800&q=80",
-    "calories": 340,
-    "protein": 28,
-    "carbs": 16,
-    "fat": 16,
-    "fiber": 6,
-    "dietTags": [
-      "Seed Oil Free",
-      "Gluten-Free",
-      "High Protein",
-      "High Fiber",
-      "Low Sugar",
-      "Millet / Whole Grain"
-    ],
-    "cookingFat": "Pure A2 Desi Cow Ghee",
-    "isSeedOilFree": true,
-    "isGlutenFree": true,
-    "isKeto": true,
     "isGrassFed": true,
     "isDairyFree": false,
     "highlights": [
-      "28g High-Quality Protein",
-      "Pure A2 Desi Cow Ghee",
+      "32g Dairy Protein",
+      "Pure A2 Desi Ghee",
       "Zero Seed Oils",
-      "6g Dietary Fiber",
+      "8g Complex Carb Fiber",
       "100% Gluten-Free"
     ],
     "ingredients": [
-      "Organic grass-fed cow paneer",
-      "charred bell peppers & onions",
-      "massaged baby greens",
-      "mint-coriander emulsion",
-      "roasted flaxseed"
+      "Fresh malai paneer block",
+      "charred garnet sweet potatoes",
+      "baby spinach",
+      "fresh rosemary sprigs",
+      "pure A2 cow ghee",
+      "pink salt"
     ],
-    "chefNotes": "Freshly coagulated cow milk paneer lightly blistered in clay tandoor. Low carb, high calcium, zero wheat additives."
+    "chefNotes": "Thick fresh paneer slab pan-seared in grass-fed A2 cow ghee and paired with oven-baked rosemary sweet potato wedges."
   },
   {
-    "id": "in-ghaziabad-201001-5",
-    "name": "Coastal Wild Kingfish Tawa Steak",
-    "restaurant": "Mojigao Coastal (Ghantaghar / Central)",
-    "restaurantAddress": "Ghantaghar Market, Ghaziabad, Uttar Pradesh 201001",
+    "id": "in-ghaziabad-indirapuram-5",
+    "name": "Desi Ghee Palak Corn & Sprouted Moong Dal Khichdi",
+    "restaurant": "EatFit (Vaibhav Khand, Indirapuram)",
+    "restaurantAddress": "Plot 12, Ground Floor, Vaibhav Khand, Indirapuram, Ghaziabad, Uttar Pradesh 201014",
     "city": "Ghaziabad",
     "coordinates": {
-      "lat": 28.67704,
-      "lng": 77.45191
+      "lat": 28.6438,
+      "lng": 77.3721
     },
-    "price": 323,
+    "price": 239,
     "rating": 4.7,
-    "reviewsCount": 154,
-    "image": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80",
-    "calories": 410,
-    "protein": 44,
-    "carbs": 8,
-    "fat": 18,
-    "fiber": 4,
-    "dietTags": [
-      "Seed Oil Free",
-      "Gluten-Free",
-      "High Protein",
-      "High Fiber",
-      "Low Sugar",
-      "Millet / Whole Grain"
-    ],
-    "cookingFat": "Wood-Pressed Virgin Coconut Oil",
-    "isSeedOilFree": true,
-    "isGlutenFree": true,
-    "isKeto": true,
-    "isGrassFed": false,
-    "isDairyFree": true,
-    "highlights": [
-      "44g Wild Marine Protein",
-      "Wood-Pressed Coconut Oil",
-      "Zero Seed Oils",
-      "Heart-Healthy Omega 3",
-      "100% Gluten-Free"
-    ],
-    "ingredients": [
-      "Wild-caught coastal kingfish / surmai",
-      "freshly ground Malabar pepper",
-      "kokum extract",
-      "curry leaves",
-      "steamed French beans"
-    ],
-    "chefNotes": "Fresh caught kingfish pan-seared gently in cold-pressed virgin coconut oil with digestive kokum. Zero batter, zero trans-fats."
-  },
-  {
-    "id": "in-ghaziabad-201014-1",
-    "name": "Artisanal Cow Milk Paneer Tikka Salad",
-    "restaurant": "Greenr Cafe (Kaushambi / Indirapuram)",
-    "restaurantAddress": "Aditya City Centre, Indirapuram, Ghaziabad, Uttar Pradesh 201014",
-    "city": "Ghaziabad",
-    "coordinates": {
-      "lat": 28.6815,
-      "lng": 77.44291
-    },
-    "price": 377,
-    "rating": 4.8,
-    "reviewsCount": 145,
-    "image": "https://images.unsplash.com/photo-1543339308-43e59d6b73a6?auto=format&fit=crop&w=800&q=80",
-    "calories": 340,
-    "protein": 28,
-    "carbs": 16,
-    "fat": 16,
-    "fiber": 6,
-    "dietTags": [
-      "Seed Oil Free",
-      "Gluten-Free",
-      "High Protein",
-      "High Fiber",
-      "Low Sugar",
-      "Millet / Whole Grain"
-    ],
-    "cookingFat": "Pure A2 Desi Cow Ghee",
-    "isSeedOilFree": true,
-    "isGlutenFree": true,
-    "isKeto": true,
-    "isGrassFed": true,
-    "isDairyFree": false,
-    "highlights": [
-      "28g High-Quality Protein",
-      "Pure A2 Desi Cow Ghee",
-      "Zero Seed Oils",
-      "6g Dietary Fiber",
-      "100% Gluten-Free"
-    ],
-    "ingredients": [
-      "Organic grass-fed cow paneer",
-      "charred bell peppers & onions",
-      "massaged baby greens",
-      "mint-coriander emulsion",
-      "roasted flaxseed"
-    ],
-    "chefNotes": "Freshly coagulated cow milk paneer lightly blistered in clay tandoor. Low carb, high calcium, zero wheat additives."
-  },
-  {
-    "id": "in-ghaziabad-201014-2",
-    "name": "Coastal Wild Kingfish Tawa Steak",
-    "restaurant": "Mojigao Coastal (Kaushambi / Indirapuram)",
-    "restaurantAddress": "Aditya City Centre, Indirapuram, Ghaziabad, Uttar Pradesh 201014",
-    "city": "Ghaziabad",
-    "coordinates": {
-      "lat": 28.66818,
-      "lng": 77.45859
-    },
-    "price": 399,
-    "rating": 4.7,
-    "reviewsCount": 347,
-    "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80",
-    "calories": 410,
-    "protein": 44,
-    "carbs": 8,
-    "fat": 18,
-    "fiber": 4,
-    "dietTags": [
-      "Seed Oil Free",
-      "Gluten-Free",
-      "High Protein",
-      "High Fiber",
-      "Low Sugar",
-      "Millet / Whole Grain"
-    ],
-    "cookingFat": "Wood-Pressed Virgin Coconut Oil",
-    "isSeedOilFree": true,
-    "isGlutenFree": true,
-    "isKeto": true,
-    "isGrassFed": false,
-    "isDairyFree": true,
-    "highlights": [
-      "44g Wild Marine Protein",
-      "Wood-Pressed Coconut Oil",
-      "Zero Seed Oils",
-      "Heart-Healthy Omega 3",
-      "100% Gluten-Free"
-    ],
-    "ingredients": [
-      "Wild-caught coastal kingfish / surmai",
-      "freshly ground Malabar pepper",
-      "kokum extract",
-      "curry leaves",
-      "steamed French beans"
-    ],
-    "chefNotes": "Fresh caught kingfish pan-seared gently in cold-pressed virgin coconut oil with digestive kokum. Zero batter, zero trans-fats."
-  },
-  {
-    "id": "in-ghaziabad-201014-3",
-    "name": "Jowar Bhakri with Sprouted Matki Usal",
-    "restaurant": "Swaad Organic (Kaushambi / Indirapuram)",
-    "restaurantAddress": "Aditya City Centre, Indirapuram, Ghaziabad, Uttar Pradesh 201014",
-    "city": "Ghaziabad",
-    "coordinates": {
-      "lat": 28.65904,
-      "lng": 77.44239
-    },
-    "price": 320,
-    "rating": 4.7,
-    "reviewsCount": 155,
-    "image": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=800&q=80",
-    "calories": 320,
-    "protein": 21,
+    "reviewsCount": 512,
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "calories": 360,
+    "protein": 22,
     "carbs": 42,
-    "fat": 6,
+    "fat": 10,
     "fiber": 10,
     "dietTags": [
       "Seed Oil Free",
       "Gluten-Free",
-      "High Protein",
       "High Fiber",
       "Low Sugar",
-      "Millet / Whole Grain"
+      "Millet / Whole Grain",
+      "Vegetarian"
     ],
     "cookingFat": "Pure A2 Desi Cow Ghee",
     "isSeedOilFree": true,
     "isGlutenFree": true,
     "isKeto": false,
     "isGrassFed": true,
-    "isDairyFree": true,
+    "isDairyFree": false,
     "highlights": [
-      "21g Plant Protein",
-      "Pure A2 Ghee",
+      "Prebiotic Gut Fuel",
+      "Pure A2 Cow Ghee",
       "Zero Seed Oils",
-      "10g Millet Fiber",
+      "10g Dietary Fiber",
       "100% Gluten-Free"
     ],
     "ingredients": [
-      "100% Hand-pressed jowar (sorghum) flour",
-      "sprouted dew beans (matki)",
-      "fresh ginger & garlic",
-      "tempered mustard seeds",
-      "green chili"
+      "Sprouted green moong dal",
+      "brown unpolished rice",
+      "steamed baby spinach purée",
+      "sweet corn kernels",
+      "A2 cow ghee tadka",
+      "cumin & ginger"
     ],
-    "chefNotes": "Ancient grain sorghum roti hand-patted and puffed on cast-iron tawa, served with enzymatic sprouted dew bean curry. 100% gluten-free."
+    "chefNotes": "Ayurvedic comforting gut-restorative meal. Cooked in pure desi ghee with digestive hing and jeera without any palm or refined oils."
   },
   {
-    "id": "in-ghaziabad-201014-4",
-    "name": "Steamed Ragi Mudde with Huruli (Horsegram) Saaru",
-    "restaurant": "Karnataka Millets (Kaushambi / Indirapuram)",
-    "restaurantAddress": "Aditya City Centre, Indirapuram, Ghaziabad, Uttar Pradesh 201014",
+    "id": "in-ghaziabad-indirapuram-6",
+    "name": "Tender Chicken Keema & Multigrain Roti Plate (Zero Maida)",
+    "restaurant": "EatFit (Vaibhav Khand, Indirapuram)",
+    "restaurantAddress": "Plot 12, Ground Floor, Vaibhav Khand, Indirapuram, Ghaziabad, Uttar Pradesh 201014",
     "city": "Ghaziabad",
     "coordinates": {
-      "lat": 28.6574,
-      "lng": 77.45265
+      "lat": 28.6441,
+      "lng": 77.3725
     },
-    "price": 223,
+    "price": 289,
+    "rating": 4.8,
+    "reviewsCount": 390,
+    "image": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80",
+    "calories": 410,
+    "protein": 45,
+    "carbs": 26,
+    "fat": 12,
+    "fiber": 11,
+    "dietTags": [
+      "Seed Oil Free",
+      "High Protein",
+      "High Fiber",
+      "Low Sugar",
+      "Clean Whole Food"
+    ],
+    "cookingFat": "Cold-Pressed Kachi Ghani Mustard Oil",
+    "isSeedOilFree": true,
+    "isGlutenFree": false,
+    "isKeto": false,
+    "isGrassFed": false,
+    "isDairyFree": true,
+    "highlights": [
+      "45g High Protein",
+      "Cold-Pressed Mustard Oil",
+      "Zero Seed Oils",
+      "11g Whole Grain Fiber",
+      "Zero Maida"
+    ],
+    "ingredients": [
+      "Lean minced chicken breast",
+      "whole wheat & ragi multigrain rotis",
+      "slow-cooked onion-tomato gravy",
+      "kachi ghani mustard oil",
+      "fresh coriander"
+    ],
+    "chefNotes": "Minced breast meat braised gently in wood-pressed mustard oil with whole aromatic spices. Paired with 100% whole grain rotis."
+  },
+  {
+    "id": "in-ghaziabad-indirapuram-7",
+    "name": "Sourdough Avocado Poached Egg Toast with Roasted Seeds",
+    "restaurant": "Blue Tokai Coffee Roasters (Ahinsa Khand 2, Indirapuram)",
+    "restaurantAddress": "Windsor Street Market, Ahinsa Khand 2, Indirapuram, Ghaziabad, Uttar Pradesh 201014",
+    "city": "Ghaziabad",
+    "coordinates": {
+      "lat": 28.6385,
+      "lng": 77.3812
+    },
+    "price": 340,
     "rating": 4.9,
-    "reviewsCount": 274,
-    "image": "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=800&q=80",
-    "calories": 290,
-    "protein": 23,
-    "carbs": 38,
+    "reviewsCount": 310,
+    "image": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=800&q=80",
+    "calories": 320,
+    "protein": 21,
+    "carbs": 22,
+    "fat": 16,
+    "fiber": 7,
+    "dietTags": [
+      "Seed Oil Free",
+      "High Protein",
+      "High Fiber",
+      "Low Sugar",
+      "Clean Whole Food"
+    ],
+    "cookingFat": "Cold-Pressed Extra Virgin Olive Oil",
+    "isSeedOilFree": true,
+    "isGlutenFree": false,
+    "isKeto": false,
+    "isGrassFed": false,
+    "isDairyFree": true,
+    "highlights": [
+      "21g Natural Egg Protein",
+      "Cold-Pressed Olive Oil",
+      "Zero Seed Oils",
+      "Wild-Fermented Sourdough",
+      "Healthy Fats"
+    ],
+    "ingredients": [
+      "Naturally fermented sourdough slice",
+      "fresh Hass avocado mash",
+      "two cage-free poached eggs",
+      "toasted pumpkin & chia seeds",
+      "chili flakes"
+    ],
+    "chefNotes": "Wild sourdough bread with natural sourdough culture for easy digestion, crowned with farm poached eggs and healthy avocado lipids."
+  },
+  {
+    "id": "in-ghaziabad-vaishali-1",
+    "name": "High-Protein Sprouted Moong & Pomegranate Chaat",
+    "restaurant": "Roots & Greens Clean Eatery (Sector 4, Vaishali)",
+    "restaurantAddress": "Near Vaishali Metro Station, Sector 4, Vaishali, Ghaziabad, Uttar Pradesh 201010",
+    "city": "Ghaziabad",
+    "coordinates": {
+      "lat": 28.6482,
+      "lng": 77.3395
+    },
+    "price": 180,
+    "rating": 4.8,
+    "reviewsCount": 275,
+    "image": "https://images.unsplash.com/photo-1547496502-affa22d38842?auto=format&fit=crop&w=800&q=80",
+    "calories": 240,
+    "protein": 20,
+    "carbs": 32,
     "fat": 4,
     "fiber": 12,
     "dietTags": [
@@ -2389,48 +2342,152 @@ export const INDIA_DISHES: Dish[] = [
       "High Protein",
       "High Fiber",
       "Low Sugar",
-      "Millet / Whole Grain"
+      "Vegetarian",
+      "Vegan"
+    ],
+    "cookingFat": "Cold-Pressed Kachi Ghani Mustard Oil",
+    "isSeedOilFree": true,
+    "isGlutenFree": true,
+    "isKeto": false,
+    "isGrassFed": false,
+    "isDairyFree": true,
+    "highlights": [
+      "20g Clean Pulse Protein",
+      "Raw Cold-Pressed Mustard Oil",
+      "Zero Seed Oils",
+      "12g Fiber Superfood",
+      "100% Gluten-Free"
+    ],
+    "ingredients": [
+      "Sprouted whole green moong",
+      "boiled kabuli chana",
+      "ruby pomegranate arils",
+      "chopped English cucumber",
+      "roasted jeera",
+      "sendha namak",
+      "fresh lime juice"
+    ],
+    "chefNotes": "Living enzymatic sprouted beans mixed raw with digestion-friendly roasted cumin and cold-pressed mustard oil. Pure clean vitality."
+  },
+  {
+    "id": "in-ghaziabad-vaishali-2",
+    "name": "Steamed Edamame & Roasted Paneer Power Bowl",
+    "restaurant": "Roots & Greens Clean Eatery (Sector 4, Vaishali)",
+    "restaurantAddress": "Near Vaishali Metro Station, Sector 4, Vaishali, Ghaziabad, Uttar Pradesh 201010",
+    "city": "Ghaziabad",
+    "coordinates": {
+      "lat": 28.6486,
+      "lng": 77.3398
+    },
+    "price": 320,
+    "rating": 4.9,
+    "reviewsCount": 198,
+    "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "calories": 350,
+    "protein": 34,
+    "carbs": 18,
+    "fat": 16,
+    "fiber": 8,
+    "dietTags": [
+      "Seed Oil Free",
+      "Gluten-Free",
+      "High Protein",
+      "High Fiber",
+      "Low Sugar",
+      "Vegetarian"
+    ],
+    "cookingFat": "Cold-Pressed Sesame Oil",
+    "isSeedOilFree": true,
+    "isGlutenFree": true,
+    "isKeto": true,
+    "isGrassFed": true,
+    "isDairyFree": false,
+    "highlights": [
+      "34g Complete Plant & Dairy Protein",
+      "Cold-Pressed Sesame Oil",
+      "Zero Seed Oils",
+      "8g Fiber",
+      "100% Gluten-Free"
+    ],
+    "ingredients": [
+      "Young steamed edamame beans",
+      "clay-roasted artisanal cow paneer",
+      "baby spinach",
+      "steamed carrots",
+      "toasted white sesame",
+      "tamari dressing"
+    ],
+    "chefNotes": "Combines complete amino acid profile of edamame with unadulterated cow paneer lightly charred in clay oven. Low glycemic, zero seed oils."
+  },
+  {
+    "id": "in-ghaziabad-kaushambi-1",
+    "name": "Tandoori Angara Paneer Tikka (Zero Batter, Clay Roasted)",
+    "restaurant": "Haldiram's Sattvik Tandoor (Pacific Mall, Kaushambi)",
+    "restaurantAddress": "Pacific Mall, Plot 1, Site 4, Sahibabad / Kaushambi, Ghaziabad, Uttar Pradesh 201010",
+    "city": "Ghaziabad",
+    "coordinates": {
+      "lat": 28.6542,
+      "lng": 77.3312
+    },
+    "price": 295,
+    "rating": 4.8,
+    "reviewsCount": 460,
+    "image": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80",
+    "calories": 360,
+    "protein": 30,
+    "carbs": 10,
+    "fat": 20,
+    "fiber": 5,
+    "dietTags": [
+      "Seed Oil Free",
+      "Gluten-Free",
+      "High Protein",
+      "Low Carb",
+      "Keto",
+      "Low Sugar",
+      "Vegetarian"
     ],
     "cookingFat": "Pure A2 Desi Cow Ghee",
     "isSeedOilFree": true,
     "isGlutenFree": true,
-    "isKeto": false,
+    "isKeto": true,
     "isGrassFed": true,
-    "isDairyFree": true,
+    "isDairyFree": false,
     "highlights": [
-      "23g High-Protein Broth",
-      "Pure A2 Cow Ghee",
-      "Zero Seed Oils",
-      "12g High Fiber",
+      "30g Dairy Protein",
+      "Pure A2 Desi Ghee",
+      "Clay Tandoor Roasting",
+      "Zero Maida / Batter",
       "100% Gluten-Free"
     ],
     "ingredients": [
-      "Finger millet (ragi) whole grain flour",
-      "horsegram (kulthi) slow broth",
-      "crushed peppercorns",
-      "fresh coriander roots",
-      "curry leaf tadka"
+      "Thick cubes of fresh malai paneer",
+      "hung curd marinade",
+      "Kashmiri red chili",
+      "ajwain",
+      "roasted chickpea flour (besan)",
+      "mint chutney"
     ],
-    "chefNotes": "Legendary Ayurvedic endurance staple. Steamed mineral-rich ragi ball paired with high-protein horsegram broth. Zero seed oils."
+    "chefNotes": "Traditional north Indian clay tandoor roast without cornstarch or refined flour. Brushes only pure desi cow ghee before serving."
   },
   {
-    "id": "in-ghaziabad-201014-5",
-    "name": "High-Protein Sattu & Roasted Jeera Buttermilk Bowl",
-    "restaurant": "Bihar Sattu & Grain (Kaushambi / Indirapuram)",
-    "restaurantAddress": "Aditya City Centre, Indirapuram, Ghaziabad, Uttar Pradesh 201014",
+    "id": "in-ghaziabad-kaushambi-2",
+    "name": "Steamed Kuttu & Sprouted Green Moong Chilla",
+    "restaurant": "Haldiram's Sattvik Tandoor (Pacific Mall, Kaushambi)",
+    "restaurantAddress": "Pacific Mall, Plot 1, Site 4, Sahibabad / Kaushambi, Ghaziabad, Uttar Pradesh 201010",
     "city": "Ghaziabad",
     "coordinates": {
-      "lat": 28.67457,
-      "lng": 77.45758
+      "lat": 28.6545,
+      "lng": 77.3318
     },
-    "price": 228,
+    "price": 195,
     "rating": 4.7,
-    "reviewsCount": 397,
+    "reviewsCount": 315,
     "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
-    "calories": 270,
-    "protein": 24,
-    "carbs": 30,
-    "fat": 5,
+    "calories": 220,
+    "protein": 19,
+    "carbs": 28,
+    "fat": 4,
     "fiber": 9,
     "dietTags": [
       "Seed Oil Free",
@@ -2438,29 +2495,484 @@ export const INDIA_DISHES: Dish[] = [
       "High Protein",
       "High Fiber",
       "Low Sugar",
-      "Millet / Whole Grain"
+      "Vegetarian",
+      "Vegan"
+    ],
+    "cookingFat": "Cold-Pressed Groundnut Oil",
+    "isSeedOilFree": true,
+    "isGlutenFree": true,
+    "isKeto": false,
+    "isGrassFed": false,
+    "isDairyFree": true,
+    "highlights": [
+      "19g Clean Plant Protein",
+      "Wood-Pressed Peanut Oil",
+      "Zero Seed Oils",
+      "9g Prebiotic Fiber",
+      "100% Gluten-Free"
+    ],
+    "ingredients": [
+      "Stone-ground buckwheat (kuttu) flour",
+      "sprouted moong paste",
+      "fresh green chilies",
+      "ginger",
+      "cold-pressed groundnut oil",
+      "fresh coriander mint dip"
+    ],
+    "chefNotes": "Naturally gluten-free crepe griddled on cast iron with minimal unrefined peanut oil. High in bioavailable magnesium and zinc."
+  },
+  {
+    "id": "in-ghaziabad-vaishali-3",
+    "name": "Homestyle Millet Poha with Roasted Peanuts & Curry Leaves",
+    "restaurant": "Chai Point Clean Kitchen (Mahagun Metro Mall, Vaishali)",
+    "restaurantAddress": "Food Court, Mahagun Metro Mall, Sector 3, Vaishali, Ghaziabad, Uttar Pradesh 201010",
+    "city": "Ghaziabad",
+    "coordinates": {
+      "lat": 28.6465,
+      "lng": 77.3421
+    },
+    "price": 160,
+    "rating": 4.7,
+    "reviewsCount": 340,
+    "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80",
+    "calories": 260,
+    "protein": 14,
+    "carbs": 36,
+    "fat": 7,
+    "fiber": 7,
+    "dietTags": [
+      "Seed Oil Free",
+      "Gluten-Free",
+      "High Fiber",
+      "Low Sugar",
+      "Millet / Whole Grain",
+      "Vegetarian"
     ],
     "cookingFat": "Cold-Pressed Kachi Ghani Mustard Oil",
     "isSeedOilFree": true,
     "isGlutenFree": true,
     "isKeto": false,
     "isGrassFed": false,
-    "isDairyFree": false,
+    "isDairyFree": true,
     "highlights": [
-      "24g Clean Pulse Protein",
-      "Probiotic Chaas",
+      "Foxtail Millet Flakes",
+      "Cold-Pressed Mustard Oil",
       "Zero Seed Oils",
-      "9g Prebiotic Fiber",
+      "7g Fiber",
       "100% Gluten-Free"
     ],
     "ingredients": [
-      "Toasted Bengal gram (sattu) flour",
-      "churned A2 cow milk chaas",
-      "finely chopped shallots & green chilies",
-      "kala namak",
-      "roasted cumin"
+      "Foxtail millet flakes (poha)",
+      "crispy roasted red peanuts",
+      "curry leaves",
+      "black mustard seeds",
+      "green chilies",
+      "turmeric",
+      "fresh lemon"
     ],
-    "chefNotes": "Cooling powerhouse protein meal with roasted chana flour suspended in churned dahi. Extremely low glycemic index and 100% gluten-free."
+    "chefNotes": "Crafted with prebiotic millet flakes instead of stripped white paddy rice. Tempered in virgin mustard oil with anti-inflammatory turmeric."
+  },
+  {
+    "id": "in-ghaziabad-rajnagar-1",
+    "name": "Char-Grilled Rosemary Lemon Chicken Breast with Asparagus",
+    "restaurant": "The Healthy Table (RDC Raj Nagar)",
+    "restaurantAddress": "C-45, Raj Nagar District Centre (RDC), Raj Nagar, Ghaziabad, Uttar Pradesh 201002",
+    "city": "Ghaziabad",
+    "coordinates": {
+      "lat": 28.6792,
+      "lng": 77.4412
+    },
+    "price": 395,
+    "rating": 4.9,
+    "reviewsCount": 380,
+    "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "calories": 370,
+    "protein": 48,
+    "carbs": 6,
+    "fat": 14,
+    "fiber": 6,
+    "dietTags": [
+      "Seed Oil Free",
+      "Gluten-Free",
+      "High Protein",
+      "Low Carb",
+      "Keto",
+      "Low Sugar",
+      "Clean Whole Food"
+    ],
+    "cookingFat": "Cold-Pressed Extra Virgin Olive Oil",
+    "isSeedOilFree": true,
+    "isGlutenFree": true,
+    "isKeto": true,
+    "isGrassFed": false,
+    "isDairyFree": true,
+    "highlights": [
+      "48g Ultra-Clean Protein",
+      "Cold-Pressed Olive Oil",
+      "Zero Seed Oils",
+      "Keto 6g Net Carbs",
+      "100% Gluten-Free"
+    ],
+    "ingredients": [
+      "Fresh farm chicken breast",
+      "fresh rosemary sprigs",
+      "fresh lemon zest",
+      "tender blanched asparagus spears",
+      "garlic cloves",
+      "cold-pressed olive oil",
+      "sea salt"
+    ],
+    "chefNotes": "Chef-favorite lean chicken breast marinated in fresh herbs and seared over lava rock grill without vegetable oil blends."
+  },
+  {
+    "id": "in-ghaziabad-rajnagar-2",
+    "name": "Pan-Seared Tofu & Broccoli Teriyaki Bowl with Black Rice",
+    "restaurant": "The Healthy Table (RDC Raj Nagar)",
+    "restaurantAddress": "C-45, Raj Nagar District Centre (RDC), Raj Nagar, Ghaziabad, Uttar Pradesh 201002",
+    "city": "Ghaziabad",
+    "coordinates": {
+      "lat": 28.6795,
+      "lng": 77.4418
+    },
+    "price": 330,
+    "rating": 4.8,
+    "reviewsCount": 220,
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "calories": 320,
+    "protein": 26,
+    "carbs": 32,
+    "fat": 10,
+    "fiber": 9,
+    "dietTags": [
+      "Seed Oil Free",
+      "Gluten-Free",
+      "High Protein",
+      "High Fiber",
+      "Low Sugar",
+      "Vegetarian",
+      "Vegan"
+    ],
+    "cookingFat": "Cold-Pressed Sesame Oil",
+    "isSeedOilFree": true,
+    "isGlutenFree": true,
+    "isKeto": false,
+    "isGrassFed": false,
+    "isDairyFree": true,
+    "highlights": [
+      "26g Organic Soy Protein",
+      "Antioxidant Black Rice",
+      "Zero Seed Oils",
+      "9g Dietary Fiber",
+      "Vegan & Gluten-Free"
+    ],
+    "ingredients": [
+      "Non-GMO organic firm tofu",
+      "steamed broccoli & baby corn",
+      "Assamese black forbidden rice",
+      "cold-pressed sesame oil",
+      "naturally fermented gluten-free tamari"
+    ],
+    "chefNotes": "Nutrient-dense vegan bowl featuring anthocyanin-packed black rice and organic tofu griddled in pure sesame oil."
+  },
+  {
+    "id": "in-ghaziabad-rajnagar-3",
+    "name": "Hand-Patted Bajra (Pearl Millet) Roti with Desi Ghee Sarson Saag",
+    "restaurant": "Organic Desi Rasoi (Sector 10, Raj Nagar)",
+    "restaurantAddress": "Market Complex, Sector 10, Raj Nagar, Ghaziabad, Uttar Pradesh 201002",
+    "city": "Ghaziabad",
+    "coordinates": {
+      "lat": 28.6835,
+      "lng": 77.4462
+    },
+    "price": 260,
+    "rating": 4.9,
+    "reviewsCount": 310,
+    "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80",
+    "calories": 340,
+    "protein": 18,
+    "carbs": 40,
+    "fat": 12,
+    "fiber": 12,
+    "dietTags": [
+      "Seed Oil Free",
+      "Gluten-Free",
+      "High Fiber",
+      "Low Sugar",
+      "Millet / Whole Grain",
+      "Vegetarian"
+    ],
+    "cookingFat": "Pure A2 Desi Cow Ghee",
+    "isSeedOilFree": true,
+    "isGlutenFree": true,
+    "isKeto": false,
+    "isGrassFed": true,
+    "isDairyFree": false,
+    "highlights": [
+      "18g Heritage Protein",
+      "Pure A2 Cow Ghee",
+      "Zero Seed Oils",
+      "12g Ancient Grain Fiber",
+      "100% Gluten-Free"
+    ],
+    "ingredients": [
+      "100% stone-ground pearl millet (bajra)",
+      "fresh mustard leaves (sarson)",
+      "bathua & spinach",
+      "slow-simmered in clay handi",
+      "pure A2 bilona ghee",
+      "white butter dollop"
+    ],
+    "chefNotes": "Pure winter Ayurvedic heritage meal made on earthern chulha with stone-ground bajra and iron-rich mustard leaves simmered in A2 bilona ghee."
+  },
+  {
+    "id": "in-ghaziabad-rajnagar-4",
+    "name": "Roasted Makhana & Sprouted Black Chana Energy Salad",
+    "restaurant": "Organic Desi Rasoi (Sector 10, Raj Nagar)",
+    "restaurantAddress": "Market Complex, Sector 10, Raj Nagar, Ghaziabad, Uttar Pradesh 201002",
+    "city": "Ghaziabad",
+    "coordinates": {
+      "lat": 28.6838,
+      "lng": 77.4468
+    },
+    "price": 190,
+    "rating": 4.8,
+    "reviewsCount": 195,
+    "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "calories": 230,
+    "protein": 19,
+    "carbs": 30,
+    "fat": 5,
+    "fiber": 11,
+    "dietTags": [
+      "Seed Oil Free",
+      "Gluten-Free",
+      "High Protein",
+      "High Fiber",
+      "Low Sugar",
+      "Vegetarian",
+      "Vegan"
+    ],
+    "cookingFat": "Cold-Pressed Kachi Ghani Mustard Oil",
+    "isSeedOilFree": true,
+    "isGlutenFree": true,
+    "isKeto": false,
+    "isGrassFed": false,
+    "isDairyFree": true,
+    "highlights": [
+      "19g Clean Plant Protein",
+      "Crispy Foxnuts (Makhana)",
+      "Zero Seed Oils",
+      "11g Fiber",
+      "100% Gluten-Free"
+    ],
+    "ingredients": [
+      "Slow-roasted foxnuts (makhana)",
+      "overnight sprouted black chickpeas (kala chana)",
+      "cucumber chunks",
+      "pomegranate seeds",
+      "kachhi ghani mustard oil",
+      "chaat spices"
+    ],
+    "chefNotes": "Low-glycemic afternoon snack bowl bursting with plant protein, bioflavonoids, and dietary fiber without refined fats."
+  },
+  {
+    "id": "in-ghaziabad-rajnagarext-1",
+    "name": "Smoked Paprika Chicken Skewers with Mint Labneh",
+    "restaurant": "Fit Meals Kitchen (Raj Nagar Extension)",
+    "restaurantAddress": "VVIP Style Mall, Raj Nagar Extension, Ghaziabad, Uttar Pradesh 201017",
+    "city": "Ghaziabad",
+    "coordinates": {
+      "lat": 28.7112,
+      "lng": 77.4285
+    },
+    "price": 360,
+    "rating": 4.8,
+    "reviewsCount": 260,
+    "image": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80",
+    "calories": 390,
+    "protein": 46,
+    "carbs": 6,
+    "fat": 16,
+    "fiber": 4,
+    "dietTags": [
+      "Seed Oil Free",
+      "Gluten-Free",
+      "High Protein",
+      "Low Carb",
+      "Keto",
+      "Low Sugar"
+    ],
+    "cookingFat": "Cold-Pressed Extra Virgin Olive Oil",
+    "isSeedOilFree": true,
+    "isGlutenFree": true,
+    "isKeto": true,
+    "isGrassFed": false,
+    "isDairyFree": false,
+    "highlights": [
+      "46g Clean Protein",
+      "Zero Seed Oils",
+      "Cold-Pressed Olive Oil",
+      "Probiotic Labneh",
+      "100% Gluten-Free"
+    ],
+    "ingredients": [
+      "Lean chicken breast cubes",
+      "Spanish smoked paprika",
+      "crushed garlic",
+      "hung cow milk yogurt (labneh)",
+      "fresh garden mint",
+      "cold-pressed olive oil"
+    ],
+    "chefNotes": "Flame-grilled chicken skewers seasoned with unadulterated ground spices and served with probiotic Greek-style strained dahi."
+  },
+  {
+    "id": "in-ghaziabad-vasundhara-1",
+    "name": "Scrambled Soya & Bell Pepper High-Protein Bhurji with Roti",
+    "restaurant": "NutriBowl Kitchen (Sector 12, Vasundhara)",
+    "restaurantAddress": "Main Road, Sector 12, Vasundhara, Ghaziabad, Uttar Pradesh 201012",
+    "city": "Ghaziabad",
+    "coordinates": {
+      "lat": 28.6582,
+      "lng": 77.3621
+    },
+    "price": 210,
+    "rating": 4.7,
+    "reviewsCount": 280,
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "calories": 310,
+    "protein": 32,
+    "carbs": 24,
+    "fat": 8,
+    "fiber": 8,
+    "dietTags": [
+      "Seed Oil Free",
+      "High Protein",
+      "High Fiber",
+      "Low Sugar",
+      "Vegetarian",
+      "Clean Whole Food"
+    ],
+    "cookingFat": "Cold-Pressed Kachi Ghani Mustard Oil",
+    "isSeedOilFree": true,
+    "isGlutenFree": false,
+    "isKeto": false,
+    "isGrassFed": false,
+    "isDairyFree": true,
+    "highlights": [
+      "32g Plant Protein",
+      "Cold-Pressed Mustard Oil",
+      "Zero Seed Oils",
+      "8g Fiber",
+      "Zero Added Sugar"
+    ],
+    "ingredients": [
+      "Granulated defatted soya chunks",
+      "tri-color bell peppers",
+      "finely chopped red onions",
+      "turmeric",
+      "fresh ginger",
+      "kachi ghani mustard oil",
+      "two whole wheat rotis"
+    ],
+    "chefNotes": "Powerhouse protein dish for vegetarian muscle recovery. Cooked dry on iron kadai with cold-pressed mustard oil."
+  },
+  {
+    "id": "in-ghaziabad-vasundhara-2",
+    "name": "Chia Seed & Overnight Rolled Oats Bowl with Berries & Almonds",
+    "restaurant": "NutriBowl Kitchen (Sector 12, Vasundhara)",
+    "restaurantAddress": "Main Road, Sector 12, Vasundhara, Ghaziabad, Uttar Pradesh 201012",
+    "city": "Ghaziabad",
+    "coordinates": {
+      "lat": 28.6585,
+      "lng": 77.3626
+    },
+    "price": 240,
+    "rating": 4.9,
+    "reviewsCount": 315,
+    "image": "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=800&q=80",
+    "calories": 280,
+    "protein": 16,
+    "carbs": 34,
+    "fat": 8,
+    "fiber": 9,
+    "dietTags": [
+      "Seed Oil Free",
+      "Gluten-Free",
+      "High Fiber",
+      "Low Sugar",
+      "Vegetarian",
+      "Clean Whole Food"
+    ],
+    "cookingFat": "Zero Added Oil",
+    "isSeedOilFree": true,
+    "isGlutenFree": true,
+    "isKeto": false,
+    "isGrassFed": false,
+    "isDairyFree": true,
+    "highlights": [
+      "16g Natural Protein",
+      "Certified Gluten-Free Oats",
+      "Zero Refined Sugar",
+      "9g Prebiotic Fiber",
+      "Dairy-Free Almond Milk"
+    ],
+    "ingredients": [
+      "Gluten-free whole rolled oats",
+      "unsweetened almond milk",
+      "black chia seeds",
+      "blueberries",
+      "sliced Mamra almonds",
+      "raw forest honey"
+    ],
+    "chefNotes": "Slow-soaked overnight oats enriched with omega-3 chia seeds and polyphenol-dense berries. Steady glycemic release without sugar crashes."
+  },
+  {
+    "id": "in-ghaziabad-crossings-1",
+    "name": "Tandoori Malai Soya Chaap (Zero Refined Flour, Clay Roasted)",
+    "restaurant": "Green Leaf Kitchen (Crossings Republik)",
+    "restaurantAddress": "Galleria Market, Crossings Republik, Ghaziabad, Uttar Pradesh 201016",
+    "city": "Ghaziabad",
+    "coordinates": {
+      "lat": 28.6321,
+      "lng": 77.4425
+    },
+    "price": 275,
+    "rating": 4.8,
+    "reviewsCount": 340,
+    "image": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80",
+    "calories": 340,
+    "protein": 33,
+    "carbs": 14,
+    "fat": 16,
+    "fiber": 6,
+    "dietTags": [
+      "Seed Oil Free",
+      "High Protein",
+      "Low Carb",
+      "Low Sugar",
+      "Vegetarian"
+    ],
+    "cookingFat": "Pure A2 Desi Cow Ghee",
+    "isSeedOilFree": true,
+    "isGlutenFree": false,
+    "isKeto": true,
+    "isGrassFed": true,
+    "isDairyFree": false,
+    "highlights": [
+      "33g Plant Protein",
+      "Pure A2 Desi Ghee",
+      "Zero Seed Oils",
+      "Clay Tandoor Roasting",
+      "Zero Maida Fillers"
+    ],
+    "ingredients": [
+      "100% natural soya chaap (zero maida)",
+      "hung cow milk dahi marinade",
+      "cracked black pepper",
+      "A2 cow ghee",
+      "green coriander chutney"
+    ],
+    "chefNotes": "Clean soya chaap made exclusively without all-purpose maida fillers. Lightly brushed with A2 cow ghee and roasted until smoky in clay oven."
   },
   {
     "id": "in-bengaluru-560004-1",

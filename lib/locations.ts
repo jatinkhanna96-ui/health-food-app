@@ -80,8 +80,20 @@ export const INDIAN_CITIES: CityConfig[] = [
     region: 'Delhi NCR',
     coordinates: { lat: 28.6692, lng: 77.4538 },
     zoom: 12,
-    aliases: ['ghaziabad'],
-    isPopular: false,
+    aliases: [
+      'ghaziabad',
+      'indirapuram',
+      'vaishali',
+      'kaushambi',
+      'raj nagar',
+      'raj nagar extension',
+      'vasundhara',
+      'crossings republik',
+      'delhi ncr',
+      'ncr',
+      'gzb'
+    ],
+    isPopular: true,
   },
 
   // South
