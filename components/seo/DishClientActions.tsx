@@ -56,17 +56,17 @@ export default function DishClientActions({ dish }: DishClientActionsProps) {
       <button
         id="seo-share-dish-btn"
         onClick={handleShare}
-        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#123D2A] hover:bg-[#1B4D36] text-[#b6f7c1] border border-[#1B3B2F] text-xs font-semibold transition-all cursor-pointer active:scale-95 shadow-sm"
+        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-[#FAF6EE] text-[#231815] border border-[#E8DEC8] text-xs font-bold transition-all cursor-pointer active:scale-95 shadow-xs"
         title="Share this clean dish link"
       >
         {copied ? (
           <>
-            <Check className="w-3.5 h-3.5 text-[#35E27F]" />
-            <span>Link Copied!</span>
+            <Check className="w-3.5 h-3.5 text-[#2D5A34]" />
+            <span className="text-[#2D5A34]">Link Copied!</span>
           </>
         ) : (
           <>
-            <Share2 className="w-3.5 h-3.5 text-[#35E27F]" />
+            <Share2 className="w-3.5 h-3.5 text-[#C86A1D]" />
             <span>Share Dish</span>
           </>
         )}
@@ -76,16 +76,16 @@ export default function DishClientActions({ dish }: DishClientActionsProps) {
       <button
         id="seo-save-dish-btn"
         onClick={handleToggleSave}
-        className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border text-xs font-semibold transition-all cursor-pointer active:scale-95 shadow-sm ${
+        className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer active:scale-95 shadow-xs ${
           saved
-            ? 'bg-[#35E27F] text-[#07130F] border-[#35E27F]'
-            : 'bg-[#123D2A] hover:bg-[#1B4D36] text-[#F5F7F3] border-[#1B3B2F]'
+            ? 'bg-[#C86A1D] text-white border-[#C86A1D]'
+            : 'bg-white hover:bg-[#FAF6EE] text-[#231815] border-[#E8DEC8]'
         }`}
         title="Save to your clean dining list"
       >
         <Bookmark
           className={`w-3.5 h-3.5 ${
-            saved ? 'fill-current text-[#07130F]' : 'text-[#35E27F]'
+            saved ? 'fill-current text-white' : 'text-[#C86A1D]'
           }`}
         />
         <span>{saved ? 'Saved to List' : 'Save Dish'}</span>
@@ -97,11 +97,11 @@ export default function DishClientActions({ dish }: DishClientActionsProps) {
         href={mapsUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0F231B] hover:bg-[#123D2A] text-[#A8B5AE] hover:text-[#F5F7F3] border border-[#1B3B2F] text-xs font-semibold transition-all cursor-pointer active:scale-95"
+        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FAF6EE] hover:bg-[#F4EDE2] text-[#6B5E55] hover:text-[#231815] border border-[#E8DEC8] text-xs font-bold transition-all cursor-pointer active:scale-95"
       >
-        <Navigation className="w-3.5 h-3.5 text-[#35E27F]" />
+        <Navigation className="w-3.5 h-3.5 text-[#2D5A34]" />
         <span>Directions</span>
-        <ExternalLink className="w-3 h-3 text-[#A8B5AE]" />
+        <ExternalLink className="w-3 h-3 text-[#8C7E72]" />
       </a>
     </div>
   );

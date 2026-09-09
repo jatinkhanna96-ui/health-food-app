@@ -631,29 +631,29 @@ export default function HomePage() {
   const allCityDishesCount = dishes.filter((d) => d.city === selectedCity.name).length;
 
   return (
-    <div className="min-h-screen bg-[#07130F] text-[#F5F7F3] flex flex-col font-sans selection:bg-[#35E27F]/25 selection:text-[#35E27F] relative overflow-x-hidden">
-      {/* Subtle Radial Glows */}
-      <div className="fixed top-12 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[#35E27F]/[0.04] rounded-full blur-[120px] pointer-events-none -z-10" />
-      <div className="fixed bottom-20 right-10 w-96 h-96 bg-[#123D2A]/30 rounded-full blur-[100px] pointer-events-none -z-10" />
+    <div className="min-h-screen bg-[#FAF6EE] text-[#231815] flex flex-col font-sans selection:bg-[#F5C842]/35 selection:text-[#231815] relative overflow-x-hidden">
+      {/* Warm Ambient Glows */}
+      <div className="fixed top-12 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[#F5C842]/[0.08] rounded-full blur-[140px] pointer-events-none -z-10" />
+      <div className="fixed bottom-20 right-10 w-96 h-96 bg-[#C86A1D]/[0.05] rounded-full blur-[120px] pointer-events-none -z-10" />
 
       {/* ========================================================================= */}
       {/* MISSION & VISION ANNOUNCEMENT BAR                                          */}
       {/* ========================================================================= */}
       <div
         id="mission-vision-announcement-header"
-        className="relative w-full bg-[#0B1A14] border-b border-[#1B3B2F] py-2 sm:py-2.5 px-3.5 sm:px-4 transition-all"
+        className="relative w-full bg-[#FDF8E2] border-b border-[#F0E5C0] py-2 sm:py-2.5 px-3.5 sm:px-4 transition-all"
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2.5 text-xs">
           <div className="flex items-center gap-2 min-w-0">
             <span className="relative flex h-2 w-2 shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#35E27F] opacity-80" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#35E27F]" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C86A1D] opacity-80" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C86A1D]" />
             </span>
-            <span className="text-[#35E27F] uppercase tracking-wider text-[9px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-[#123D2A] border border-[#1B3B2F] shrink-0">
+            <span className="text-[#231815] uppercase tracking-wider text-[9px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#F5C842] border border-[#E8C040] shrink-0">
               Our Vision
             </span>
-            <p className="text-[#F5F7F3] font-medium truncate text-[11px] sm:text-[13px]">
-              Make every meal a choice you can feel good about.
+            <p className="text-[#3B2C24] font-medium truncate text-[11px] sm:text-[13px]">
+              Make every meal a wholesome choice you can feel good about.
             </p>
           </div>
           <button
@@ -661,7 +661,7 @@ export default function HomePage() {
               const elem = document.getElementById('mission-section');
               if (elem) elem.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-[#35E27F] hover:text-[#44eb8c] hover:underline cursor-pointer shrink-0 transition-colors"
+            className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-[#C86A1D] hover:text-[#A84E18] hover:underline cursor-pointer shrink-0 transition-colors"
           >
             <span>Our Mission</span>
             <ArrowRight className="w-3 h-3" />
@@ -673,7 +673,7 @@ export default function HomePage() {
       {/* SLIDE-OUT NEARBY FOOD MAP DRAWER                                          */}
       {/* ========================================================================= */}
       <div
-        className={`fixed inset-0 z-45 bg-black/70 backdrop-blur-xs transition-opacity duration-300 ${
+        className={`fixed inset-0 z-45 bg-black/40 backdrop-blur-xs transition-opacity duration-300 ${
           isMapOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setIsMapOpen(false)}
@@ -681,25 +681,25 @@ export default function HomePage() {
 
       <aside
         id="vicinity-map-drawer"
-        className={`fixed inset-y-0 left-0 z-50 w-[calc(100%-24px)] sm:w-[580px] md:w-[650px] lg:w-[740px] max-w-[760px] bg-[#0B1A14] text-[#F5F7F3] shadow-2xl flex flex-col border-r border-[#1B3B2F] transition-transform duration-300 ease-out transform ${
+        className={`fixed inset-y-0 left-0 z-50 w-[calc(100%-24px)] sm:w-[580px] md:w-[650px] lg:w-[740px] max-w-[760px] bg-[#FAF6EE] text-[#231815] shadow-2xl flex flex-col border-r border-[#E8DEC8] transition-transform duration-300 ease-out transform ${
           isMapOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Drawer Header */}
-        <div className="p-4 sm:p-5 bg-[#07130F] border-b border-[#1B3B2F] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 bg-white border-b border-[#E8DEC8] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#0F231B] text-[#35E27F] flex items-center justify-center shadow-xs border border-[#1B3B2F]">
-              <Radar className={`w-5 h-5 ${isRadarScanning ? 'animate-spin text-[#35E27F]' : ''}`} />
+            <div className="w-10 h-10 rounded-2xl bg-[#FDF5D9] text-[#C86A1D] flex items-center justify-center shadow-xs border border-[#F4E3A8]">
+              <Radar className={`w-5 h-5 ${isRadarScanning ? 'animate-spin text-[#C86A1D]' : ''}`} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-[#F5F7F3] text-base leading-tight">
-                  Nearby Food Map &amp; Directory
+                <h3 className="font-bold text-[#231815] text-base leading-tight">
+                  Neighborhood Food Map &amp; Pantry
                 </h3>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#35E27F] animate-ping" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#2D5A34] animate-ping" />
               </div>
-              <p className="text-[11px] font-medium text-[#35E27F] tracking-wide">
-                {filteredDishes.length} options nearby in {selectedCity.name}
+              <p className="text-[11px] font-semibold text-[#2D5A34] tracking-wide">
+                {filteredDishes.length} wholesome options nearby in {selectedCity.name}
               </p>
             </div>
           </div>
@@ -708,7 +708,7 @@ export default function HomePage() {
             <button
               id="close-map-drawer-btn"
               onClick={() => setIsMapOpen(false)}
-              className="p-2 rounded-xl bg-[#0F231B] hover:bg-[#142C23] text-[#A8B5AE] hover:text-[#F5F7F3] border border-[#1B3B2F] transition-colors cursor-pointer active:scale-95"
+              className="p-2 rounded-xl bg-[#FAF6EE] hover:bg-[#F7F1E5] text-[#6B5E55] hover:text-[#231815] border border-[#E8DEC8] transition-colors cursor-pointer active:scale-95"
               title="Close Map Slider"
             >
               <X className="w-4 h-4" />
@@ -717,17 +717,17 @@ export default function HomePage() {
         </div>
 
         {/* Drawer Controls: View Switcher & Radius Filter */}
-        <div className="p-3 sm:px-5 bg-[#07130F]/60 border-b border-[#1B3B2F] space-y-2.5 shrink-0">
+        <div className="p-3 sm:px-5 bg-white/70 border-b border-[#E8DEC8] space-y-2.5 shrink-0">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             {/* View Mode Segmented Controls */}
-            <div className="inline-flex rounded-xl bg-[#0F231B] p-1 border border-[#1B3B2F] self-start sm:self-auto gap-1">
+            <div className="inline-flex rounded-xl bg-[#FAF6EE] p-1 border border-[#E8DEC8] self-start sm:self-auto gap-1">
               <button
                 id="map-mode-radar-btn"
                 onClick={() => setMapViewMode('map')}
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   mapViewMode === 'map'
-                    ? 'bg-[#35E27F] text-[#07130F] shadow-xs'
-                    : 'text-[#A8B5AE] hover:text-[#F5F7F3]'
+                    ? 'bg-[#C86A1D] text-white shadow-xs'
+                    : 'text-[#6B5E55] hover:text-[#231815]'
                 }`}
                 title="View interactive radar map"
               >
@@ -740,8 +740,8 @@ export default function HomePage() {
                 onClick={() => setMapViewMode('list')}
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   mapViewMode === 'list'
-                    ? 'bg-[#35E27F] text-[#07130F] shadow-xs'
-                    : 'text-[#A8B5AE] hover:text-[#F5F7F3]'
+                    ? 'bg-[#C86A1D] text-white shadow-xs'
+                    : 'text-[#6B5E55] hover:text-[#231815]'
                 }`}
                 title="View dishes list in this radius"
               >
@@ -749,7 +749,7 @@ export default function HomePage() {
                 <span>Dish List</span>
                 <span
                   className={`px-1.5 py-0.2 rounded-md text-[10px] font-bold ${
-                    mapViewMode === 'list' ? 'bg-[#07130F] text-[#35E27F]' : 'bg-[#123D2A] text-[#35E27F]'
+                    mapViewMode === 'list' ? 'bg-white text-[#C86A1D]' : 'bg-[#FAF6EE] text-[#6B5E55]'
                   }`}
                 >
                   {filteredDishes.length}
@@ -761,8 +761,8 @@ export default function HomePage() {
                 onClick={() => setMapViewMode('split')}
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   mapViewMode === 'split'
-                    ? 'bg-[#35E27F] text-[#07130F] shadow-xs'
-                    : 'text-[#A8B5AE] hover:text-[#F5F7F3]'
+                    ? 'bg-[#C86A1D] text-white shadow-xs'
+                    : 'text-[#6B5E55] hover:text-[#231815]'
                 }`}
                 title="View Map and Dish List side-by-side"
               >
@@ -773,20 +773,20 @@ export default function HomePage() {
 
             {/* Radius Options */}
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-semibold uppercase text-[#A8B5AE] tracking-wider flex items-center gap-1">
-                <MapPin className="w-3 h-3 text-[#35E27F] shrink-0" />
+              <span className="text-[11px] font-semibold uppercase text-[#6B5E55] tracking-wider flex items-center gap-1">
+                <MapPin className="w-3 h-3 text-[#C86A1D] shrink-0" />
                 <span className="hidden sm:inline">Radius:</span>
               </span>
 
-              <div className="inline-flex rounded-xl bg-[#0F231B] p-1 border border-[#1B3B2F] gap-1">
+              <div className="inline-flex rounded-xl bg-[#FAF6EE] p-1 border border-[#E8DEC8] gap-1">
                 {[1, 3, 5, 10].map((radius) => (
                   <button
                     key={radius}
                     onClick={() => setMapRadius(radius)}
                     className={`px-2.5 py-0.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       mapRadius === radius
-                        ? 'bg-[#35E27F] text-[#07130F]'
-                        : 'text-[#A8B5AE] hover:text-[#F5F7F3]'
+                        ? 'bg-[#C86A1D] text-white shadow-xs'
+                        : 'text-[#6B5E55] hover:text-[#231815]'
                     }`}
                   >
                     {radius}mi
@@ -796,10 +796,11 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+
         {/* Drawer Body - Switches according to mapViewMode */}
         {mapViewMode === 'map' && (
-          <div className="p-3 sm:p-4 flex-1 flex flex-col min-h-0 space-y-3 bg-[#07130F]">
-            <div className="relative flex-1 rounded-2xl border border-[#1B3B2F] overflow-hidden shadow-lg min-h-[300px]">
+          <div className="p-3 sm:p-4 flex-1 flex flex-col min-h-0 space-y-3 bg-[#FAF6EE]">
+            <div className="relative flex-1 rounded-2xl border border-[#E8DEC8] overflow-hidden shadow-sm min-h-[300px] bg-white">
               <InteractiveMap
                 dishes={filteredDishes}
                 city={selectedCity}
@@ -815,9 +816,9 @@ export default function HomePage() {
 
             {/* Selected Dish Preview inside drawer */}
             {selectedDish ? (
-              <div className="p-3.5 rounded-2xl bg-[#0B1A14] border border-[#1B3B2F] text-[#F5F7F3] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-md shrink-0 animate-in fade-in slide-in-from-bottom-2 duration-200">
+              <div className="p-3.5 rounded-2xl bg-white border border-[#E8DEC8] text-[#231815] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-sm shrink-0 animate-in fade-in slide-in-from-bottom-2 duration-200">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-12 h-12 rounded-xl bg-[#0F231B] overflow-hidden shrink-0 border border-[#1B3B2F] relative">
+                  <div className="w-12 h-12 rounded-xl bg-[#FAF6EE] overflow-hidden shrink-0 border border-[#E8DEC8] relative">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={selectedDish.image}
@@ -825,24 +826,24 @@ export default function HomePage() {
                       className="w-full h-full object-cover"
                     />
                     {selectedDish.isSeedOilFree && (
-                      <span className="absolute bottom-0 inset-x-0 bg-[#35E27F] text-[#07130F] text-[8px] font-bold uppercase text-center py-0.5">
+                      <span className="absolute bottom-0 inset-x-0 bg-[#2D5A34] text-white text-[8px] font-bold uppercase text-center py-0.5">
                         Clean
                       </span>
                     )}
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-xs font-bold text-[#F5F7F3] truncate max-w-[180px]">
+                      <span className="text-xs font-bold text-[#231815] truncate max-w-[180px]">
                         {selectedDish.restaurant}
                       </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#123D2A] text-[#35E27F] border border-[#1B3B2F] font-semibold">
+                      <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#FDF5D9] text-[#8C5D0D] border border-[#F4E3A8] font-semibold">
                         {selectedDish.cookingFat}
                       </span>
                     </div>
-                    <p className="text-xs text-[#A8B5AE] font-semibold truncate mt-0.5">
-                      {selectedDish.name} &bull; <span className="text-[#35E27F] font-bold">{formatPrice(selectedDish.price, selectedDish.city, selectedDish.id)}</span>
+                    <p className="text-xs text-[#6B5E55] font-semibold truncate mt-0.5">
+                      {selectedDish.name} &bull; <span className="text-[#C86A1D] font-bold">{formatPrice(selectedDish.price, selectedDish.city, selectedDish.id)}</span>
                     </p>
-                    <p className="text-[10px] text-[#A8B5AE] truncate">
+                    <p className="text-[10px] text-[#6B5E55] truncate">
                       {selectedDish.protein}g Protein &bull; {selectedDish.calories} kcal
                     </p>
                   </div>
@@ -851,24 +852,24 @@ export default function HomePage() {
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => setMapViewMode('list')}
-                    className="px-3 py-2 rounded-xl bg-[#0F231B] hover:bg-[#142C23] text-[#F5F7F3] text-xs font-semibold border border-[#1B3B2F] transition-all cursor-pointer flex items-center gap-1 active:scale-95"
+                    className="px-3 py-2 rounded-xl bg-[#FAF6EE] hover:bg-[#F7F1E5] text-[#231815] text-xs font-semibold border border-[#E8DEC8] transition-all cursor-pointer flex items-center gap-1 active:scale-95"
                     title="View in Dish List"
                   >
-                    <List className="w-3.5 h-3.5 text-[#35E27F]" />
+                    <List className="w-3.5 h-3.5 text-[#C86A1D]" />
                     <span>View List</span>
                   </button>
                   <button
                     id="map-view-dish-details-btn"
                     onClick={() => setDetailDish(selectedDish)}
-                    className="px-3.5 py-2 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 active:scale-95"
+                    className="px-3.5 py-2 rounded-xl bg-[#C86A1D] hover:bg-[#A84E18] text-white text-xs font-bold transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1.5 active:scale-95"
                   >
-                    <span>View Dish Details</span>
+                    <span>View Details</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                   <button
                     id="dismiss-bottom-preview-btn"
                     onClick={() => setSelectedDish(null)}
-                    className="p-2 rounded-xl bg-[#0F231B] hover:bg-[#142C23] text-[#A8B5AE] hover:text-[#F5F7F3] border border-[#1B3B2F] transition-all cursor-pointer active:scale-95"
+                    className="p-2 rounded-xl bg-[#FAF6EE] hover:bg-[#F7F1E5] text-[#6B5E55] hover:text-[#231815] border border-[#E8DEC8] transition-all cursor-pointer active:scale-95"
                     title="Dismiss selection"
                   >
                     <X className="w-4 h-4" />
@@ -876,14 +877,14 @@ export default function HomePage() {
                 </div>
               </div>
             ) : (
-              <div className="px-3.5 py-2.5 rounded-xl bg-[#0B1A14] border border-[#1B3B2F] text-[#A8B5AE] text-xs flex items-center justify-between shrink-0">
-                <span className="flex items-center gap-2 text-[11px] font-medium text-[#F5F7F3]">
-                  <MapPin className="w-3.5 h-3.5 text-[#35E27F] shrink-0" />
+              <div className="px-3.5 py-2.5 rounded-xl bg-white border border-[#E8DEC8] text-[#6B5E55] text-xs flex items-center justify-between shrink-0 shadow-2xs">
+                <span className="flex items-center gap-2 text-[11px] font-medium text-[#231815]">
+                  <MapPin className="w-3.5 h-3.5 text-[#C86A1D] shrink-0" />
                   <span>Select any dish on the map to see ingredients and nutrition</span>
                 </span>
                 <button
                   onClick={() => setMapViewMode('list')}
-                  className="text-xs font-bold text-[#35E27F] hover:underline flex items-center gap-1"
+                  className="text-xs font-bold text-[#C86A1D] hover:underline flex items-center gap-1 cursor-pointer"
                 >
                   <span>Open Dish List ({filteredDishes.length})</span>
                   <ChevronRight className="w-3 h-3" />
@@ -894,23 +895,23 @@ export default function HomePage() {
         )}
 
         {mapViewMode === 'list' && (
-          <div className="p-3 sm:p-4 flex-1 flex flex-col min-h-0 space-y-3 bg-[#07130F]">
+          <div className="p-3 sm:p-4 flex-1 flex flex-col min-h-0 space-y-3 bg-[#FAF6EE]">
             {/* List Search & Quick Sorting Bar */}
-            <div className="bg-[#0B1A14] rounded-2xl border border-[#1B3B2F] p-2.5 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
+            <div className="bg-white rounded-2xl border border-[#E8DEC8] p-2.5 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
               <div className="relative flex-1">
-                <Search className="w-3.5 h-3.5 text-[#35E27F] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className="w-3.5 h-3.5 text-[#C86A1D] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   id="map-dish-search-input"
                   type="text"
                   value={mapDishSearch}
                   onChange={(e) => setMapDishSearch(e.target.value)}
                   placeholder={`Search dishes, fats, or kitchens in ${selectedCity.name}...`}
-                  className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-[#07130F] border border-[#1B3B2F] text-xs font-medium text-[#F5F7F3] placeholder:text-[#A8B5AE] focus:outline-none focus:border-[#35E27F]"
+                  className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-[#FAF6EE] border border-[#E8DEC8] text-xs font-medium text-[#231815] placeholder:text-[#9E9084] focus:outline-none focus:border-[#C86A1D]"
                 />
                 {mapDishSearch && (
                   <button
                     onClick={() => setMapDishSearch('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#A8B5AE] hover:text-[#F5F7F3] text-xs font-bold p-0.5"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9E9084] hover:text-[#231815] text-xs font-bold p-0.5"
                   >
                     ×
                   </button>
@@ -918,8 +919,8 @@ export default function HomePage() {
               </div>
 
               <div className="flex items-center gap-1 self-end sm:self-auto overflow-x-auto max-w-full pb-0.5 sm:pb-0">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#A8B5AE] shrink-0 flex items-center gap-1 mr-1">
-                  <ArrowUpDown className="w-3 h-3 text-[#35E27F]" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#6B5E55] shrink-0 flex items-center gap-1 mr-1">
+                  <ArrowUpDown className="w-3 h-3 text-[#C86A1D]" />
                   <span>Sort:</span>
                 </span>
                 {[
@@ -933,8 +934,8 @@ export default function HomePage() {
                     onClick={() => setMapSortBy(s.id as any)}
                     className={`px-2 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer shrink-0 ${
                       mapSortBy === s.id
-                        ? 'bg-[#35E27F] text-[#07130F] shadow-xs'
-                        : 'bg-[#0F231B] text-[#A8B5AE] hover:text-[#F5F7F3] border border-[#1B3B2F]'
+                        ? 'bg-[#C86A1D] text-white shadow-xs'
+                        : 'bg-[#FAF6EE] text-[#6B5E55] hover:text-[#231815] border border-[#E8DEC8]'
                     }`}
                   >
                     {s.label}
@@ -954,13 +955,13 @@ export default function HomePage() {
                       id={`map-dish-item-${dish.id}`}
                       className={`p-3 sm:p-3.5 rounded-2xl border transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 cursor-pointer ${
                         isSelected
-                          ? 'bg-[#0E221A] border-[#35E27F] shadow-sm'
-                          : 'bg-[#0B1A14] hover:bg-[#0E2019] border-[#1B3B2F] hover:border-[#35E27F]/40'
+                          ? 'bg-[#FFFDF9] border-[#C86A1D] ring-2 ring-[#C86A1D]/20 shadow-sm'
+                          : 'bg-white hover:bg-[#FAF6EE] border-[#E8DEC8] hover:border-[#D4C3A3]'
                       }`}
                       onClick={() => setSelectedDish(dish)}
                     >
                       <div className="flex items-center gap-3 min-w-0 flex-1">
-                        <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden shrink-0 border border-[#1B3B2F] bg-[#0F231B]">
+                        <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden shrink-0 border border-[#E8DEC8] bg-[#FAF6EE]">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={dish.image}
@@ -969,7 +970,7 @@ export default function HomePage() {
                             style={{ objectFit: 'cover', objectPosition: 'center' }}
                           />
                           {dish.isSeedOilFree && (
-                            <span className="absolute bottom-0 inset-x-0 bg-[#35E27F] text-[#07130F] text-[8px] font-bold uppercase text-center py-0.5 tracking-wider">
+                            <span className="absolute bottom-0 inset-x-0 bg-[#2D5A34] text-white text-[8px] font-bold uppercase text-center py-0.5 tracking-wider">
                               Oil-Free
                             </span>
                           )}
@@ -977,31 +978,31 @@ export default function HomePage() {
 
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
-                            <span className="text-xs font-bold text-[#F5F7F3] truncate max-w-[160px]">
+                            <span className="text-xs font-bold text-[#231815] truncate max-w-[160px]">
                               {dish.restaurant}
                             </span>
-                            <span className="px-2 py-0.5 rounded-md bg-[#123D2A] text-[#35E27F] border border-[#1B3B2F] text-[10px] font-bold flex items-center gap-0.5">
-                              <MapPin className="w-2.5 h-2.5 text-[#35E27F]" />
+                            <span className="px-2 py-0.5 rounded-md bg-[#FAF6EE] text-[#C86A1D] border border-[#E8DEC8] text-[10px] font-bold flex items-center gap-0.5">
+                              <MapPin className="w-2.5 h-2.5 text-[#C86A1D]" />
                               <span>{dish.distanceMiles} mi</span>
                             </span>
-                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#0F231B] text-[#DDFBE9] border border-[#1B3B2F] font-semibold">
+                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#FDF5D9] text-[#8C5D0D] border border-[#F4E3A8] font-semibold">
                               {dish.cookingFat}
                             </span>
                           </div>
 
-                          <h4 className="text-xs sm:text-sm font-bold text-[#F5F7F3] truncate leading-snug">
+                          <h4 className="text-xs sm:text-sm font-bold text-[#231815] truncate leading-snug">
                             {dish.name}
                           </h4>
 
-                          <div className="flex items-center gap-2 mt-1 text-[11px] font-medium text-[#A8B5AE] flex-wrap">
-                            <span className="text-[#35E27F] font-bold">{formatPrice(dish.price, dish.city, dish.id)}</span>
+                          <div className="flex items-center gap-2 mt-1 text-[11px] font-medium text-[#6B5E55] flex-wrap">
+                            <span className="text-[#231815] font-bold">{formatPrice(dish.price, dish.city, dish.id)}</span>
                             <span>&bull;</span>
-                            <span className="text-[#F5F7F3] font-semibold flex items-center gap-0.5">
-                              <Flame className="w-3 h-3 text-[#35E27F]" />
+                            <span className="text-[#231815] font-semibold flex items-center gap-0.5">
+                              <Flame className="w-3 h-3 text-[#C86A1D]" />
                               {dish.calories} kcal
                             </span>
                             <span>&bull;</span>
-                            <span className="text-[#DDFBE9] font-medium">{dish.protein}g Protein</span>
+                            <span className="text-[#2D5A34] font-medium">{dish.protein}g Protein</span>
                             <span>&bull;</span>
                             <span>{dish.carbs}g Carbs</span>
                           </div>
@@ -1015,10 +1016,10 @@ export default function HomePage() {
                             setSelectedDish(dish);
                             setMapViewMode('map');
                           }}
-                          className="px-3 py-1.5 rounded-xl bg-[#0F231B] hover:bg-[#142C23] text-[#35E27F] border border-[#1B3B2F] hover:border-[#35E27F]/50 text-xs font-semibold transition-all flex items-center gap-1 cursor-pointer active:scale-95"
+                          className="px-3 py-1.5 rounded-xl bg-[#FAF6EE] hover:bg-[#F7F1E5] text-[#C86A1D] border border-[#E8DEC8] hover:border-[#C86A1D]/50 text-xs font-semibold transition-all flex items-center gap-1 cursor-pointer active:scale-95"
                           title="Show dish location on radar map"
                         >
-                          <MapIcon className="w-3.5 h-3.5 text-[#35E27F]" />
+                          <MapIcon className="w-3.5 h-3.5 text-[#C86A1D]" />
                           <span>Pin on Map</span>
                         </button>
                         <button
@@ -1026,7 +1027,7 @@ export default function HomePage() {
                             e.stopPropagation();
                             setDetailDish(dish);
                           }}
-                          className="px-3 py-1.5 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-sm"
+                          className="px-3 py-1.5 rounded-xl bg-[#C86A1D] hover:bg-[#A84E18] text-white text-xs font-bold transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-xs"
                           title="View dish details"
                         >
                           <span>View Details</span>
@@ -1037,11 +1038,11 @@ export default function HomePage() {
                   );
                 })
               ) : (
-                <div className="p-8 text-center bg-[#0B1A14] rounded-2xl border border-[#1B3B2F] space-y-3">
-                  <p className="text-sm font-bold text-[#F5F7F3]">
+                <div className="p-8 text-center bg-white rounded-2xl border border-[#E8DEC8] space-y-3">
+                  <p className="text-sm font-bold text-[#231815]">
                     Nothing matching your preferences nearby.
                   </p>
-                  <p className="text-xs text-[#A8B5AE]">
+                  <p className="text-xs text-[#6B5E55]">
                     Try removing a filter or expanding your search.
                   </p>
                   <button
@@ -1050,7 +1051,7 @@ export default function HomePage() {
                       setMapRadius(10);
                       resetFilters();
                     }}
-                    className="px-4 py-2 rounded-xl bg-[#35E27F] text-[#07130F] text-xs font-bold transition-all hover:bg-[#44eb8c] cursor-pointer shadow-sm"
+                    className="px-4 py-2 rounded-xl bg-[#C86A1D] text-white text-xs font-bold transition-all hover:bg-[#A84E18] cursor-pointer shadow-xs"
                   >
                     Show Me More Options
                   </button>
@@ -1061,9 +1062,9 @@ export default function HomePage() {
         )}
 
         {mapViewMode === 'split' && (
-          <div className="p-3 sm:p-4 flex-1 flex flex-col min-h-0 space-y-2.5 bg-[#07130F]">
+          <div className="p-3 sm:p-4 flex-1 flex flex-col min-h-0 space-y-2.5 bg-[#FAF6EE]">
             {/* Top Map Pane (~42% height) */}
-            <div className="relative h-[42%] min-h-[200px] rounded-2xl border border-[#1B3B2F] overflow-hidden shadow-md">
+            <div className="relative h-[42%] min-h-[200px] rounded-2xl border border-[#E8DEC8] overflow-hidden shadow-xs bg-white">
               <InteractiveMap
                 dishes={filteredDishes}
                 city={selectedCity}
@@ -1078,12 +1079,12 @@ export default function HomePage() {
             </div>
 
             {/* Bottom Dish List Pane (~58% height) */}
-            <div className="flex-1 flex flex-col min-h-0 bg-[#0B1A14] rounded-2xl border border-[#1B3B2F] p-2.5 shadow-xs space-y-2">
-              <div className="flex items-center justify-between gap-2 shrink-0 pb-1 border-b border-[#1B3B2F]">
+            <div className="flex-1 flex flex-col min-h-0 bg-white rounded-2xl border border-[#E8DEC8] p-2.5 shadow-xs space-y-2">
+              <div className="flex items-center justify-between gap-2 shrink-0 pb-1 border-b border-[#E8DEC8]">
                 <div className="flex items-center gap-1.5">
-                  <List className="w-3.5 h-3.5 text-[#35E27F]" />
-                  <span className="text-xs font-bold text-[#F5F7F3]">
-                    Vicinity Dish List ({mapDishesWithDistance.length})
+                  <List className="w-3.5 h-3.5 text-[#C86A1D]" />
+                  <span className="text-xs font-bold text-[#231815]">
+                    Neighborhood Dish List ({mapDishesWithDistance.length})
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
@@ -1093,8 +1094,8 @@ export default function HomePage() {
                       onClick={() => setMapSortBy(s as any)}
                       className={`px-2 py-0.5 rounded-lg text-[10px] font-bold capitalize transition-all cursor-pointer ${
                         mapSortBy === s
-                          ? 'bg-[#35E27F] text-[#07130F]'
-                          : 'bg-[#0F231B] text-[#A8B5AE] hover:text-[#F5F7F3] border border-[#1B3B2F]'
+                          ? 'bg-[#C86A1D] text-white'
+                          : 'bg-[#FAF6EE] text-[#6B5E55] hover:text-[#231815] border border-[#E8DEC8]'
                       }`}
                     >
                       {s}
@@ -1112,13 +1113,13 @@ export default function HomePage() {
                       key={dish.id}
                       className={`p-2 sm:p-2.5 rounded-xl border transition-all duration-200 flex items-center justify-between gap-2.5 cursor-pointer ${
                         isSelected
-                          ? 'bg-[#0F261D] border-[#255C42]'
-                          : 'bg-[#07130F] hover:bg-[#0B1A14] border-[#1B3B2F] hover:border-[#255C42]/50'
+                          ? 'bg-[#FFFDF9] border-[#C86A1D] ring-2 ring-[#C86A1D]/20 shadow-xs'
+                          : 'bg-[#FAF6EE] hover:bg-white border-[#E8DEC8]'
                       }`}
                       onClick={() => setSelectedDish(dish)}
                     >
                       <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                        <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 border border-[#1B3B2F] bg-[#0F231B] relative">
+                        <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 border border-[#E8DEC8] bg-[#FAF6EE] relative">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={dish.image}
@@ -1129,18 +1130,18 @@ export default function HomePage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="text-xs font-semibold text-[#F5F7F3] truncate">
+                            <span className="text-xs font-semibold text-[#231815] truncate">
                               {dish.restaurant}
                             </span>
-                            <span className="text-[10px] font-semibold text-[#A8B5AE]">
+                            <span className="text-[10px] font-semibold text-[#6B5E55]">
                               &bull; {dish.distanceMiles} mi
                             </span>
                           </div>
-                          <p className="text-xs font-bold text-[#F5F7F3] truncate">
+                          <p className="text-xs font-bold text-[#231815] truncate">
                             {dish.name}
                           </p>
-                          <p className="text-[10px] text-[#A8B5AE] truncate font-medium">
-                            <span className="text-[#35E27F] font-bold">{formatPrice(dish.price, dish.city, dish.id)}</span> &bull; {dish.protein}g protein &bull; {dish.cookingFat}
+                          <p className="text-[10px] text-[#6B5E55] truncate font-medium">
+                            <span className="text-[#231815] font-bold">{formatPrice(dish.price, dish.city, dish.id)}</span> &bull; <span className="text-[#2D5A34]">{dish.protein}g protein</span> &bull; {dish.cookingFat}
                           </p>
                         </div>
                       </div>
@@ -1153,8 +1154,8 @@ export default function HomePage() {
                           }}
                           className={`p-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
                             isSelected
-                              ? 'bg-[#184632] text-[#35E27F] border border-[#255C42]'
-                              : 'bg-[#0F231B] text-[#A8B5AE] hover:text-[#35E27F] hover:bg-[#142C23] border border-[#1B3B2F]'
+                              ? 'bg-[#C86A1D] text-white'
+                              : 'bg-white text-[#6B5E55] hover:text-[#C86A1D] border border-[#E8DEC8]'
                           }`}
                           title="Center on map"
                         >
@@ -1171,7 +1172,7 @@ export default function HomePage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="p-1.5 rounded-lg bg-[#0F231B] hover:bg-[#142C23] text-[#A8B5AE] hover:text-[#35E27F] border border-[#1B3B2F] text-xs font-bold transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg bg-white hover:bg-[#FAF6EE] text-[#6B5E55] hover:text-[#C86A1D] border border-[#E8DEC8] text-xs font-bold transition-colors cursor-pointer"
                           title={`Get directions to ${dish.restaurant} on Google Maps`}
                         >
                           <Navigation className="w-3.5 h-3.5 fill-current" />
@@ -1182,10 +1183,10 @@ export default function HomePage() {
                             e.stopPropagation();
                             setDetailDish(dish);
                           }}
-                          className="px-2.5 py-1 rounded-lg bg-[#143B2A] hover:bg-[#1B4D36] text-[#DDFBE9] border border-[#1B3B2F] text-xs font-semibold transition-all cursor-pointer shadow-xs"
+                          className="px-2.5 py-1 rounded-lg bg-[#C86A1D] hover:bg-[#A84E18] text-white text-xs font-semibold transition-all cursor-pointer shadow-xs"
                           title="See what's in this dish"
                         >
-                          See Details
+                          Details
                         </button>
                       </div>
                     </div>
@@ -1202,26 +1203,28 @@ export default function HomePage() {
       {/* ========================================================================= */}
       <header
         id="main-app-header"
-        className="sticky top-0 z-30 px-3 sm:px-6 lg:px-8 bg-[#07130F]/95 backdrop-blur-md border-b border-[#1B3B2F] shadow-sm"
+        className="sticky top-0 z-30 px-3 sm:px-6 lg:px-8 bg-[#FAF6EE]/95 backdrop-blur-md border-b border-[#E8DEC8] shadow-xs"
       >
         <div className="max-w-7xl mx-auto h-14 sm:h-20 flex items-center justify-between gap-2 sm:gap-3">
           {/* Top/Left Brand Identity */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#0F231B] text-[#35E27F] flex items-center justify-center border border-[#1B3B2F] shrink-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-[#FDF2C8] text-[#C86A1D] flex items-center justify-center border border-[#F3DFC1] shrink-0 shadow-xs">
               <Compass className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="font-extrabold text-sm sm:text-lg lg:text-xl tracking-tight text-[#F5F7F3] leading-none">
-                  Healthy Vicinity <span className="text-[#35E27F]">LIVE</span>
+                <span className="font-serif font-black text-base sm:text-xl lg:text-2xl tracking-tight text-[#231815] leading-none">
+                  Healthy Vicinity <span className="text-[#C86A1D] italic font-normal">Market</span>
                 </span>
-                <span className="hidden md:inline-flex px-2 py-0.5 rounded-md bg-[#123D2A] text-[#35E27F] text-[10px] font-bold tracking-wider uppercase border border-[#1B3B2F] items-center gap-1 shrink-0">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#35E27F] animate-pulse" />
+                <span className="hidden md:inline-flex px-2 py-0.5 rounded-full bg-[#EBF4ED] text-[#2D5A34] text-[10px] font-bold tracking-wider uppercase border border-[#C5DEC9] items-center gap-1 shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#2D5A34] animate-pulse" />
                   <span>Verified</span>
                 </span>
               </div>
-              <p className="hidden sm:flex text-[#A8B5AE] font-medium text-[11px] sm:text-xs mt-0.5 items-center gap-1.5">
-                <span className="text-[#35E27F] font-semibold">Bio-Individual Dining Engine</span>
+              <p className="hidden sm:flex text-[#6B5E55] font-medium text-[11px] sm:text-xs mt-0.5 items-center gap-1.5">
+                <span className="text-[#2D5A34] font-semibold">Wholesome Clean Dining Guide</span>
+                <span>&bull;</span>
+                <span className="text-[#8C7A6B]">Seed-Oil Free &amp; Transparent Macros</span>
               </p>
             </div>
           </div>
@@ -1231,16 +1234,16 @@ export default function HomePage() {
             {/* Country Switcher: 🇮🇳 India (INR) | 🇺🇸 USA (USD) */}
             <div
               id="header-country-switcher"
-              className="inline-flex items-center rounded-xl bg-[#0B1A14] p-0.5 sm:p-1 border border-[#1B3B2F] shrink-0 shadow-xs"
+              className="inline-flex items-center rounded-2xl bg-[#F4ECE1] p-0.5 sm:p-1 border border-[#E8DEC8] shrink-0 shadow-xs"
               title="Switch country (auto-detected from your IP or location)"
             >
               <button
                 id="header-country-btn-in"
                 onClick={() => handleSwitchCountry('IN')}
-                className={`px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   selectedCity.country === 'IN'
-                    ? 'bg-[#35E27F] text-[#07130F] shadow-xs font-extrabold'
-                    : 'text-[#A8B5AE] hover:text-[#F5F7F3]'
+                    ? 'bg-[#C86A1D] text-white shadow-xs font-extrabold'
+                    : 'text-[#6B5E55] hover:text-[#231815]'
                 }`}
                 title="India - 31 cities (₹ INR)"
               >
@@ -1250,10 +1253,10 @@ export default function HomePage() {
               <button
                 id="header-country-btn-us"
                 onClick={() => handleSwitchCountry('US')}
-                className={`px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   selectedCity.country === 'US'
-                    ? 'bg-[#35E27F] text-[#07130F] shadow-xs font-extrabold'
-                    : 'text-[#A8B5AE] hover:text-[#F5F7F3]'
+                    ? 'bg-[#C86A1D] text-white shadow-xs font-extrabold'
+                    : 'text-[#6B5E55] hover:text-[#231815]'
                 }`}
                 title="United States - 30 cities ($ USD)"
               >
@@ -1266,17 +1269,17 @@ export default function HomePage() {
             <button
               id="header-city-selector-btn"
               onClick={() => setIsLocationModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2.5 rounded-xl bg-[#0B1A14] hover:bg-[#0F231B] text-[#F5F7F3] font-bold text-xs border border-[#1B3B2F] hover:border-[#35E27F]/60 transition-all cursor-pointer max-w-[135px] sm:max-w-[200px] group active:scale-95 shadow-sm"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2.5 rounded-2xl bg-[#FFFFFF] hover:bg-[#FDFBF7] text-[#231815] font-bold text-xs border border-[#E8DEC8] hover:border-[#C86A1D]/60 transition-all cursor-pointer max-w-[135px] sm:max-w-[200px] group active:scale-95 shadow-xs"
               title="Where are you eating? Click to select city or use location"
             >
               <span className="text-xs shrink-0">
                 {selectedCity.country === 'IN' ? '🇮🇳' : '📍'}
               </span>
-              <span className="truncate text-left font-bold text-[#F5F7F3] group-hover:text-[#35E27F] transition-colors">
+              <span className="truncate text-left font-bold text-[#231815] group-hover:text-[#C86A1D] transition-colors">
                 {selectedCity.name}
                 {selectedCity.country === 'IN' ? ' (IN)' : `, ${selectedCity.state}`}
               </span>
-              <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#A8B5AE] group-hover:text-[#35E27F] shrink-0 ml-0.5 sm:ml-1 transition-colors" />
+              <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#6B5E55] group-hover:text-[#C86A1D] shrink-0 ml-0.5 sm:ml-1 transition-colors" />
             </button>
 
             {/* Quick Auto-Locate Button */}
@@ -1284,13 +1287,13 @@ export default function HomePage() {
               id="header-quick-locate-btn"
               onClick={handleQuickLocate}
               disabled={isAutoLocating}
-              className="p-1.5 sm:p-2.5 rounded-xl bg-[#0B1A14] hover:bg-[#123D2A] text-[#35E27F] border border-[#1B3B2F] hover:border-[#35E27F]/60 transition-all cursor-pointer active:scale-95 shadow-sm shrink-0 disabled:opacity-60"
+              className="p-1.5 sm:p-2.5 rounded-2xl bg-[#FFFFFF] hover:bg-[#EBF4ED] text-[#2D5A34] border border-[#E8DEC8] hover:border-[#2D5A34]/60 transition-all cursor-pointer active:scale-95 shadow-xs shrink-0 disabled:opacity-60"
               title="Auto-detect location via GPS or IP address"
             >
               {isAutoLocating ? (
-                <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin text-[#35E27F]" />
+                <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin text-[#2D5A34]" />
               ) : (
-                <Navigation className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#35E27F]" />
+                <Navigation className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#2D5A34]" />
               )}
             </button>
 
@@ -1298,12 +1301,12 @@ export default function HomePage() {
             <button
               id="header-open-map-btn"
               onClick={() => setIsMapOpen(true)}
-              className="inline-flex items-center justify-center gap-1 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2.5 rounded-xl bg-[#0B1A14] hover:bg-[#0F231B] text-[#F5F7F3] text-xs font-semibold border border-[#1B3B2F] hover:border-[#35E27F]/50 transition-all duration-200 cursor-pointer group active:scale-95 shrink-0 whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-1 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2.5 rounded-2xl bg-[#FFFFFF] hover:bg-[#FDFBF7] text-[#231815] text-xs font-bold border border-[#E8DEC8] hover:border-[#C86A1D]/50 transition-all duration-200 cursor-pointer group active:scale-95 shrink-0 whitespace-nowrap shadow-xs"
               title="Map Radar"
             >
-              <Radar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#35E27F] group-hover:rotate-45 transition-transform shrink-0" />
+              <Radar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C86A1D] group-hover:rotate-45 transition-transform shrink-0" />
               <span className="hidden sm:inline">Map Radar</span>
-              <span className="px-1.5 py-0.5 rounded-md bg-[#123D2A] text-[#35E27F] font-bold text-[10px] border border-[#1B3B2F]">
+              <span className="px-1.5 py-0.5 rounded-full bg-[#FDF2C8] text-[#914605] font-bold text-[10px] border border-[#F3DFC1]">
                 {cityReelsCount}
               </span>
             </button>
@@ -1312,10 +1315,10 @@ export default function HomePage() {
             <button
               id="open-menu-scanner-btn"
               onClick={() => setIsScannerOpen(true)}
-              className="inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2.5 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all duration-200 cursor-pointer group active:scale-95 shrink-0 shadow-sm whitespace-nowrap"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2.5 rounded-2xl bg-[#2D5A34] hover:bg-[#234729] text-white text-xs font-bold transition-all duration-200 cursor-pointer group active:scale-95 shrink-0 shadow-xs whitespace-nowrap"
               title="AI Menu Scanner"
             >
-              <ScanLine className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#07130F] group-hover:rotate-12 transition-transform" />
+              <ScanLine className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white group-hover:rotate-12 transition-transform" />
               <span className="hidden sm:inline">AI Menu Scanner</span>
               <span className="sm:hidden text-[11px]">Scan</span>
             </button>
@@ -1326,27 +1329,27 @@ export default function HomePage() {
       {/* ========================================================================= */}
       {/* MAIN VIEWPORT CONTENT                                                     */}
       {/* ========================================================================= */}
-      <main className="max-w-7xl mx-auto w-full px-3.5 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-5 sm:space-y-7 flex-1 pb-28 sm:pb-8">
+      <main className="max-w-7xl mx-auto w-full px-3.5 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6 sm:space-y-8 flex-1 pb-28 sm:pb-8">
         {/* Automatic Location / IP Detection Notification */}
         {locationBannerText && (
           <div
             id="location-detection-banner"
-            className="px-4 py-2.5 rounded-xl bg-[#0E221A] border border-[#35E27F]/40 text-xs text-[#F5F7F3] flex items-center justify-between gap-3 shadow-md animate-in fade-in slide-in-from-top-2"
+            className="px-4 py-3 rounded-2xl bg-[#EBF4ED] border border-[#C5DEC9] text-xs text-[#231815] flex items-center justify-between gap-3 shadow-xs animate-in fade-in slide-in-from-top-2"
           >
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#35E27F] animate-pulse shrink-0" />
-              <span className="font-semibold text-[#DDFBE9]">{locationBannerText}</span>
+            <div className="flex items-center gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-[#2D5A34] animate-pulse shrink-0" />
+              <span className="font-semibold text-[#1C3D23]">{locationBannerText}</span>
             </div>
             <div className="flex items-center gap-2.5 shrink-0">
               <button
                 onClick={() => setIsLocationModalOpen(true)}
-                className="text-[11px] font-bold text-[#35E27F] hover:underline cursor-pointer"
+                className="text-[11px] font-bold text-[#C86A1D] hover:underline cursor-pointer"
               >
                 Change city
               </button>
               <button
                 onClick={() => setLocationBannerText(null)}
-                className="p-1 rounded-md text-[#A8B5AE] hover:text-[#F5F7F3] cursor-pointer"
+                className="p-1 rounded-md text-[#6B5E55] hover:text-[#231815] cursor-pointer"
                 title="Dismiss banner"
               >
                 <X className="w-3.5 h-3.5" />
@@ -1367,70 +1370,101 @@ export default function HomePage() {
         />
 
         {/* ========================================================================= */}
-        {/* HERO SPOTLIGHT                                                            */}
+        {/* HERO SPOTLIGHT: SUN-DRENCHED GOLDEN CITRUS ORGANIC MARKET BANNER           */}
         {/* ========================================================================= */}
-        <section className="relative rounded-2xl bg-[#0B1A14] text-[#F5F7F3] p-4 sm:p-8 lg:p-10 overflow-hidden border border-[#1B3B2F] shadow-lg">
-          {/* Subtle Radial Green Ambient Glow behind Hero */}
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#35E27F]/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -left-12 -bottom-12 w-80 h-80 bg-[#123D2A]/30 rounded-full blur-3xl pointer-events-none" />
+        <section className="relative rounded-[32px] bg-gradient-to-br from-[#F5C842] via-[#F9D65E] to-[#EFA928] text-[#231815] p-5 sm:p-8 lg:p-10 overflow-hidden border border-[#E6B830] shadow-xl">
+          {/* Subtle Ambient Sun & Citrus Glow */}
+          <div className="absolute top-0 right-1/4 w-96 h-96 bg-white/30 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -left-12 -bottom-12 w-80 h-80 bg-[#E08A1E]/25 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="relative z-10 max-w-3xl space-y-3.5 sm:space-y-5">
-            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 rounded-full bg-[#123D2A] text-[#DDFBE9] border border-[#1B3B2F] text-[10px] sm:text-[11px] font-semibold tracking-wide">
-              <Sparkles className="w-3.5 h-3.5 text-[#35E27F] shrink-0" />
-              <span>Dish-Level Transparency &bull; {selectedCity.name}</span>
+          <div className="relative z-10 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6 lg:gap-10">
+            <div className="max-w-3xl space-y-3.5 sm:space-y-4.5 flex-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/85 backdrop-blur-xs text-[#231815] border border-white/60 text-[10px] sm:text-xs font-bold tracking-wide shadow-xs">
+                <Sparkles className="w-3.5 h-3.5 text-[#C86A1D] shrink-0" />
+                <span>Wholesome Kitchen Transparency &bull; {selectedCity.name}</span>
+              </div>
+
+              <h1 className="font-serif font-black text-2xl sm:text-4xl lg:text-5xl tracking-tight leading-tight sm:leading-[1.12] text-[#231815]">
+                Wholesome, healthy food <br className="hidden sm:inline" />
+                <span className="italic font-normal text-[#692900] underline decoration-[#C86A1D]/40 decoration-wavy decoration-2">
+                  rooted in community.
+                </span>
+              </h1>
+
+              <p className="text-xs sm:text-base text-[#4A3210] font-medium leading-relaxed max-w-2xl">
+                Discover neighborhood kitchens honoring traditional preparation, seed-oil-free fats, nutrient-dense ingredients, and transparent macros in {selectedCity.name}.
+              </p>
+
+              {/* CTAs */}
+              <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3.5">
+                <button
+                  id="hero-open-map-btn"
+                  onClick={() => setIsMapOpen(true)}
+                  className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-[#231815] hover:bg-[#3B2923] text-[#FAF6EE] font-bold text-xs sm:text-sm transition-all duration-200 active:scale-95 cursor-pointer inline-flex items-center justify-center gap-2 group shadow-md"
+                >
+                  <Radar className="w-4 h-4 text-[#F5C842] group-hover:rotate-45 transition-transform shrink-0" />
+                  <span>Find Healthy Food Near Me</span>
+                  <ChevronRight className="w-4 h-4 text-[#FAF6EE] group-hover:translate-x-0.5 transition-transform shrink-0" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    const elem = document.getElementById('dishes-section');
+                    if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-white/85 hover:bg-white text-[#231815] font-bold text-xs sm:text-sm transition-all duration-200 border border-white/80 shadow-xs active:scale-95 cursor-pointer inline-flex items-center justify-center gap-2"
+                >
+                  <span>Explore Dishes</span>
+                </button>
+              </div>
+
+              {/* Credibility verification metrics strip */}
+              <div className="pt-3 border-t border-[#231815]/15 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 text-[11px] sm:text-xs text-[#4A3210] font-bold">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#2D5A34] shrink-0" />
+                  <span className="truncate">Restaurant-Confirmed</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#2D5A34] shrink-0" />
+                  <span className="truncate">Nutrition &amp; Macros</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#2D5A34] shrink-0" />
+                  <span className="truncate">Seed-Oil-Free Fats</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#2D5A34] shrink-0" />
+                  <span className="truncate">Ancestral &amp; Local Roots</span>
+                </div>
+              </div>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight sm:leading-[1.15] text-[#F5F7F3]">
-              Find food that <br />
-              <span className="text-[#35E27F]">
-                fits your diet.
-              </span>
-            </h1>
-
-            <p className="text-xs sm:text-base text-[#A8B5AE] font-normal leading-relaxed max-w-2xl">
-              Discover healthy dishes near you with nutrition, ingredients, cooking methods, and information you can trust.
-            </p>
-
-            {/* CTAs */}
-            <div className="pt-1 sm:pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4">
-              <button
-                id="hero-open-map-btn"
-                onClick={() => setIsMapOpen(true)}
-                className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] font-bold text-xs sm:text-sm transition-all duration-200 active:scale-95 cursor-pointer inline-flex items-center justify-center gap-2 group shadow-sm"
-              >
-                <Radar className="w-4 h-4 text-[#07130F] group-hover:rotate-45 transition-transform shrink-0" />
-                <span>Find Healthy Food Near Me</span>
-                <ChevronRight className="w-4 h-4 text-[#07130F] group-hover:translate-x-0.5 transition-transform shrink-0" />
-              </button>
-
-              <button
-                onClick={() => {
-                  const elem = document.getElementById('dishes-section');
-                  if (elem) elem.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="w-full sm:w-auto px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-[#0F231B] hover:bg-[#142C23] text-[#F5F7F3] font-semibold text-xs sm:text-sm transition-all duration-200 border border-[#1B3B2F] hover:border-[#35E27F]/40 active:scale-95 cursor-pointer inline-flex items-center justify-center gap-2"
-              >
-                <span>Explore Dishes</span>
-              </button>
-            </div>
-
-            {/* Credibility verification metrics strip */}
-            <div className="pt-3 sm:pt-4 border-t border-[#1B3B2F]/60 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 text-[11px] sm:text-xs text-[#A8B5AE]">
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#35E27F] shrink-0" />
-                <span className="font-medium truncate">Restaurant-Confirmed</span>
+            {/* Right-Side Organic Market Badge (Large screens) */}
+            <div className="hidden lg:flex flex-col items-center justify-center p-6 bg-white/80 backdrop-blur-md rounded-3xl border border-white/90 shadow-lg text-center w-72 shrink-0 space-y-3">
+              <div className="w-14 h-14 rounded-2xl bg-[#FDF2C8] text-[#C86A1D] flex items-center justify-center border border-[#F3DFC1] text-2xl shadow-xs">
+                🌾
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#35E27F] shrink-0" />
-                <span className="font-medium truncate">Nutrition &amp; Macros</span>
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#C86A1D] block">
+                  Market Promise
+                </span>
+                <h3 className="font-serif font-bold text-base text-[#231815] mt-0.5">
+                  Clean Heritage Dining
+                </h3>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#35E27F] shrink-0" />
-                <span className="font-medium truncate">Cooking Oils &amp; Fats</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#35E27F] shrink-0" />
-                <span className="font-medium truncate">Clear Sourcing</span>
+              <p className="text-[11px] text-[#6B5E55] leading-relaxed">
+                Zero refined seed oils, unadulterated pasture-raised fats, and whole food ingredients only.
+              </p>
+              <div className="w-full pt-1 border-t border-[#E8DEC8] flex flex-wrap gap-1 justify-center">
+                <span className="px-2 py-0.5 rounded-md bg-[#EBF4ED] text-[#2D5A34] text-[10px] font-bold">
+                  A2 Desi Ghee
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-[#FDF2C8] text-[#914605] text-[10px] font-bold">
+                  Pastured Tallow
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-[#FAF6EE] text-[#6B5E55] text-[10px] font-bold border border-[#E8DEC8]">
+                  Ancient Grains
+                </span>
               </div>
             </div>
           </div>
@@ -1467,30 +1501,30 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-base sm:text-xl font-bold text-[#F5F7F3] flex items-center gap-2">
-                  <Flame className="w-5 h-5 text-[#35E27F] shrink-0" />
-                  <span>Healthy Food Around You in {selectedCity.name}</span>
+                <h2 className="text-lg sm:text-2xl font-serif font-black text-[#231815] flex items-center gap-2">
+                  <Flame className="w-5 h-5 text-[#C86A1D] shrink-0" />
+                  <span>Wholesome Dishes in {selectedCity.name}</span>
                 </h2>
-                <span className="text-xs font-semibold text-[#35E27F] bg-[#0F231B] px-3 py-1 rounded-full border border-[#1B3B2F] shrink-0">
+                <span className="text-xs font-bold text-[#914605] bg-[#FDF2C8] px-3 py-1 rounded-full border border-[#F3DFC1] shrink-0">
                   {filteredDishes.length} options nearby
                 </span>
               </div>
-              <p className="text-xs text-[#A8B5AE] mt-1 font-medium">
-                Good options nearby, matched to what you&apos;re looking for.
+              <p className="text-xs text-[#6B5E55] mt-1 font-medium">
+                Locally sourced &amp; kitchen-verified dishes matched to your dietary preferences.
               </p>
             </div>
 
             <button
               onClick={() => setIsMapOpen(true)}
-              className="text-xs font-bold text-[#35E27F] hover:underline flex items-center gap-1 cursor-pointer self-start sm:self-auto shrink-0 transition-colors"
+              className="text-xs font-bold text-[#C86A1D] hover:underline flex items-center gap-1 cursor-pointer self-start sm:self-auto shrink-0 transition-colors"
             >
-              <span>See More Nearby</span>
+              <span>See More on Radar</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
           {filteredDishes.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6 relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 relative">
               {filteredDishes.map((dish) => (
                 <DishCard
                   key={dish.id}
@@ -1505,21 +1539,21 @@ export default function HomePage() {
               ))}
             </div>
           ) : allCityDishesCount === 0 ? (
-            <div className="p-8 sm:p-12 text-center bg-[#0B1A14] border border-[#1B3B2F] rounded-2xl space-y-3.5 shadow-md">
-              <div className="w-12 h-12 rounded-xl bg-[#0F231B] text-[#35E27F] flex items-center justify-center mx-auto border border-[#1B3B2F]">
+            <div className="p-8 sm:p-12 text-center bg-[#FFFFFF] border border-[#E8DEC8] rounded-[28px] space-y-3.5 shadow-xs">
+              <div className="w-12 h-12 rounded-2xl bg-[#FDF2C8] text-[#C86A1D] flex items-center justify-center mx-auto border border-[#F3DFC1]">
                 <Compass className="w-6 h-6" />
               </div>
-              <h3 className="font-bold text-[#F5F7F3] text-base sm:text-lg">
-                More healthy options coming soon.
+              <h3 className="font-serif font-bold text-[#231815] text-base sm:text-lg">
+                More wholesome options coming soon.
               </h3>
-              <p className="text-xs sm:text-sm text-[#A8B5AE] max-w-md mx-auto font-medium">
-                We&apos;re building the HealthyVicinity food guide for {selectedCity.name}.
+              <p className="text-xs sm:text-sm text-[#6B5E55] max-w-md mx-auto font-medium">
+                We&apos;re currently scouting community kitchens and wholesome dining in {selectedCity.name}.
               </p>
               <div className="pt-2 flex items-center justify-center gap-2.5 flex-wrap">
                 <button
                   id="empty-explore-cities-btn"
                   onClick={() => setIsLocationModalOpen(true)}
-                  className="px-4 py-2.5 rounded-xl bg-[#123D2A] hover:bg-[#184d35] text-[#35E27F] text-xs font-bold border border-[#1B3B2F] transition-all cursor-pointer active:scale-95 flex items-center gap-1.5"
+                  className="px-4 py-2.5 rounded-2xl bg-[#EBF4ED] hover:bg-[#DCEDE0] text-[#2D5A34] text-xs font-bold border border-[#C5DEC9] transition-all cursor-pointer active:scale-95 flex items-center gap-1.5"
                 >
                   <MapPin className="w-3.5 h-3.5" />
                   <span>Explore Other Cities</span>
@@ -1527,7 +1561,7 @@ export default function HomePage() {
                 <button
                   id="empty-suggest-menu-btn"
                   onClick={() => setIsScannerOpen(true)}
-                  className="px-4 py-2.5 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all cursor-pointer active:scale-95 shadow-sm flex items-center gap-1.5"
+                  className="px-4 py-2.5 rounded-2xl bg-[#C86A1D] hover:bg-[#B35912] text-white text-xs font-bold transition-all cursor-pointer active:scale-95 shadow-xs flex items-center gap-1.5"
                 >
                   <ScanLine className="w-3.5 h-3.5" />
                   <span>Scan Menu in {selectedCity.name}</span>
@@ -1535,23 +1569,23 @@ export default function HomePage() {
               </div>
             </div>
           ) : (
-            <div className="p-10 sm:p-12 text-center bg-[#0B1A14] border border-[#1B3B2F] rounded-2xl space-y-3 shadow-md">
-              <div className="w-12 h-12 rounded-xl bg-[#0F231B] text-[#35E27F] flex items-center justify-center mx-auto border border-[#1B3B2F]">
+            <div className="p-10 sm:p-12 text-center bg-[#FFFFFF] border border-[#E8DEC8] rounded-[28px] space-y-3 shadow-xs">
+              <div className="w-12 h-12 rounded-2xl bg-[#FDF2C8] text-[#C86A1D] flex items-center justify-center mx-auto border border-[#F3DFC1]">
                 <Compass className="w-6 h-6" />
               </div>
-              <h3 className="font-bold text-[#F5F7F3] text-base sm:text-lg">
-                Nothing matching your preferences nearby.
+              <h3 className="font-serif font-bold text-[#231815] text-base sm:text-lg">
+                No matching dishes with these filters.
               </h3>
-              <p className="text-xs text-[#A8B5AE] max-w-md mx-auto font-medium">
-                Try removing a filter or expanding your search.
+              <p className="text-xs text-[#6B5E55] max-w-md mx-auto font-medium">
+                Try loosening your macro limits or resetting diet tags to see more wholesome meals.
               </p>
               <div className="pt-2">
                 <button
                   id="empty-reset-filters-btn"
                   onClick={resetFilters}
-                  className="px-5 py-2.5 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 shadow-sm"
+                  className="px-5 py-2.5 rounded-2xl bg-[#C86A1D] hover:bg-[#B35912] text-white text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 shadow-xs"
                 >
-                  Show Me More Options
+                  Reset All Filters
                 </button>
               </div>
             </div>
@@ -1559,25 +1593,126 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
+        {/* CULTURE & COMMUNITY TABLE: HERITAGE CULINARY ROOTS & LOCAL SCOUTS          */}
+        {/* ========================================================================= */}
+        <section
+          id="culture-community-section"
+          className="p-6 sm:p-10 rounded-[32px] bg-[#FFFFFF] border border-[#E8DEC8] shadow-xs space-y-6"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#C86A1D]">
+                <span>🌿</span>
+                <span>Culinary Heritage &amp; Trust</span>
+              </div>
+              <h2 className="font-serif font-black text-2xl sm:text-3xl text-[#231815] mt-1">
+                The Wholesome Community Table
+              </h2>
+              <p className="text-xs sm:text-sm text-[#6B5E55] mt-1 max-w-2xl">
+                We celebrate kitchens that honor ancestral preparation, pure culinary traditions, and direct neighborhood transparency.
+              </p>
+            </div>
+            <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-[#2D5A34] bg-[#EBF4ED] px-3.5 py-1.5 rounded-full border border-[#C5DEC9]">
+              <ShieldCheck className="w-4 h-4" />
+              <span>100% Unadulterated Ingredients</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Card 1: Ancestral Fats */}
+            <div className="p-5 rounded-2xl bg-[#FAF6EE] border border-[#E8DEC8] space-y-2.5 flex flex-col justify-between hover:border-[#C86A1D]/40 transition-all">
+              <div className="space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-[#FDF2C8] text-[#C86A1D] flex items-center justify-center text-xl border border-[#F3DFC1]">
+                  🧈
+                </div>
+                <h3 className="font-serif font-bold text-base text-[#231815]">
+                  Ancestral Fats &amp; Ghee
+                </h3>
+                <p className="text-xs text-[#6B5E55] leading-relaxed">
+                  Traditional A2 Desi Gir Cow bilona ghee, 100% pastured tallow, and cold-pressed extra virgin olive oils. Zero industrial deodorized seed oils.
+                </p>
+              </div>
+              <div className="pt-2 border-t border-[#E8DEC8] text-[11px] font-bold text-[#2D5A34]">
+                ✓ High heat stability &bull; Natural butyrate
+              </div>
+            </div>
+
+            {/* Card 2: Ancient Millets & Grains */}
+            <div className="p-5 rounded-2xl bg-[#FAF6EE] border border-[#E8DEC8] space-y-2.5 flex flex-col justify-between hover:border-[#C86A1D]/40 transition-all">
+              <div className="space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-[#EBF4ED] text-[#2D5A34] flex items-center justify-center text-xl border border-[#C5DEC9]">
+                  🌾
+                </div>
+                <h3 className="font-serif font-bold text-base text-[#231815]">
+                  Ancient Millets &amp; Grains
+                </h3>
+                <p className="text-xs text-[#6B5E55] leading-relaxed">
+                  Heritage ragi, jowar, foxtail millets, and slow-fermented wild sourdough. Naturally gluten-conscious, rich in micro-minerals and prebiotic fiber.
+                </p>
+              </div>
+              <div className="pt-2 border-t border-[#E8DEC8] text-[11px] font-bold text-[#2D5A34]">
+                ✓ Low glycemic index &bull; Gut microbiome friendly
+              </div>
+            </div>
+
+            {/* Card 3: Farm-to-Table Transparency */}
+            <div className="p-5 rounded-2xl bg-[#FAF6EE] border border-[#E8DEC8] space-y-2.5 flex flex-col justify-between hover:border-[#C86A1D]/40 transition-all">
+              <div className="space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-[#FDF2C8] text-[#C86A1D] flex items-center justify-center text-xl border border-[#F3DFC1]">
+                  🥕
+                </div>
+                <h3 className="font-serif font-bold text-base text-[#231815]">
+                  Clean Soil &amp; Pastures
+                </h3>
+                <p className="text-xs text-[#6B5E55] leading-relaxed">
+                  Partnered with local regenerative farms. 100% grass-fed ruminant meats, pasture-raised poultry, organic seasonal vegetables, and wild herbs.
+                </p>
+              </div>
+              <div className="pt-2 border-t border-[#E8DEC8] text-[11px] font-bold text-[#2D5A34]">
+                ✓ Hormone-free &bull; Antibiotic-free
+              </div>
+            </div>
+
+            {/* Card 4: Neighborhood Food Scouts */}
+            <div className="p-5 rounded-2xl bg-[#FAF6EE] border border-[#E8DEC8] space-y-2.5 flex flex-col justify-between hover:border-[#C86A1D]/40 transition-all">
+              <div className="space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-[#EBF4ED] text-[#2D5A34] flex items-center justify-center text-xl border border-[#C5DEC9]">
+                  🎥
+                </div>
+                <h3 className="font-serif font-bold text-base text-[#231815]">
+                  Scout Verified Reels
+                </h3>
+                <p className="text-xs text-[#6B5E55] leading-relaxed">
+                  Real neighborhood scouts and culinary investigators record kitchen proof directly on video reels so you can see authentic pan prep with your own eyes.
+                </p>
+              </div>
+              <div className="pt-2 border-t border-[#E8DEC8] text-[11px] font-bold text-[#2D5A34]">
+                ✓ Live kitchen proof &bull; Community reviewed
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
         {/* BRAND DIFFERENTIATION & VALUE PROPOSITION                                  */}
         {/* ========================================================================= */}
-        <section id="mission-section" className="scroll-mt-24 p-6 sm:p-8 rounded-2xl bg-[#0B1A14] border border-[#1B3B2F] shadow-lg relative overflow-hidden">
+        <section id="mission-section" className="scroll-mt-24 p-6 sm:p-8 rounded-[28px] bg-[#FFFFFF] border border-[#E8DEC8] shadow-xs relative overflow-hidden">
           <div className="max-w-3xl space-y-3">
-            <span className="text-[11px] font-bold text-[#35E27F] uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-[#C86A1D] uppercase tracking-wider">
               Our Vision &amp; Mission
             </span>
-            <h3 className="text-xl sm:text-2xl font-bold text-[#F5F7F3] leading-snug">
+            <h3 className="font-serif font-bold text-xl sm:text-2xl text-[#231815] leading-snug">
               Make every meal a choice you can feel good about.
             </h3>
-            <p className="text-xs sm:text-sm text-[#35E27F] font-semibold">
+            <p className="text-xs sm:text-sm text-[#2D5A34] font-semibold">
               A restaurant tells you where to eat. HealthyVicinity helps you decide what to order.
             </p>
-            <p className="text-xs sm:text-sm text-[#A8B5AE] leading-relaxed">
-              Instead of stopping at restaurant ratings, HealthyVicinity helps you discover individual dishes based on the things you care about — from protein and calories to ingredients and cooking methods.
+            <p className="text-xs sm:text-sm text-[#6B5E55] leading-relaxed">
+              Instead of stopping at generic restaurant ratings, HealthyVicinity helps you discover individual dishes based on the things you care about — from protein and calories to cooking fats and authentic preparation methods.
             </p>
-            <div className="pt-3 border-t border-[#1B3B2F] flex items-start gap-3">
-              <span className="w-2 h-2 rounded-full bg-[#35E27F] mt-1.5 shrink-0" />
-              <p className="text-xs font-medium text-[#F5F7F3] italic">
+            <div className="pt-3 border-t border-[#E8DEC8] flex items-start gap-3">
+              <span className="w-2 h-2 rounded-full bg-[#C86A1D] mt-1.5 shrink-0" />
+              <p className="text-xs font-medium text-[#231815] font-serif italic">
                 &ldquo;Eating healthy shouldn&apos;t require homework. Menus tell you what&apos;s available. HealthyVicinity helps you figure out what fits you.&rdquo;
               </p>
             </div>
@@ -1589,38 +1724,38 @@ export default function HomePage() {
         {/* ========================================================================= */}
         <section className="space-y-4">
           <div>
-            <span className="text-[11px] font-bold text-[#35E27F] uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-[#2D5A34] uppercase tracking-wider">
               Verification &amp; Transparency
             </span>
-            <h3 className="text-lg sm:text-xl font-bold text-[#F5F7F3] mt-1">
+            <h3 className="font-serif font-bold text-lg sm:text-xl text-[#231815] mt-1">
               Why Trust the Details?
             </h3>
-            <p className="text-xs text-[#A8B5AE] mt-1 max-w-2xl">
+            <p className="text-xs text-[#6B5E55] mt-1 max-w-2xl">
               HealthyVicinity shows you more than a restaurant name. We help you understand what&apos;s in the dish, how it&apos;s prepared and where the information comes from.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="p-5 rounded-2xl bg-[#0B1A14] border border-[#1B3B2F] space-y-2.5">
-              <div className="text-xs font-mono font-bold text-[#35E27F]">01</div>
-              <h4 className="font-bold text-[#F5F7F3] text-sm">See the Dish</h4>
-              <p className="text-xs text-[#A8B5AE] leading-relaxed">
+            <div className="p-5.5 rounded-2xl bg-[#FFFFFF] border border-[#E8DEC8] space-y-2.5 shadow-xs">
+              <div className="text-xs font-mono font-bold text-[#C86A1D]">01</div>
+              <h4 className="font-serif font-bold text-[#231815] text-base">See the Dish</h4>
+              <p className="text-xs text-[#6B5E55] leading-relaxed">
                 Find the actual dishes that match your preferences, not just a vague restaurant recommendation.
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#0B1A14] border border-[#1B3B2F] space-y-2.5">
-              <div className="text-xs font-mono font-bold text-[#35E27F]">02</div>
-              <h4 className="font-bold text-[#F5F7F3] text-sm">Understand the Details</h4>
-              <p className="text-xs text-[#A8B5AE] leading-relaxed">
+            <div className="p-5.5 rounded-2xl bg-[#FFFFFF] border border-[#E8DEC8] space-y-2.5 shadow-xs">
+              <div className="text-xs font-mono font-bold text-[#C86A1D]">02</div>
+              <h4 className="font-serif font-bold text-[#231815] text-base">Understand the Details</h4>
+              <p className="text-xs text-[#6B5E55] leading-relaxed">
                 See nutrition, ingredients and cooking methods in plain language so you can make informed choices with ease.
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#0B1A14] border border-[#1B3B2F] space-y-2.5">
-              <div className="text-xs font-mono font-bold text-[#35E27F]">03</div>
-              <h4 className="font-bold text-[#F5F7F3] text-sm">Know the Source</h4>
-              <p className="text-xs text-[#A8B5AE] leading-relaxed">
+            <div className="p-5.5 rounded-2xl bg-[#FFFFFF] border border-[#E8DEC8] space-y-2.5 shadow-xs">
+              <div className="text-xs font-mono font-bold text-[#C86A1D]">03</div>
+              <h4 className="font-serif font-bold text-[#231815] text-base">Know the Source</h4>
+              <p className="text-xs text-[#6B5E55] leading-relaxed">
                 See where important information comes from and when it was last checked, from menu listings to restaurant direct confirmations.
               </p>
             </div>
@@ -1630,24 +1765,24 @@ export default function HomePage() {
         {/* ========================================================================= */}
         {/* CLEAN ZONE SECTION                                                        */}
         {/* ========================================================================= */}
-        <section id="clean-zone" className="p-6 sm:p-8 rounded-2xl bg-[#0B1A14] border border-[#1B3B2F] shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <section id="clean-zone" className="p-6 sm:p-8 rounded-[28px] bg-gradient-to-r from-[#FBF6EE] via-[#F6EFE2] to-[#FBF6EE] border border-[#E8DEC8] shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div className="flex items-start sm:items-center gap-4 text-left">
-            <div className="w-12 h-12 rounded-xl bg-[#0F231B] flex items-center justify-center text-[#35E27F] shrink-0 border border-[#1B3B2F]">
+            <div className="w-12 h-12 rounded-2xl bg-[#EBF4ED] flex items-center justify-center text-[#2D5A34] shrink-0 border border-[#C5DEC9]">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <h4 className="font-bold text-[#F5F7F3] text-base uppercase tracking-wider">
+                <h4 className="font-serif font-bold text-[#231815] text-base uppercase tracking-wider">
                   Clean Zone
                 </h4>
-                <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#123D2A] text-[#35E27F] font-bold border border-[#1B3B2F]">
+                <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#2D5A34] text-white font-bold">
                   Stricter Preferences
                 </span>
               </div>
-              <p className="text-xs font-medium text-[#35E27F]">
+              <p className="text-xs font-semibold text-[#2D5A34]">
                 For people who want a closer look at ingredients and cooking methods.
               </p>
-              <p className="text-xs text-[#A8B5AE] leading-relaxed max-w-xl">
+              <p className="text-xs text-[#6B5E55] leading-relaxed max-w-xl">
                 Explore dishes that match stricter preferences around ingredients, cooking oils and food quality.
               </p>
             </div>
@@ -1659,7 +1794,7 @@ export default function HomePage() {
               const elem = document.getElementById('dishes-section');
               if (elem) elem.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 flex items-center justify-center gap-1.5 shrink-0 shadow-sm"
+            className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[#2D5A34] hover:bg-[#234729] text-white text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 flex items-center justify-center gap-1.5 shrink-0 shadow-xs"
           >
             <span>Filter Clean Zone Dishes</span>
           </button>
@@ -1670,30 +1805,30 @@ export default function HomePage() {
         {/* ========================================================================= */}
         <section
           id="clean-fuel-footer-banner"
-          className="rounded-2xl bg-gradient-to-r from-[#0a2e1f] via-[#0F231B] to-[#0a2e1f] border border-[#1B3B2F] p-6 sm:p-8 text-center space-y-4 relative overflow-hidden shadow-xl"
+          className="rounded-[32px] bg-gradient-to-br from-[#2D5A34] via-[#234A29] to-[#1B3B20] border border-[#3E7047] p-8 sm:p-10 text-center space-y-4 relative overflow-hidden shadow-xl text-white"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#35E27F]/15 via-transparent to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent pointer-events-none" />
           <div className="relative z-10 max-w-3xl mx-auto space-y-3">
-            <p className="text-[10px] sm:text-xs font-extrabold uppercase tracking-widest text-[#b6f7c1] flex items-center justify-center gap-2 flex-wrap">
+            <p className="text-[10px] sm:text-xs font-extrabold uppercase tracking-widest text-[#D2ECD6] flex items-center justify-center gap-2 flex-wrap">
               <span>HIGH PROTEIN</span>
-              <span className="text-[#35E27F]">&bull;</span>
+              <span>&bull;</span>
               <span>HIGH FIBER</span>
-              <span className="text-[#35E27F]">&bull;</span>
+              <span>&bull;</span>
               <span>LOW CAL</span>
-              <span className="text-[#35E27F]">&bull;</span>
+              <span>&bull;</span>
               <span>LOW SUGAR</span>
-              <span className="text-[#35E27F]">&bull;</span>
+              <span>&bull;</span>
               <span>100% SEED-OIL-FREE</span>
-              <span className="text-[#35E27F]">&bull;</span>
+              <span>&bull;</span>
               <span>PURE ANIMAL &amp; FRUIT FATS</span>
             </p>
-            <h2 className="text-xl sm:text-3xl font-extrabold tracking-tight text-[#F5F7F3]">
-              CLEAN FUEL. NUTRITION OPTIMIZED.
+            <h2 className="font-serif font-black text-2xl sm:text-4xl tracking-tight text-white">
+              CLEAN FUEL. WHOLESOME LIVING.
             </h2>
             <div className="pt-2">
               <button
                 onClick={() => setIsMapOpen(true)}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all shadow-lg active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#F5C842] hover:bg-[#F9D65E] text-[#231815] text-xs font-black transition-all shadow-lg active:scale-95 cursor-pointer"
               >
                 <MapPin className="w-4 h-4" />
                 <span>Explore Map</span>
@@ -1705,60 +1840,60 @@ export default function HomePage() {
         {/* ========================================================================= */}
         {/* FOOTER                                                                    */}
         {/* ========================================================================= */}
-        <footer className="pt-8 pb-4 border-t border-[#1B3B2F] text-[#F5F7F3] space-y-6">
+        <footer className="pt-8 pb-4 border-t border-[#E8DEC8] text-[#231815] space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h4 className="font-bold text-base text-[#F5F7F3]">
+              <h4 className="font-serif font-bold text-base text-[#231815]">
                 A restaurant tells you where to eat. We help you decide what to order.
               </h4>
-              <p className="text-xs text-[#A8B5AE] mt-1 max-w-xl leading-relaxed">
+              <p className="text-xs text-[#6B5E55] mt-1 max-w-xl leading-relaxed">
                 HealthyVicinity illuminates what&apos;s truly inside your food — from ingredients and cooking oils to complete nutritional profiles.
               </p>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-[#A8B5AE]">
+            <div className="flex items-center gap-2 text-xs text-[#6B5E55]">
               <span>Better choices start with better information.</span>
             </div>
           </div>
 
           {/* Programmatic SEO City Hub Navigation */}
-          <div className="pt-4 pb-2 border-t border-[#1B3B2F]/60">
-            <p className="text-[11px] font-bold text-[#b6f7c1] uppercase tracking-wider mb-2">
+          <div className="pt-4 pb-2 border-t border-[#E8DEC8]">
+            <p className="text-[11px] font-bold text-[#C86A1D] uppercase tracking-wider mb-2">
               Verified Clean Dining City Guides:
             </p>
-            <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-[#A8B5AE]">
-              <Link href="/austin" className="hover:text-[#35E27F] transition-colors">Austin, TX</Link>
+            <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-[#6B5E55]">
+              <Link href="/austin" className="hover:text-[#C86A1D] transition-colors">Austin, TX</Link>
               <span>&bull;</span>
-              <Link href="/nyc" className="hover:text-[#35E27F] transition-colors">New York, NY</Link>
+              <Link href="/nyc" className="hover:text-[#C86A1D] transition-colors">New York, NY</Link>
               <span>&bull;</span>
-              <Link href="/los-angeles" className="hover:text-[#35E27F] transition-colors">Los Angeles, CA</Link>
+              <Link href="/los-angeles" className="hover:text-[#C86A1D] transition-colors">Los Angeles, CA</Link>
               <span>&bull;</span>
-              <Link href="/san-francisco" className="hover:text-[#35E27F] transition-colors">San Francisco, CA</Link>
+              <Link href="/san-francisco" className="hover:text-[#C86A1D] transition-colors">San Francisco, CA</Link>
               <span>&bull;</span>
-              <Link href="/miami" className="hover:text-[#35E27F] transition-colors">Miami, FL</Link>
+              <Link href="/miami" className="hover:text-[#C86A1D] transition-colors">Miami, FL</Link>
               <span>&bull;</span>
-              <Link href="/chicago" className="hover:text-[#35E27F] transition-colors">Chicago, IL</Link>
+              <Link href="/chicago" className="hover:text-[#C86A1D] transition-colors">Chicago, IL</Link>
               <span>&bull;</span>
-              <Link href="/dallas" className="hover:text-[#35E27F] transition-colors">Dallas, TX</Link>
+              <Link href="/dallas" className="hover:text-[#C86A1D] transition-colors">Dallas, TX</Link>
               <span>&bull;</span>
-              <Link href="/houston" className="hover:text-[#35E27F] transition-colors">Houston, TX</Link>
+              <Link href="/houston" className="hover:text-[#C86A1D] transition-colors">Houston, TX</Link>
               <span>&bull;</span>
-              <Link href="/scottsdale" className="hover:text-[#35E27F] transition-colors">Scottsdale, AZ</Link>
+              <Link href="/scottsdale" className="hover:text-[#C86A1D] transition-colors">Scottsdale, AZ</Link>
               <span>&bull;</span>
-              <Link href="/denver" className="hover:text-[#35E27F] transition-colors">Denver, CO</Link>
+              <Link href="/denver" className="hover:text-[#C86A1D] transition-colors">Denver, CO</Link>
               <span>&bull;</span>
-              <Link href="/seattle" className="hover:text-[#35E27F] transition-colors">Seattle, WA</Link>
+              <Link href="/seattle" className="hover:text-[#C86A1D] transition-colors">Seattle, WA</Link>
               <span>&bull;</span>
-              <Link href="/nashville" className="hover:text-[#35E27F] transition-colors">Nashville, TN</Link>
+              <Link href="/nashville" className="hover:text-[#C86A1D] transition-colors">Nashville, TN</Link>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#1B3B2F]/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#A8B5AE]">
+          <div className="pt-4 border-t border-[#E8DEC8] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#6B5E55]">
             <p>&copy; {new Date().getFullYear()} HealthyVicinity. All rights reserved.</p>
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setIsMapOpen(true)}
-                className="hover:text-[#35E27F] transition-colors cursor-pointer"
+                className="hover:text-[#C86A1D] transition-colors cursor-pointer"
               >
                 Nearby Map
               </button>
@@ -1767,13 +1902,13 @@ export default function HomePage() {
                   const elem = document.getElementById('clean-zone');
                   if (elem) elem.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="hover:text-[#35E27F] transition-colors cursor-pointer"
+                className="hover:text-[#C86A1D] transition-colors cursor-pointer"
               >
                 Clean Zone
               </button>
               <button
                 onClick={() => setIsScannerOpen(true)}
-                className="hover:text-[#35E27F] transition-colors cursor-pointer"
+                className="hover:text-[#C86A1D] transition-colors cursor-pointer"
               >
                 AI Menu Scanner
               </button>
@@ -1789,18 +1924,18 @@ export default function HomePage() {
         <button
           id="floating-map-toggle-btn"
           onClick={() => setIsMapOpen(true)}
-          className="group px-4 py-2 sm:px-5 sm:py-3 rounded-full bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] font-bold text-xs shadow-xl shadow-black/40 flex items-center gap-2 sm:gap-2.5 border border-[#35E27F] transition-all duration-200 cursor-pointer active:scale-95 whitespace-nowrap"
+          className="group px-4 py-2 sm:px-5 sm:py-3 rounded-full bg-[#231815] hover:bg-[#3B2923] text-[#FAF6EE] font-bold text-xs shadow-xl shadow-black/20 flex items-center gap-2 sm:gap-2.5 border border-[#3E2B25] transition-all duration-200 cursor-pointer active:scale-95 whitespace-nowrap"
           title="Slide out the interactive map from the left"
         >
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#07130F] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#07130F]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#F5C842] opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#F5C842]" />
           </span>
           <span>Find Food Near Me</span>
-          <span className="px-1.5 py-0.5 rounded-md bg-[#07130F]/20 text-[#07130F] text-[10px] font-bold">
+          <span className="px-1.5 py-0.5 rounded-md bg-[#F5C842] text-[#231815] text-[10px] font-black">
             {filteredDishes.length}
           </span>
-          <ChevronRight className="w-3.5 h-3.5 text-[#07130F] group-hover:translate-x-0.5 transition-transform" />
+          <ChevronRight className="w-3.5 h-3.5 text-[#FAF6EE] group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
 

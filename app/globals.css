@@ -1,64 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-brand-dark: #07130F;
-  --color-brand-surface: #0B1A14;
-  --color-brand-surface-raised: #0F231B;
-  --color-brand-border: #1B3B2F;
-  --color-brand-green: #35E27F;
-  --color-brand-green-secondary: #123D2A;
-  --color-brand-mint: #DDFBE9;
-  --color-brand-offwhite: #F5F7F3;
-  --color-brand-muted: #A8B5AE;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+
+  /* Warm Organic Palette */
+  --color-brand-canvas: #FAF6EE;
+  --color-brand-surface: #FFFFFF;
+  --color-brand-surface-warm: #F7F1E5;
+  --color-brand-border: #E8DEC8;
+  --color-brand-border-warm: #DFD2BC;
+  --color-brand-gold: #F5C842;
+  --color-brand-gold-deep: #EAA827;
+  --color-brand-terracotta: #C86A1D;
+  --color-brand-terracotta-dark: #A84E18;
+  --color-brand-green: #2D5A34;
+  --color-brand-green-light: #EBF4ED;
+  --color-brand-espresso: #231815;
+  --color-brand-cedar: #6B5E55;
+  --color-brand-sand: #9E9084;
+
+  /* Backward Compatibility Mappings for older utility classes */
+  --color-brand-dark: #FAF6EE;
+  --color-brand-surface-raised: #F7F1E5;
+  --color-brand-green-secondary: #EBF4ED;
+  --color-brand-mint: #2D5A34;
+  --color-brand-offwhite: #231815;
+  --color-brand-muted: #6B5E55;
 }
 
 @layer base {
   * {
-    border-color: #1B3B2F;
+    border-color: #E8DEC8;
   }
   img {
     object-fit: cover;
   }
   body {
-    background-color: #07130F; /* Deep charcoal/green-black technology foundation */
-    color: #F5F7F3; /* Off-white primary text */
+    background-color: #FAF6EE; /* Warm, wholesome sunlit organic cream */
+    color: #231815; /* Deep roast espresso */
+    font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1, "cv11" 1;
     letter-spacing: -0.015em;
   }
   ::selection {
-    background-color: rgba(53, 226, 127, 0.25);
-    color: #35E27F;
+    background-color: rgba(245, 200, 66, 0.4);
+    color: #231815;
   }
 }
 
-/* Modern Tech Card Surfaces */
+.font-display {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+/* Organic Market Card Surfaces */
+.organic-card,
 .tech-card {
-  background: #0B1A14;
-  border: 1px solid #1B3B2F;
-  border-radius: 20px;
+  background: #FFFFFF;
+  border: 1px solid #E8DEC8;
+  border-radius: 26px;
+  box-shadow: 0 4px 20px -4px rgba(130, 90, 40, 0.06);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.organic-card:hover,
 .tech-card:hover {
-  border-color: rgba(53, 226, 127, 0.4);
-  background: #0E2019;
-  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5), 0 0 20px -6px rgba(53, 226, 127, 0.12);
+  border-color: #D4C3A3;
+  box-shadow: 0 16px 36px -8px rgba(130, 90, 40, 0.12);
+  transform: translateY(-2px);
 }
 
-/* Radial Glows */
+/* Sun-drenched Hero Banner with subtle natural grain */
+.hero-sun-banner {
+  background: linear-gradient(135deg, #F5C842 0%, #F9D558 55%, #EFA928 100%);
+  color: #231815;
+}
+
+/* Organic Torn Paper / Wavy Divider Effect */
+.torn-paper-divider {
+  background: linear-gradient(135deg, #F5C842 0%, #F9D558 100%);
+  mask-image: radial-gradient(circle at 10px 0, transparent 0, transparent 10px, black 11px);
+  mask-size: 20px 20px;
+}
+
+/* Warm Ambient Glows */
 .hero-ambient-glow {
-  background: radial-gradient(circle at 50% 30%, rgba(53, 226, 127, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 30%, rgba(245, 200, 66, 0.18) 0%, transparent 70%);
 }
 
 .vicinity-radial-glow {
-  background: radial-gradient(circle, rgba(53, 226, 127, 0.12) 0%, rgba(18, 61, 42, 0.05) 50%, transparent 70%);
+  background: radial-gradient(circle, rgba(200, 106, 29, 0.1) 0%, rgba(45, 90, 52, 0.05) 50%, transparent 70%);
 }
 
 .tech-glow-marker {
-  box-shadow: 0 0 16px 2px rgba(53, 226, 127, 0.5);
+  box-shadow: 0 0 16px 2px rgba(200, 106, 29, 0.35);
 }
 
-/* Radar Sweep Keyframe */
+/* Pulse Keyframe */
 @keyframes radar-pulse {
   0% {
     transform: scale(0.9);
@@ -78,20 +117,20 @@
   animation: radar-pulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
-/* Modern Dark Scrollbars */
+/* Warm Organic Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: #07130F;
+  background: #FAF6EE;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1B3B2F;
+  background: #DFD2BC;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #35E27F;
+  background: #C86A1D;
 }
 
 

@@ -653,10 +653,10 @@ export default function InteractiveMap({
           onClick={(e) => e.stopPropagation()}
         >
           <div
-            className="w-[290px] sm:w-[320px] rounded-2xl shadow-xl p-3 border border-[#1B3B2F] bg-[#0B1A14]/95 backdrop-blur-md text-[#F5F7F3] animate-in zoom-in-95 fade-in duration-200"
+            className="w-[290px] sm:w-[320px] rounded-2xl shadow-xl p-3 border border-[#E8DEC8] bg-white/95 backdrop-blur-md text-[#231815] animate-in zoom-in-95 fade-in duration-200"
           >
             {/* Header: Close Button & Restaurant */}
-            <div className="flex items-start justify-between gap-2 pb-2 border-b border-[#1B3B2F]">
+            <div className="flex items-start justify-between gap-2 pb-2 border-b border-[#E8DEC8]">
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <a
@@ -670,22 +670,22 @@ export default function InteractiveMap({
                     rel="noopener noreferrer"
                     onMouseDown={(e) => e.stopPropagation()}
                     onClick={(e) => e.stopPropagation()}
-                    className="text-[11px] font-bold uppercase tracking-wider text-[#35E27F] hover:text-[#52ee96] truncate flex items-center gap-1 cursor-pointer transition-colors"
+                    className="text-[11px] font-bold uppercase tracking-wider text-[#C86A1D] hover:text-[#A95513] truncate flex items-center gap-1 cursor-pointer transition-colors"
                     title={`View ${selectedDish.restaurant} on Google Maps`}
                   >
                     <MapPin className="w-3 h-3 shrink-0" />
                     <span className="truncate">{selectedDish.restaurant}</span>
                   </a>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#10291D] text-[#A8B5AE] border border-[#1B3B2F] font-semibold shrink-0">
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#FAF6EE] text-[#6B5E55] border border-[#E8DEC8] font-semibold shrink-0">
                     ⭐ {selectedDish.rating}
                   </span>
                 </div>
                 {selectedDish.restaurantAddress && (
-                  <p className="text-[10px] text-[#A8B5AE] truncate mt-0.5">
+                  <p className="text-[10px] text-[#6B5E55] truncate mt-0.5">
                     {selectedDish.restaurantAddress}
                   </p>
                 )}
-                <h4 className="font-bold text-sm truncate leading-snug mt-0.5 text-[#F5F7F3]">
+                <h4 className="font-serif font-bold text-sm truncate leading-snug mt-0.5 text-[#231815]">
                   {selectedDish.name}
                 </h4>
               </div>
@@ -696,7 +696,7 @@ export default function InteractiveMap({
                   e.stopPropagation();
                   onSelectDish(null);
                 }}
-                className="p-1.5 rounded-lg hover:bg-white/10 text-[#A8B5AE] hover:text-[#F5F7F3] transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg hover:bg-[#FAF6EE] text-[#6B5E55] hover:text-[#231815] transition-colors cursor-pointer"
                 title="Dismiss Callout"
               >
                 <X className="w-4 h-4" />
@@ -705,7 +705,7 @@ export default function InteractiveMap({
 
             {/* Thumbnail + Highlights Row */}
             <div className="flex gap-2.5 mt-2.5 items-center">
-              <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 relative border border-[#1B3B2F] bg-[#07130F]">
+              <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 relative border border-[#E8DEC8] bg-[#FAF6EE]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={selectedDish.image}
@@ -713,7 +713,7 @@ export default function InteractiveMap({
                   className="w-full h-full object-cover"
                 />
                 {selectedDish.isSeedOilFree && (
-                  <span className="absolute bottom-0 inset-x-0 bg-[#0E2F20] text-[#86EFAC] text-[7px] font-bold uppercase tracking-wider text-center py-0.5 border-t border-[#1B3B2F]">
+                  <span className="absolute bottom-0 inset-x-0 bg-[#EBF4ED] text-[#2D5A34] text-[7px] font-bold uppercase tracking-wider text-center py-0.5 border-t border-[#C5DEC9]">
                     No Seed Oils
                   </span>
                 )}
@@ -722,29 +722,29 @@ export default function InteractiveMap({
               <div className="min-w-0 flex-1 space-y-1">
                 {/* Macros Chips */}
                 <div className="flex items-center gap-1.5 flex-wrap text-[11px]">
-                  <span className="font-semibold text-[#35E27F]">
-                    {selectedDish.protein}g Protein
+                  <span className="font-bold text-[#2D5A34]">
+                    {selectedDish.protein}g Pro
                   </span>
-                  <span className="text-[#1B3B2F]">&bull;</span>
-                  <span className="text-[#A8B5AE] font-medium">
+                  <span className="text-[#E8DEC8]">&bull;</span>
+                  <span className="text-[#6B5E55] font-medium">
                     {selectedDish.calories} kcal
                   </span>
-                  <span className="text-[#1B3B2F]">&bull;</span>
-                  <span className="font-bold text-[#F5F7F3]">
+                  <span className="text-[#E8DEC8]">&bull;</span>
+                  <span className="font-black text-[#231815]">
                     {formatPrice(selectedDish.price, selectedDish.city, selectedDish.id)}
                   </span>
                 </div>
 
                 {/* Cooking Fat Badge */}
-                <div className="text-[10px] text-[#A8B5AE] font-medium truncate flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3 text-[#35E27F] shrink-0" />
+                <div className="text-[10px] text-[#6B5E55] font-medium truncate flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3 text-[#2D5A34] shrink-0" />
                   <span className="truncate">Cooked in: {selectedDish.cookingFat}</span>
                 </div>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="mt-3 pt-2.5 border-t border-[#1B3B2F] flex items-center gap-2">
+            <div className="mt-3 pt-2.5 border-t border-[#E8DEC8] flex items-center gap-2">
               {onViewDetail && (
                 <button
                   id="map-callout-view-details-btn"
@@ -752,10 +752,10 @@ export default function InteractiveMap({
                     e.stopPropagation();
                     onViewDetail(selectedDish);
                   }}
-                  className="flex-1 py-1.5 px-2.5 rounded-xl bg-[#143B2A] hover:bg-[#1B4D36] text-[#DDFBE9] border border-[#1B3B2F] text-xs font-semibold transition-all shadow-xs flex items-center justify-center gap-1 active:scale-95 cursor-pointer"
+                  className="flex-1 py-1.5 px-2.5 rounded-xl bg-[#C86A1D] hover:bg-[#A95513] text-white border border-[#C86A1D] text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1 active:scale-95 cursor-pointer"
                 >
                   <span>View Details</span>
-                  <ChevronRight className="w-3.5 h-3.5 opacity-80" />
+                  <ChevronRight className="w-3.5 h-3.5 opacity-90" />
                 </button>
               )}
 
@@ -774,10 +774,10 @@ export default function InteractiveMap({
                 onTouchStart={(e) => e.stopPropagation()}
                 onTouchEnd={(e) => e.stopPropagation()}
                 onClick={(e) => e.stopPropagation()}
-                className="py-1.5 px-3 rounded-xl bg-[#0F261D] hover:bg-[#15382B] text-[#A8B5AE] hover:text-[#DDFBE9] border border-[#1B3B2F] text-xs font-semibold transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-xs"
+                className="py-1.5 px-3 rounded-xl bg-white hover:bg-[#FAF6EE] text-[#6B5E55] hover:text-[#231815] border border-[#E8DEC8] text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-xs"
                 title={`Get directions to ${selectedDish.restaurant} on Google Maps`}
               >
-                <Navigation className="w-3.5 h-3.5 fill-current shrink-0 text-[#35E27F]" />
+                <Navigation className="w-3.5 h-3.5 fill-current shrink-0 text-[#2D5A34]" />
                 <span>Directions</span>
                 <ExternalLink className="w-3 h-3 opacity-60 shrink-0" />
               </a>

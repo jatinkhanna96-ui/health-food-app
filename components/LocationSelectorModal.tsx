@@ -285,7 +285,7 @@ export default function LocationSelectorModal({
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
         onClick={onClose}
       />
 
@@ -294,35 +294,35 @@ export default function LocationSelectorModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="location-modal-title"
-        className="relative w-full sm:max-w-2xl bg-[#0B1A14] text-[#F5F7F3] border-t sm:border border-[#1B3B2F] rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[90vh] sm:max-h-[85vh] z-10 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200"
+        className="relative w-full sm:max-w-2xl bg-[#FFFFFF] text-[#231815] border-t sm:border border-[#E8DEC8] rounded-t-3xl sm:rounded-[28px] shadow-2xl flex flex-col max-h-[90vh] sm:max-h-[85vh] z-10 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200"
       >
         {/* Mobile Drag Indicator */}
         <div className="sm:hidden flex justify-center pt-2.5 pb-1">
-          <div className="w-10 h-1 rounded-full bg-[#1B3B2F]" />
+          <div className="w-10 h-1 rounded-full bg-[#E8DEC8]" />
         </div>
 
         {/* Modal Header */}
-        <div className="px-4 sm:px-6 pt-3 sm:pt-5 pb-3 border-b border-[#1B3B2F] flex items-center justify-between gap-3">
+        <div className="px-4 sm:px-6 pt-3 sm:pt-5 pb-3 border-b border-[#E8DEC8] flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#123D2A] text-[#35E27F] flex items-center justify-center border border-[#1B3B2F]">
+            <div className="w-8 h-8 rounded-xl bg-[#FDF2C8] text-[#C86A1D] flex items-center justify-center border border-[#F3DFC1]">
               <Compass className="w-4 h-4" />
             </div>
             <div>
               <h2
                 id="location-modal-title"
-                className="text-base sm:text-lg font-bold text-[#F5F7F3] leading-tight"
+                className="font-serif font-bold text-base sm:text-lg text-[#231815] leading-tight"
               >
                 Where are you eating?
               </h2>
-              <p className="text-[11px] sm:text-xs text-[#A8B5AE] font-medium">
-                Choose your city to explore verified healthy dining
+              <p className="text-[11px] sm:text-xs text-[#6B5E55] font-medium">
+                Choose your city to explore verified wholesome dining
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-[#A8B5AE] hover:text-[#F5F7F3] hover:bg-[#0F231B] transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-[#6B5E55] hover:text-[#231815] hover:bg-[#FAF6EE] transition-colors cursor-pointer"
             aria-label="Close location selector"
           >
             <X className="w-5 h-5" />
@@ -330,43 +330,43 @@ export default function LocationSelectorModal({
         </div>
 
         {/* Action Bar: Use My Location & Country Tabs */}
-        <div className="px-4 sm:px-6 py-3 bg-[#07130F]/60 border-b border-[#1B3B2F] space-y-2.5">
+        <div className="px-4 sm:px-6 py-3 bg-[#FAF6EE]/90 border-b border-[#E8DEC8] space-y-2.5">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
             {/* 📍 Use my location CTA */}
             <button
               id="use-my-location-btn"
               onClick={handleUseMyLocation}
               disabled={isLocating}
-              className="px-3.5 py-2 rounded-xl bg-[#123D2A] hover:bg-[#184d35] text-[#35E27F] text-xs font-bold border border-[#1B3B2F] hover:border-[#35E27F]/50 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 disabled:opacity-60"
+              className="px-3.5 py-2 rounded-xl bg-[#FFFFFF] hover:bg-[#EBF4ED] text-[#2D5A34] text-xs font-bold border border-[#E8DEC8] hover:border-[#2D5A34]/50 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 disabled:opacity-60 shadow-xs"
             >
               {isLocating ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#2D5A34]" />
               ) : (
-                <Navigation className="w-3.5 h-3.5" />
+                <Navigation className="w-3.5 h-3.5 text-[#2D5A34]" />
               )}
               <span>📍 Auto-Detect (GPS / IP)</span>
             </button>
 
             {/* Country Tabs */}
-            <div className="flex items-center bg-[#07130F] p-1 rounded-xl border border-[#1B3B2F] self-center sm:self-auto w-full sm:w-auto">
+            <div className="flex items-center bg-[#F4ECE1] p-1 rounded-2xl border border-[#E8DEC8] self-center sm:self-auto w-full sm:w-auto">
               <button
                 id="country-tab-india"
                 onClick={() => {
                   setActiveCountry('IN');
                   setSearchQuery('');
                 }}
-                className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                   activeCountry === 'IN'
-                    ? 'bg-[#35E27F] text-[#07130F] shadow-sm'
-                    : 'text-[#A8B5AE] hover:text-[#F5F7F3]'
+                    ? 'bg-[#C86A1D] text-white shadow-xs'
+                    : 'text-[#6B5E55] hover:text-[#231815]'
                 }`}
               >
                 <span>🇮🇳 India</span>
                 <span
                   className={`text-[10px] px-1.5 py-0.2 rounded-full ${
                     activeCountry === 'IN'
-                      ? 'bg-[#07130F]/20 text-[#07130F]'
-                      : 'bg-[#1B3B2F] text-[#A8B5AE]'
+                      ? 'bg-white/20 text-white'
+                      : 'bg-[#E8DEC8] text-[#6B5E55]'
                   }`}
                 >
                   31
@@ -379,18 +379,18 @@ export default function LocationSelectorModal({
                   setActiveCountry('US');
                   setSearchQuery('');
                 }}
-                className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                   activeCountry === 'US'
-                    ? 'bg-[#35E27F] text-[#07130F] shadow-sm'
-                    : 'text-[#A8B5AE] hover:text-[#F5F7F3]'
+                    ? 'bg-[#C86A1D] text-white shadow-xs'
+                    : 'text-[#6B5E55] hover:text-[#231815]'
                 }`}
               >
                 <span>🇺🇸 United States</span>
                 <span
                   className={`text-[10px] px-1.5 py-0.2 rounded-full ${
                     activeCountry === 'US'
-                      ? 'bg-[#07130F]/20 text-[#07130F]'
-                      : 'bg-[#1B3B2F] text-[#A8B5AE]'
+                      ? 'bg-white/20 text-white'
+                      : 'bg-[#E8DEC8] text-[#6B5E55]'
                   }`}
                 >
                   30
@@ -403,20 +403,20 @@ export default function LocationSelectorModal({
             <div
               className={`text-xs px-3 py-2 rounded-xl flex items-center gap-2 animate-in fade-in ${
                 locationStatus.type === 'loading'
-                  ? 'bg-[#0F231B] text-[#A8B5AE] border border-[#1B3B2F]'
+                  ? 'bg-[#FAF6EE] text-[#6B5E55] border border-[#E8DEC8]'
                   : locationStatus.type === 'success'
-                  ? 'bg-[#123D2A] text-[#35E27F] font-bold border border-[#35E27F]/40'
-                  : 'bg-[#241C10] text-[#FFD166] border border-[#3E301A]'
+                  ? 'bg-[#EBF4ED] text-[#2D5A34] font-bold border border-[#C5DEC9]'
+                  : 'bg-[#FFF7ED] text-[#C86A1D] border border-[#F3DFC1]'
               }`}
             >
               {locationStatus.type === 'loading' && (
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#35E27F] shrink-0" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#C86A1D] shrink-0" />
               )}
               {locationStatus.type === 'success' && (
-                <Check className="w-3.5 h-3.5 text-[#35E27F] shrink-0" />
+                <Check className="w-3.5 h-3.5 text-[#2D5A34] shrink-0" />
               )}
               {locationStatus.type === 'warning' && (
-                <AlertCircle className="w-3.5 h-3.5 text-[#FFD166] shrink-0" />
+                <AlertCircle className="w-3.5 h-3.5 text-[#C86A1D] shrink-0" />
               )}
               <span className="flex-1">{locationStatus.message}</span>
             </div>
@@ -424,7 +424,7 @@ export default function LocationSelectorModal({
 
           {/* Quick Search Input */}
           <div className="relative">
-            <Search className="w-4 h-4 text-[#A8B5AE] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-[#6B5E55] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               id="location-search-input"
@@ -435,12 +435,12 @@ export default function LocationSelectorModal({
                   ? 'Search Indian city (e.g. Bangalore, Gurgaon, Mumbai, Pune)...'
                   : 'Search US city (e.g. Austin, New York, Los Angeles)...'
               }
-              className="w-full bg-[#0F231B] text-[#F5F7F3] text-xs font-medium pl-9 pr-8 py-2.5 rounded-xl border border-[#1B3B2F] placeholder-[#A8B5AE]/60 focus:outline-none focus:border-[#35E27F] focus:ring-1 focus:ring-[#35E27F] transition-all"
+              className="w-full bg-[#FFFFFF] text-[#231815] text-xs font-medium pl-9 pr-8 py-2.5 rounded-xl border border-[#E8DEC8] placeholder-[#6B5E55]/60 focus:outline-none focus:border-[#C86A1D] focus:ring-1 focus:ring-[#C86A1D] transition-all shadow-xs"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#A8B5AE] hover:text-[#F5F7F3] p-1 cursor-pointer"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#6B5E55] hover:text-[#231815] p-1 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -453,7 +453,7 @@ export default function LocationSelectorModal({
           {/* SEARCH RESULTS VIEW */}
           {searchResults !== null ? (
             <div className="space-y-2">
-              <p className="text-[11px] font-bold text-[#A8B5AE] uppercase tracking-wider">
+              <p className="text-[11px] font-bold text-[#6B5E55] uppercase tracking-wider">
                 Matching Cities ({searchResults.length})
               </p>
               {searchResults.length > 0 ? (
@@ -472,8 +472,8 @@ export default function LocationSelectorModal({
                         }}
                         className={`p-3 rounded-xl border text-left transition-all flex items-center justify-between gap-2.5 cursor-pointer active:scale-[0.98] ${
                           isSelected
-                            ? 'bg-[#123D2A] border-[#35E27F] text-[#F5F7F3]'
-                            : 'bg-[#0F231B] border-[#1B3B2F] hover:border-[#35E27F]/50 text-[#F5F7F3]'
+                            ? 'bg-[#EBF4ED] border-[#2D5A34] text-[#231815] font-bold shadow-xs'
+                            : 'bg-[#FAF6EE] border-[#E8DEC8] hover:border-[#C86A1D]/50 text-[#231815]'
                         }`}
                       >
                         <div className="min-w-0">
@@ -485,28 +485,28 @@ export default function LocationSelectorModal({
                               {city.displayName}
                             </span>
                           </div>
-                          <p className="text-[11px] text-[#A8B5AE] font-medium mt-0.5 truncate">
+                          <p className="text-[11px] text-[#6B5E55] font-medium mt-0.5 truncate">
                             {city.state} &bull; {city.region}
                             {matchedAlias && matchedAlias !== city.city.toLowerCase() && (
-                              <span className="text-[#35E27F] ml-1">
+                              <span className="text-[#C86A1D] ml-1">
                                 (matches &ldquo;{matchedAlias}&rdquo;)
                               </span>
                             )}
                           </p>
                         </div>
                         {isSelected && (
-                          <Check className="w-4 h-4 text-[#35E27F] shrink-0" />
+                          <Check className="w-4 h-4 text-[#2D5A34] shrink-0" />
                         )}
                       </button>
                     );
                   })}
                 </div>
               ) : (
-                <div className="p-8 text-center bg-[#0F231B] border border-[#1B3B2F] rounded-xl space-y-2">
-                  <p className="text-xs text-[#A8B5AE]">
+                <div className="p-8 text-center bg-[#FAF6EE] border border-[#E8DEC8] rounded-2xl space-y-2">
+                  <p className="text-xs text-[#6B5E55]">
                     No cities matching &ldquo;{searchQuery}&rdquo;.
                   </p>
-                  <p className="text-[11px] text-[#35E27F]">
+                  <p className="text-[11px] text-[#C86A1D] font-medium">
                     Try searching Bangalore for Bengaluru, Gurgaon for Gurugram, or Bombay for Mumbai.
                   </p>
                 </div>
@@ -517,8 +517,8 @@ export default function LocationSelectorModal({
               {/* POPULAR CITIES QUICK STRIP */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <p className="text-[11px] font-bold text-[#b6f7c1] uppercase tracking-wider flex items-center gap-1.5">
-                    <Sparkles className="w-3 h-3 text-[#35E27F]" />
+                  <p className="text-[11px] font-bold text-[#C86A1D] uppercase tracking-wider flex items-center gap-1.5">
+                    <Sparkles className="w-3 h-3 text-[#C86A1D]" />
                     <span>Popular Cities in {activeCountry === 'IN' ? 'India' : 'United States'}</span>
                   </p>
                 </div>
@@ -536,12 +536,12 @@ export default function LocationSelectorModal({
                         }}
                         className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer active:scale-95 flex items-center gap-1.5 ${
                           isSelected
-                            ? 'bg-[#35E27F] border-[#35E27F] text-[#07130F] font-bold shadow-sm'
-                            : 'bg-[#0F231B] border-[#1B3B2F] text-[#F5F7F3] hover:border-[#35E27F]/40 hover:bg-[#123D2A]'
+                            ? 'bg-[#C86A1D] border-[#C86A1D] text-white font-bold shadow-xs'
+                            : 'bg-[#FAF6EE] border-[#E8DEC8] text-[#231815] hover:border-[#C86A1D]/40 hover:bg-[#FFF7ED]'
                         }`}
                       >
                         <span>{city.city}</span>
-                        {isSelected && <Check className="w-3 h-3 text-[#07130F]" />}
+                        {isSelected && <Check className="w-3 h-3 text-white" />}
                       </button>
                     );
                   })}
@@ -552,11 +552,11 @@ export default function LocationSelectorModal({
               <div className="space-y-4 pt-1">
                 {groupedCities.map((group) => (
                   <div key={group.region} className="space-y-2">
-                    <div className="flex items-center justify-between border-b border-[#1B3B2F]/60 pb-1">
-                      <span className="text-[11px] font-bold text-[#A8B5AE] uppercase tracking-wider">
+                    <div className="flex items-center justify-between border-b border-[#E8DEC8] pb-1">
+                      <span className="text-[11px] font-bold text-[#6B5E55] uppercase tracking-wider">
                         {group.region}
                       </span>
-                      <span className="text-[10px] text-[#A8B5AE]">
+                      <span className="text-[10px] text-[#6B5E55]">
                         {group.cities.length} {group.cities.length === 1 ? 'city' : 'cities'}
                       </span>
                     </div>
@@ -574,20 +574,20 @@ export default function LocationSelectorModal({
                             }}
                             className={`p-2.5 rounded-xl border text-left transition-all flex items-center justify-between gap-1.5 cursor-pointer active:scale-[0.98] ${
                               isSelected
-                                ? 'bg-[#123D2A] border-[#35E27F] text-[#F5F7F3] font-bold shadow-sm'
-                                : 'bg-[#0F231B] border-[#1B3B2F] hover:border-[#35E27F]/40 text-[#F5F7F3]'
+                                ? 'bg-[#EBF4ED] border-[#2D5A34] text-[#231815] font-bold shadow-xs'
+                                : 'bg-[#FAF6EE] border-[#E8DEC8] hover:border-[#C86A1D]/40 text-[#231815]'
                             }`}
                           >
                             <div className="min-w-0">
                               <span className="text-xs font-semibold truncate block">
                                 {city.city}
                               </span>
-                              <span className="text-[10px] text-[#A8B5AE] truncate block">
+                              <span className="text-[10px] text-[#6B5E55] truncate block">
                                 {city.state}
                               </span>
                             </div>
                             {isSelected && (
-                              <Check className="w-3.5 h-3.5 text-[#35E27F] shrink-0" />
+                              <Check className="w-3.5 h-3.5 text-[#2D5A34] shrink-0" />
                             )}
                           </button>
                         );
@@ -601,9 +601,9 @@ export default function LocationSelectorModal({
         </div>
 
         {/* Footer info note */}
-        <div className="px-4 sm:px-6 py-2.5 bg-[#07130F] border-t border-[#1B3B2F] flex items-center justify-between text-[11px] text-[#A8B5AE]">
+        <div className="px-4 sm:px-6 py-2.5 bg-[#FAF6EE] border-t border-[#E8DEC8] flex items-center justify-between text-[11px] text-[#6B5E55]">
           <span>Select any city to explore seed-oil-free dining</span>
-          <span className="text-[#35E27F] font-semibold">
+          <span className="text-[#2D5A34] font-bold">
             {activeCountry === 'IN' ? '31 Cities in India' : '30 Cities in USA'}
           </span>
         </div>

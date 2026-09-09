@@ -114,7 +114,7 @@ export default function BentoFilters({
     filters.search.trim().length > 0;
 
   return (
-    <div className="space-y-3.5 sm:space-y-5 bg-[#0B1A14] border border-[#1B3B2F] text-[#F5F7F3] p-3.5 sm:p-6 rounded-2xl sm:rounded-[22px] shadow-sm">
+    <div className="space-y-3.5 sm:space-y-5 bg-white border border-[#E8DEC8] text-[#231815] p-3.5 sm:p-6 rounded-[26px] shadow-[0_4px_20px_-4px_rgba(140,100,50,0.06)]">
       {/* ===================================================================== */}
       {/* 1. SEARCH SECTION (Section 2)                                         */}
       {/* ===================================================================== */}
@@ -122,18 +122,18 @@ export default function BentoFilters({
         <div className="flex items-center justify-between">
           <label
             htmlFor="dish-search-input"
-            className="text-[10px] sm:text-[11px] font-bold tracking-wider text-[#35E27F] uppercase block"
+            className="text-[10px] sm:text-[11px] font-bold tracking-wider text-[#C86A1D] uppercase block"
           >
             WHAT ARE YOU LOOKING FOR?
           </label>
-          <span className="text-xs text-[#A8B5AE] font-medium hidden sm:inline">
+          <span className="text-xs text-[#6B5E55] font-medium hidden sm:inline">
             {filteredCount} matching {filteredCount === 1 ? 'dish' : 'dishes'}
           </span>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
           <div className="relative flex-1 w-full">
-            <Search className="w-4 h-4 text-[#35E27F] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-[#C86A1D] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               id="dish-search-input"
               suppressHydrationWarning
@@ -141,12 +141,12 @@ export default function BentoFilters({
               value={filters.search}
               onChange={(e) => onChange({ ...filters, search: e.target.value })}
               placeholder='Try "high-protein lunch near me"'
-              className="w-full pl-10 pr-4 py-2 sm:py-3 rounded-xl bg-[#07130F] border border-[#1B3B2F] text-xs font-semibold text-[#F5F7F3] placeholder:text-[#A8B5AE] focus:outline-none focus:border-[#35E27F] transition-all duration-200"
+              className="w-full pl-10 pr-4 py-2 sm:py-3 rounded-xl bg-[#FAF6EE] border border-[#E8DEC8] text-xs font-semibold text-[#231815] placeholder:text-[#9E9084] focus:outline-none focus:border-[#C86A1D] focus:bg-white transition-all duration-200"
             />
             {filters.search && (
               <button
                 onClick={() => onChange({ ...filters, search: '' })}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A8B5AE] hover:text-[#F5F7F3] text-xs font-bold"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9084] hover:text-[#231815] text-xs font-bold"
               >
                 &times;
               </button>
@@ -154,19 +154,19 @@ export default function BentoFilters({
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end shrink-0">
-            <div className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#0F231B] border border-[#1B3B2F] text-[11px] sm:text-xs font-medium text-[#A8B5AE] whitespace-nowrap flex items-center gap-1.5 sm:gap-2">
+            <div className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#FAF6EE] border border-[#E8DEC8] text-[11px] sm:text-xs font-medium text-[#6B5E55] whitespace-nowrap flex items-center gap-1.5 sm:gap-2">
               <span>Nearby:</span>
-              <strong className="text-[#35E27F] font-bold">{filteredCount}</strong>
-              <span className="text-[#1B3B2F]">&bull;</span>
-              <span className="text-[#F5F7F3] font-semibold">{totalDishesCount} in City</span>
+              <strong className="text-[#2D5A34] font-bold">{filteredCount}</strong>
+              <span className="text-[#E8DEC8]">&bull;</span>
+              <span className="text-[#231815] font-semibold">{totalDishesCount} in City</span>
             </div>
             {hasActiveFilters && (
               <button
                 id="reset-filters-btn"
                 onClick={onReset}
-                className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-[#0F231B] hover:bg-[#142C23] text-[#A8B5AE] hover:text-[#F5F7F3] text-[11px] sm:text-xs font-semibold transition-all duration-200 cursor-pointer border border-[#1B3B2F] active:scale-95 shrink-0"
+                className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-[#FAF6EE] hover:bg-[#F7F1E5] text-[#6B5E55] hover:text-[#C86A1D] text-[11px] sm:text-xs font-semibold transition-all duration-200 cursor-pointer border border-[#E8DEC8] active:scale-95 shrink-0"
               >
-                <RotateCcw className="w-3.5 h-3.5 text-[#35E27F]" />
+                <RotateCcw className="w-3.5 h-3.5 text-[#C86A1D]" />
                 <span>Reset</span>
               </button>
             )}
@@ -174,13 +174,13 @@ export default function BentoFilters({
         </div>
 
         {/* Supporting microcopy */}
-        <p className="text-[11px] sm:text-xs text-[#A8B5AE] font-normal">
+        <p className="text-[11px] sm:text-xs text-[#6B5E55] font-normal">
           Search by dish, diet, nutrition goal or ingredient.
         </p>
 
         {/* Quick Example Search Pills - Horizontal scrolling on mobile */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none flex-nowrap sm:flex-wrap -mx-1 px-1">
-          <span className="text-[10px] font-semibold text-[#A8B5AE] uppercase tracking-wider mr-0.5 shrink-0">
+          <span className="text-[10px] font-semibold text-[#6B5E55] uppercase tracking-wider mr-0.5 shrink-0">
             Try:
           </span>
           {QUICK_SEARCH_EXAMPLES.map((example) => (
@@ -190,8 +190,8 @@ export default function BentoFilters({
               onClick={() => onChange({ ...filters, search: example })}
               className={`text-[10px] sm:text-[11px] px-2.5 py-1 rounded-lg border transition-all duration-150 cursor-pointer shrink-0 whitespace-nowrap ${
                 filters.search.toLowerCase() === example.toLowerCase()
-                  ? 'bg-[#35E27F] text-[#07130F] font-bold border-[#35E27F]'
-                  : 'bg-[#0F231B] text-[#A8B5AE] hover:text-[#F5F7F3] border-[#1B3B2F] hover:border-[#35E27F]/40'
+                  ? 'bg-[#C86A1D] text-white font-bold border-[#C86A1D]'
+                  : 'bg-[#FAF6EE] text-[#6B5E55] hover:text-[#231815] border-[#E8DEC8] hover:border-[#D4C3A3]'
               }`}
             >
               {example}
@@ -203,14 +203,14 @@ export default function BentoFilters({
       {/* ===================================================================== */}
       {/* 2. HEALTH GOAL & PERSONALIZATION (Section 3 & 11)                     */}
       {/* ===================================================================== */}
-      <div className="space-y-3 pt-2 border-t border-[#1B3B2F]/60">
+      <div className="space-y-3 pt-2 border-t border-[#E8DEC8]">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#F5F7F3] flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-[#35E27F]" />
+          <span className="text-xs font-bold uppercase tracking-wider text-[#231815] flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-[#C86A1D]" />
             <span>WHAT FITS YOU TODAY?</span>
           </span>
-          <span className="text-[10px] text-[#35E27F] font-bold uppercase tracking-wider">
-            WHAT MATTERS TO YOU?
+          <span className="text-[10px] text-[#C86A1D] font-bold uppercase tracking-wider">
+            WHOLESOME CHOICES
           </span>
         </div>
 
@@ -220,27 +220,27 @@ export default function BentoFilters({
           <div
             id="filter-more-protein-card"
             onClick={() => toggleBenefit('postWorkout')}
-            className={`p-3 sm:p-4 rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-between gap-2.5 sm:gap-3 group border ${
+            className={`p-3 sm:p-4 rounded-2xl transition-all duration-200 cursor-pointer flex items-center justify-between gap-2.5 sm:gap-3 group border ${
               filters.benefitPostWorkout
-                ? 'bg-[#123D2A] border-[#35E27F] shadow-[0_0_16px_rgba(53,226,127,0.15)]'
-                : 'bg-[#0F231B] border-[#1B3B2F] hover:border-[#265241]'
+                ? 'bg-[#EBF4ED] border-2 border-[#2D5A34] shadow-[0_4px_16px_rgba(45,90,52,0.12)]'
+                : 'bg-[#FAF6EE] border border-[#E8DEC8] hover:border-[#D4C3A3]'
             }`}
           >
             <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
               <div
                 className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all shrink-0 ${
                   filters.benefitPostWorkout
-                    ? 'bg-[#35E27F] text-[#07130F] font-bold'
-                    : 'bg-[#07130F] text-[#35E27F] border border-[#1B3B2F]'
+                    ? 'bg-[#2D5A34] text-white font-bold'
+                    : 'bg-white text-[#C86A1D] border border-[#E8DEC8]'
                 }`}
               >
                 <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
               <div className="min-w-0">
-                <span className="text-xs sm:text-sm font-bold block leading-tight text-[#F5F7F3]">
+                <span className="text-xs sm:text-sm font-bold block leading-tight text-[#231815]">
                   More Protein
                 </span>
-                <span className="text-[10px] sm:text-[11px] text-[#A8B5AE] font-medium truncate block mt-0.5">
+                <span className="text-[10px] sm:text-[11px] text-[#6B5E55] font-medium truncate block mt-0.5">
                   40g+ protein &bull; Great for recovery
                 </span>
               </div>
@@ -249,12 +249,12 @@ export default function BentoFilters({
             <div className="shrink-0 flex items-center">
               <div
                 className={`w-9 sm:w-10 h-5 rounded-full transition-colors duration-200 p-0.5 flex items-center ${
-                  filters.benefitPostWorkout ? 'bg-[#35E27F]' : 'bg-[#1B3B2F]'
+                  filters.benefitPostWorkout ? 'bg-[#2D5A34]' : 'bg-[#E8DEC8]'
                 }`}
               >
                 <div
                   className={`w-4 h-4 rounded-full transition-transform duration-200 shadow-sm ${
-                    filters.benefitPostWorkout ? 'translate-x-4 sm:translate-x-5 bg-[#07130F]' : 'translate-x-0 bg-[#A8B5AE]'
+                    filters.benefitPostWorkout ? 'translate-x-4 sm:translate-x-5 bg-white' : 'translate-x-0 bg-[#9E9084]'
                   }`}
                 />
               </div>
@@ -265,27 +265,27 @@ export default function BentoFilters({
           <div
             id="filter-less-carbs-card"
             onClick={() => toggleBenefit('brainFuel')}
-            className={`p-3 sm:p-4 rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-between gap-2.5 sm:gap-3 group border ${
+            className={`p-3 sm:p-4 rounded-2xl transition-all duration-200 cursor-pointer flex items-center justify-between gap-2.5 sm:gap-3 group border ${
               filters.benefitBrainFuel
-                ? 'bg-[#123D2A] border-[#35E27F] shadow-[0_0_16px_rgba(53,226,127,0.15)]'
-                : 'bg-[#0F231B] border-[#1B3B2F] hover:border-[#265241]'
+                ? 'bg-[#EBF4ED] border-2 border-[#2D5A34] shadow-[0_4px_16px_rgba(45,90,52,0.12)]'
+                : 'bg-[#FAF6EE] border border-[#E8DEC8] hover:border-[#D4C3A3]'
             }`}
           >
             <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
               <div
                 className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all shrink-0 ${
                   filters.benefitBrainFuel
-                    ? 'bg-[#35E27F] text-[#07130F] font-bold'
-                    : 'bg-[#07130F] text-[#35E27F] border border-[#1B3B2F]'
+                    ? 'bg-[#2D5A34] text-white font-bold'
+                    : 'bg-white text-[#C86A1D] border border-[#E8DEC8]'
                 }`}
               >
                 <Brain className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
               <div className="min-w-0">
-                <span className="text-xs sm:text-sm font-bold block leading-tight text-[#F5F7F3]">
+                <span className="text-xs sm:text-sm font-bold block leading-tight text-[#231815]">
                   Less Carbs &amp; Sugar
                 </span>
-                <span className="text-[10px] sm:text-[11px] text-[#A8B5AE] font-medium truncate block mt-0.5">
+                <span className="text-[10px] sm:text-[11px] text-[#6B5E55] font-medium truncate block mt-0.5">
                   Lower carbs &bull; Low added sugar
                 </span>
               </div>
@@ -294,12 +294,12 @@ export default function BentoFilters({
             <div className="shrink-0 flex items-center">
               <div
                 className={`w-9 sm:w-10 h-5 rounded-full transition-colors duration-200 p-0.5 flex items-center ${
-                  filters.benefitBrainFuel ? 'bg-[#35E27F]' : 'bg-[#1B3B2F]'
+                  filters.benefitBrainFuel ? 'bg-[#2D5A34]' : 'bg-[#E8DEC8]'
                 }`}
               >
                 <div
                   className={`w-4 h-4 rounded-full transition-transform duration-200 shadow-sm ${
-                    filters.benefitBrainFuel ? 'translate-x-4 sm:translate-x-5 bg-[#07130F]' : 'translate-x-0 bg-[#A8B5AE]'
+                    filters.benefitBrainFuel ? 'translate-x-4 sm:translate-x-5 bg-white' : 'translate-x-0 bg-[#9E9084]'
                   }`}
                 />
               </div>
@@ -310,27 +310,27 @@ export default function BentoFilters({
           <div
             id="filter-fewer-processed-card"
             onClick={() => toggleBenefit('gutSoothers')}
-            className={`p-3 sm:p-4 rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-between gap-2.5 sm:gap-3 group border ${
+            className={`p-3 sm:p-4 rounded-2xl transition-all duration-200 cursor-pointer flex items-center justify-between gap-2.5 sm:gap-3 group border ${
               filters.benefitGutSoothers
-                ? 'bg-[#123D2A] border-[#35E27F] shadow-[0_0_16px_rgba(53,226,127,0.15)]'
-                : 'bg-[#0F231B] border-[#1B3B2F] hover:border-[#265241]'
+                ? 'bg-[#EBF4ED] border-2 border-[#2D5A34] shadow-[0_4px_16px_rgba(45,90,52,0.12)]'
+                : 'bg-[#FAF6EE] border border-[#E8DEC8] hover:border-[#D4C3A3]'
             }`}
           >
             <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
               <div
                 className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all shrink-0 ${
                   filters.benefitGutSoothers
-                    ? 'bg-[#35E27F] text-[#07130F] font-bold'
-                    : 'bg-[#07130F] text-[#35E27F] border border-[#1B3B2F]'
+                    ? 'bg-[#2D5A34] text-white font-bold'
+                    : 'bg-white text-[#C86A1D] border border-[#E8DEC8]'
                 }`}
               >
                 <HeartPulse className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
               <div className="min-w-0">
-                <span className="text-xs sm:text-sm font-bold block leading-tight text-[#F5F7F3]">
+                <span className="text-xs sm:text-sm font-bold block leading-tight text-[#231815]">
                   Fewer Processed Ingredients
                 </span>
-                <span className="text-[10px] sm:text-[11px] text-[#A8B5AE] font-medium truncate block mt-0.5">
+                <span className="text-[10px] sm:text-[11px] text-[#6B5E55] font-medium truncate block mt-0.5">
                   Gluten &amp; dairy-free &bull; Whole foods
                 </span>
               </div>
@@ -339,12 +339,12 @@ export default function BentoFilters({
             <div className="shrink-0 flex items-center">
               <div
                 className={`w-9 sm:w-10 h-5 rounded-full transition-colors duration-200 p-0.5 flex items-center ${
-                  filters.benefitGutSoothers ? 'bg-[#35E27F]' : 'bg-[#1B3B2F]'
+                  filters.benefitGutSoothers ? 'bg-[#2D5A34]' : 'bg-[#E8DEC8]'
                 }`}
               >
                 <div
                   className={`w-4 h-4 rounded-full transition-transform duration-200 shadow-sm ${
-                    filters.benefitGutSoothers ? 'translate-x-4 sm:translate-x-5 bg-[#07130F]' : 'translate-x-0 bg-[#A8B5AE]'
+                    filters.benefitGutSoothers ? 'translate-x-4 sm:translate-x-5 bg-white' : 'translate-x-0 bg-[#9E9084]'
                   }`}
                 />
               </div>
@@ -361,12 +361,12 @@ export default function BentoFilters({
               onClick={() => toggleFilter('highProtein')}
               className={`px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border transition-all duration-200 flex items-center justify-between text-[11px] sm:text-xs cursor-pointer ${
                 filters.highProtein
-                  ? 'bg-[#35E27F] border-[#35E27F] text-[#07130F] font-bold shadow-sm'
-                  : 'bg-[#0F231B] border-[#1B3B2F] text-[#F5F7F3] hover:border-[#35E27F]/40'
+                  ? 'bg-[#2D5A34] border-[#2D5A34] text-white font-bold shadow-sm'
+                  : 'bg-[#FAF6EE] border-[#E8DEC8] text-[#231815] hover:border-[#C86A1D]/50'
               }`}
             >
               <span className="truncate">High Protein</span>
-              <span className={`w-1.5 h-1.5 rounded-full ${filters.highProtein ? 'bg-[#07130F]' : 'bg-[#1B3B2F]'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${filters.highProtein ? 'bg-white' : 'bg-[#E8DEC8]'}`} />
             </button>
 
             {/* Low Calorie */}
@@ -375,12 +375,12 @@ export default function BentoFilters({
               onClick={() => toggleFilter('lowCalorie')}
               className={`px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border transition-all duration-200 flex items-center justify-between text-[11px] sm:text-xs cursor-pointer ${
                 filters.lowCalorie
-                  ? 'bg-[#35E27F] border-[#35E27F] text-[#07130F] font-bold shadow-sm'
-                  : 'bg-[#0F231B] border-[#1B3B2F] text-[#F5F7F3] hover:border-[#35E27F]/40'
+                  ? 'bg-[#2D5A34] border-[#2D5A34] text-white font-bold shadow-sm'
+                  : 'bg-[#FAF6EE] border-[#E8DEC8] text-[#231815] hover:border-[#C86A1D]/50'
               }`}
             >
               <span className="truncate">Low Calorie</span>
-              <span className={`w-1.5 h-1.5 rounded-full ${filters.lowCalorie ? 'bg-[#07130F]' : 'bg-[#1B3B2F]'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${filters.lowCalorie ? 'bg-white' : 'bg-[#E8DEC8]'}`} />
             </button>
 
             {/* Low Sugar */}
@@ -389,12 +389,12 @@ export default function BentoFilters({
               onClick={() => toggleFilter('lowSugar')}
               className={`px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border transition-all duration-200 flex items-center justify-between text-[11px] sm:text-xs cursor-pointer ${
                 filters.lowSugar
-                  ? 'bg-[#35E27F] border-[#35E27F] text-[#07130F] font-bold shadow-sm'
-                  : 'bg-[#0F231B] border-[#1B3B2F] text-[#F5F7F3] hover:border-[#35E27F]/40'
+                  ? 'bg-[#2D5A34] border-[#2D5A34] text-white font-bold shadow-sm'
+                  : 'bg-[#FAF6EE] border-[#E8DEC8] text-[#231815] hover:border-[#C86A1D]/50'
               }`}
             >
               <span className="truncate">Low Sugar</span>
-              <span className={`w-1.5 h-1.5 rounded-full ${filters.lowSugar ? 'bg-[#07130F]' : 'bg-[#1B3B2F]'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${filters.lowSugar ? 'bg-white' : 'bg-[#E8DEC8]'}`} />
             </button>
 
             {/* Low Carb */}
@@ -403,12 +403,12 @@ export default function BentoFilters({
               onClick={() => toggleFilter('lowCarb')}
               className={`px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border transition-all duration-200 flex items-center justify-between text-[11px] sm:text-xs cursor-pointer ${
                 filters.lowCarb
-                  ? 'bg-[#35E27F] border-[#35E27F] text-[#07130F] font-bold shadow-sm'
-                  : 'bg-[#0F231B] border-[#1B3B2F] text-[#F5F7F3] hover:border-[#35E27F]/40'
+                  ? 'bg-[#2D5A34] border-[#2D5A34] text-white font-bold shadow-sm'
+                  : 'bg-[#FAF6EE] border-[#E8DEC8] text-[#231815] hover:border-[#C86A1D]/50'
               }`}
             >
               <span className="truncate">Low Carb</span>
-              <span className={`w-1.5 h-1.5 rounded-full ${filters.lowCarb ? 'bg-[#07130F]' : 'bg-[#1B3B2F]'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${filters.lowCarb ? 'bg-white' : 'bg-[#E8DEC8]'}`} />
             </button>
 
             {/* High Fibre */}
@@ -417,12 +417,12 @@ export default function BentoFilters({
               onClick={() => toggleFilter('highFiber')}
               className={`px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border transition-all duration-200 flex items-center justify-between text-[11px] sm:text-xs cursor-pointer ${
                 filters.highFiber
-                  ? 'bg-[#35E27F] border-[#35E27F] text-[#07130F] font-bold shadow-sm'
-                  : 'bg-[#0F231B] border-[#1B3B2F] text-[#F5F7F3] hover:border-[#35E27F]/40'
+                  ? 'bg-[#2D5A34] border-[#2D5A34] text-white font-bold shadow-sm'
+                  : 'bg-[#FAF6EE] border-[#E8DEC8] text-[#231815] hover:border-[#C86A1D]/50'
               }`}
             >
               <span className="truncate">High Fibre</span>
-              <span className={`w-1.5 h-1.5 rounded-full ${filters.highFiber ? 'bg-[#07130F]' : 'bg-[#1B3B2F]'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${filters.highFiber ? 'bg-white' : 'bg-[#E8DEC8]'}`} />
             </button>
 
             {/* Gluten Free */}
@@ -431,12 +431,12 @@ export default function BentoFilters({
               onClick={() => toggleFilter('glutenFree')}
               className={`px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border transition-all duration-200 flex items-center justify-between text-[11px] sm:text-xs cursor-pointer ${
                 filters.glutenFree
-                  ? 'bg-[#35E27F] border-[#35E27F] text-[#07130F] font-bold shadow-sm'
-                  : 'bg-[#0F231B] border-[#1B3B2F] text-[#F5F7F3] hover:border-[#35E27F]/40'
+                  ? 'bg-[#2D5A34] border-[#2D5A34] text-white font-bold shadow-sm'
+                  : 'bg-[#FAF6EE] border-[#E8DEC8] text-[#231815] hover:border-[#C86A1D]/50'
               }`}
             >
               <span className="truncate">Gluten Free</span>
-              <span className={`w-1.5 h-1.5 rounded-full ${filters.glutenFree ? 'bg-[#07130F]' : 'bg-[#1B3B2F]'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${filters.glutenFree ? 'bg-white' : 'bg-[#E8DEC8]'}`} />
             </button>
 
             {/* Dairy Free */}
@@ -445,12 +445,12 @@ export default function BentoFilters({
               onClick={() => toggleFilter('dairyFree')}
               className={`px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border transition-all duration-200 flex items-center justify-between text-[11px] sm:text-xs cursor-pointer ${
                 filters.dairyFree
-                  ? 'bg-[#35E27F] border-[#35E27F] text-[#07130F] font-bold shadow-sm'
-                  : 'bg-[#0F231B] border-[#1B3B2F] text-[#F5F7F3] hover:border-[#35E27F]/40'
+                  ? 'bg-[#2D5A34] border-[#2D5A34] text-white font-bold shadow-sm'
+                  : 'bg-[#FAF6EE] border-[#E8DEC8] text-[#231815] hover:border-[#C86A1D]/50'
               }`}
             >
               <span className="truncate">Dairy Free</span>
-              <span className={`w-1.5 h-1.5 rounded-full ${filters.dairyFree ? 'bg-[#07130F]' : 'bg-[#1B3B2F]'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${filters.dairyFree ? 'bg-white' : 'bg-[#E8DEC8]'}`} />
             </button>
 
             {/* Seed-Oil Free */}
@@ -459,12 +459,12 @@ export default function BentoFilters({
               onClick={() => toggleFilter('seedOilFree')}
               className={`px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border transition-all duration-200 flex items-center justify-between text-[11px] sm:text-xs cursor-pointer ${
                 filters.seedOilFree
-                  ? 'bg-[#35E27F] border-[#35E27F] text-[#07130F] font-bold shadow-sm'
-                  : 'bg-[#0F231B] border-[#1B3B2F] text-[#F5F7F3] hover:border-[#35E27F]/40'
+                  ? 'bg-[#2D5A34] border-[#2D5A34] text-white font-bold shadow-sm'
+                  : 'bg-[#FAF6EE] border-[#E8DEC8] text-[#231815] hover:border-[#C86A1D]/50'
               }`}
             >
               <span className="truncate">Seed-Oil Free</span>
-              <span className={`w-1.5 h-1.5 rounded-full ${filters.seedOilFree ? 'bg-[#07130F]' : 'bg-[#1B3B2F]'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${filters.seedOilFree ? 'bg-white' : 'bg-[#E8DEC8]'}`} />
             </button>
 
             {/* Vegetarian */}
@@ -473,25 +473,25 @@ export default function BentoFilters({
               onClick={() => toggleFilter('vegetarian')}
               className={`px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border transition-all duration-200 flex items-center justify-between text-[11px] sm:text-xs cursor-pointer ${
                 filters.vegetarian
-                  ? 'bg-[#35E27F] border-[#35E27F] text-[#07130F] font-bold shadow-sm'
-                  : 'bg-[#0F231B] border-[#1B3B2F] text-[#F5F7F3] hover:border-[#35E27F]/40'
+                  ? 'bg-[#2D5A34] border-[#2D5A34] text-white font-bold shadow-sm'
+                  : 'bg-[#FAF6EE] border-[#E8DEC8] text-[#231815] hover:border-[#C86A1D]/50'
               }`}
             >
               <span className="truncate">Vegetarian</span>
-              <span className={`w-1.5 h-1.5 rounded-full ${filters.vegetarian ? 'bg-[#07130F]' : 'bg-[#1B3B2F]'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${filters.vegetarian ? 'bg-white' : 'bg-[#E8DEC8]'}`} />
             </button>
           </div>
         </div>
 
         {/* Sliders for Min Protein & Max Carbs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 pt-1">
-          <div className="p-2.5 sm:p-3 rounded-xl bg-[#0F231B] border border-[#1B3B2F] flex flex-col justify-between gap-1.5 sm:gap-2">
+          <div className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF6EE] border border-[#E8DEC8] flex flex-col justify-between gap-1.5 sm:gap-2">
             <div className="flex items-center justify-between text-[11px] sm:text-xs font-semibold">
-              <span className="text-[#F5F7F3] flex items-center gap-1.5">
-                <Flame className="w-3.5 h-3.5 text-[#35E27F]" />
+              <span className="text-[#231815] flex items-center gap-1.5">
+                <Flame className="w-3.5 h-3.5 text-[#C86A1D]" />
                 <span>Min Protein</span>
               </span>
-              <span className="px-2 py-0.5 rounded-md bg-[#123D2A] text-[#35E27F] font-bold text-[10px] sm:text-[11px] border border-[#1B3B2F]">
+              <span className="px-2.5 py-0.5 rounded-md bg-[#EBF4ED] text-[#2D5A34] font-bold text-[10px] sm:text-[11px] border border-[#D5E8D8]">
                 {filters.minProtein}g+
               </span>
             </div>
@@ -504,17 +504,17 @@ export default function BentoFilters({
               step="5"
               value={filters.minProtein}
               onChange={(e) => onChange({ ...filters, minProtein: Number(e.target.value) })}
-              className="w-full accent-[#35E27F] cursor-pointer h-1.5 bg-[#1B3B2F] rounded-lg"
+              className="w-full accent-[#C86A1D] cursor-pointer h-2 bg-[#E8DEC8] rounded-lg"
             />
           </div>
 
-          <div className="p-2.5 sm:p-3 rounded-xl bg-[#0F231B] border border-[#1B3B2F] flex flex-col justify-between gap-1.5 sm:gap-2">
+          <div className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF6EE] border border-[#E8DEC8] flex flex-col justify-between gap-1.5 sm:gap-2">
             <div className="flex items-center justify-between text-[11px] sm:text-xs font-semibold">
-              <span className="text-[#F5F7F3] flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[#35E27F]" />
+              <span className="text-[#231815] flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#C86A1D]" />
                 <span>Max Carbs</span>
               </span>
-              <span className="px-2 py-0.5 rounded-md bg-[#123D2A] text-[#35E27F] font-bold text-[10px] sm:text-[11px] border border-[#1B3B2F]">
+              <span className="px-2.5 py-0.5 rounded-md bg-[#FDF5D9] text-[#8C5D0D] font-bold text-[10px] sm:text-[11px] border border-[#F4E3A8]">
                 &le; {filters.maxCarbs}g
               </span>
             </div>
@@ -527,7 +527,7 @@ export default function BentoFilters({
               step="5"
               value={filters.maxCarbs}
               onChange={(e) => onChange({ ...filters, maxCarbs: Number(e.target.value) })}
-              className="w-full accent-[#35E27F] cursor-pointer h-1.5 bg-[#1B3B2F] rounded-lg"
+              className="w-full accent-[#C86A1D] cursor-pointer h-2 bg-[#E8DEC8] rounded-lg"
             />
           </div>
         </div>

@@ -165,25 +165,25 @@ export default function MenuScannerModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-[#07130F]/80 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
       <div
         id="menu-scanner-modal"
-        className="relative w-full max-w-2xl bg-[#0B1A14] border border-[#1B3B2F] text-[#F5F7F3] rounded-2xl overflow-hidden my-3 sm:my-8 flex flex-col max-h-[92vh] sm:max-h-[90vh] shadow-2xl"
+        className="relative w-full max-w-2xl bg-[#FFFFFF] border border-[#E8DEC8] text-[#231815] rounded-[32px] overflow-hidden my-3 sm:my-8 flex flex-col max-h-[92vh] sm:max-h-[90vh] shadow-2xl"
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-6 border-b border-[#1B3B2F] flex items-center justify-between bg-[#07130F]">
+        <div className="p-4 sm:p-6 border-b border-[#E8DEC8] flex items-center justify-between bg-[#FAF6EE]">
           <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#123D2A] text-[#35E27F] flex items-center justify-center border border-[#1B3B2F] shrink-0">
-              <ScanLine className="w-4 h-4 sm:w-5 sm:h-5 text-[#35E27F]" />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-[#EBF4ED] text-[#2D5A34] flex items-center justify-center border border-[#C5DEC9] shrink-0">
+              <ScanLine className="w-4 h-4 sm:w-5 sm:h-5 text-[#2D5A34]" />
             </div>
             <div>
-              <h3 className="font-bold text-[#F5F7F3] text-sm sm:text-base flex items-center gap-2">
+              <h3 className="font-serif font-bold text-[#231815] text-sm sm:text-base flex items-center gap-2">
                 <span>AI Menu Scanner</span>
-                <span className="px-2 py-0.5 rounded-full bg-[#123D2A] text-[#35E27F] text-[10px] font-bold uppercase tracking-wider border border-[#1B3B2F]">
+                <span className="px-2 py-0.5 rounded-full bg-[#EBF4ED] text-[#2D5A34] text-[10px] font-bold uppercase tracking-wider border border-[#C5DEC9]">
                   Instant Read
                 </span>
               </h3>
-              <p className="text-[11px] sm:text-xs text-[#A8B5AE] truncate max-w-[200px] sm:max-w-none">
+              <p className="text-[11px] sm:text-xs text-[#6B5E55] truncate max-w-[200px] sm:max-w-none">
                 Discover nutrition, ingredients and cooking details from menus in {city.name}
               </p>
             </div>
@@ -192,17 +192,17 @@ export default function MenuScannerModal({
           <button
             id="close-menu-scanner-btn"
             onClick={onClose}
-            className="p-1.5 sm:p-2 rounded-xl bg-[#0F231B] hover:bg-[#123D2A] text-[#A8B5AE] hover:text-[#F5F7F3] border border-[#1B3B2F] transition-all cursor-pointer"
+            className="p-1.5 sm:p-2 rounded-xl bg-white hover:bg-[#FAF6EE] text-[#6B5E55] hover:text-[#231815] border border-[#E8DEC8] transition-all cursor-pointer"
           >
             <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-3.5 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5 text-[#F5F7F3]">
+        <div className="p-3.5 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5 text-[#231815]">
           {/* Sample Prompts */}
           <div>
-            <span className="block text-xs font-semibold text-[#A8B5AE] uppercase tracking-wider mb-2">
+            <span className="block text-xs font-semibold text-[#6B5E55] uppercase tracking-wider mb-2">
               Quick Try Sample Menus:
             </span>
             <div className="flex flex-wrap gap-2">
@@ -216,9 +216,9 @@ export default function MenuScannerModal({
                     setImagePreview(null);
                     setImageBase64(null);
                   }}
-                  className="px-3 py-1.5 rounded-xl bg-[#0F231B] hover:bg-[#123D2A] border border-[#1B3B2F] hover:border-[#35E27F]/40 text-[#F5F7F3] text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5"
+                  className="px-3 py-1.5 rounded-xl bg-[#FAF6EE] hover:bg-[#FFF7ED] border border-[#E8DEC8] hover:border-[#C86A1D]/40 text-[#231815] text-xs font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5"
                 >
-                  <FileText className="w-3.5 h-3.5 text-[#35E27F]" />
+                  <FileText className="w-3.5 h-3.5 text-[#C86A1D]" />
                   <span>{sample.title}</span>
                 </button>
               ))}
@@ -227,12 +227,12 @@ export default function MenuScannerModal({
 
           {/* File Upload Area */}
           <div>
-            <label className="block text-xs font-semibold text-[#F5F7F3] uppercase tracking-wider mb-2">
+            <label className="block text-xs font-semibold text-[#231815] uppercase tracking-wider mb-2">
               1. Upload Menu Photo (JPG / PNG)
             </label>
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-[#1B3B2F] hover:border-[#35E27F]/60 rounded-xl p-5 text-center cursor-pointer transition-all duration-200 bg-[#07130F] hover:bg-[#0F231B] group"
+              className="border-2 border-dashed border-[#E8DEC8] hover:border-[#C86A1D]/60 rounded-2xl p-5 text-center cursor-pointer transition-all duration-200 bg-[#FAF6EE] hover:bg-[#FFF7ED] group"
             >
               <input
                 ref={fileInputRef}
@@ -245,7 +245,7 @@ export default function MenuScannerModal({
 
               {imagePreview ? (
                 <div className="flex flex-col items-center gap-2">
-                  <div className="relative w-36 h-24 rounded-xl overflow-hidden border border-[#1B3B2F] shadow-md">
+                  <div className="relative w-36 h-24 rounded-xl overflow-hidden border border-[#E8DEC8] shadow-md">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={imagePreview}
@@ -253,19 +253,19 @@ export default function MenuScannerModal({
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-bold text-[#35E27F]">
-                    Menu photo ready for forensic OCR scan (Click to change)
+                  <span className="text-xs font-bold text-[#2D5A34]">
+                    Menu photo ready for OCR scan (Click to change)
                   </span>
                 </div>
               ) : (
-                <div className="flex flex-col items-center gap-1.5 text-[#A8B5AE] group-hover:text-[#35E27F]">
-                  <div className="w-10 h-10 rounded-xl bg-[#0F231B] border border-[#1B3B2F] text-[#35E27F] group-hover:border-[#35E27F]/60 flex items-center justify-center transition-colors">
+                <div className="flex flex-col items-center gap-1.5 text-[#6B5E55] group-hover:text-[#C86A1D]">
+                  <div className="w-10 h-10 rounded-xl bg-white border border-[#E8DEC8] text-[#C86A1D] group-hover:border-[#C86A1D]/60 flex items-center justify-center transition-colors">
                     <Upload className="w-5 h-5" />
                   </div>
-                  <span className="text-xs font-semibold text-[#F5F7F3] group-hover:text-[#35E27F]">
+                  <span className="text-xs font-semibold text-[#231815] group-hover:text-[#C86A1D]">
                     Click to browse or drop menu image here
                   </span>
-                  <span className="text-[11px] text-[#A8B5AE]">
+                  <span className="text-[11px] text-[#6B5E55]">
                     Supports high-resolution menus, chalkboards &amp; PDF snapshots
                   </span>
                 </div>
@@ -275,7 +275,7 @@ export default function MenuScannerModal({
 
           {/* Paste Menu Text Area */}
           <div>
-            <label className="block text-xs font-semibold text-[#F5F7F3] uppercase tracking-wider mb-2">
+            <label className="block text-xs font-semibold text-[#231815] uppercase tracking-wider mb-2">
               2. Or Paste Menu Text / Dish Description
             </label>
             <textarea
@@ -285,13 +285,13 @@ export default function MenuScannerModal({
               onChange={(e) => setMenuText(e.target.value)}
               placeholder="e.g. 10oz Grass Fed Ribeye cooked over oak with chimichurri sauce, broccolini in beef tallow. Or paste an entire dinner menu section..."
               rows={3}
-              className="w-full p-3.5 rounded-xl bg-[#07130F] border border-[#1B3B2F] text-xs font-medium text-[#F5F7F3] placeholder:text-[#A8B5AE]/60 focus:outline-none focus:border-[#35E27F] transition-all shadow-xs"
+              className="w-full p-3.5 rounded-2xl bg-[#FFFFFF] border border-[#E8DEC8] text-xs font-medium text-[#231815] placeholder:text-[#6B5E55]/60 focus:outline-none focus:border-[#C86A1D] transition-all shadow-xs"
             />
           </div>
 
           {error && (
-            <div className="p-3.5 rounded-xl bg-red-950/40 border border-red-800/60 text-red-300 text-xs font-semibold flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 shrink-0 text-red-400" />
+            <div className="p-3.5 rounded-2xl bg-[#FFF5F5] border border-[#FCA5A5] text-[#991B1B] text-xs font-semibold flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0 text-[#DC2626]" />
               <span>{error}</span>
             </div>
           )}
@@ -301,16 +301,16 @@ export default function MenuScannerModal({
             id="run-menu-scan-btn"
             onClick={handleScan}
             disabled={isScanning}
-            className="w-full py-3.5 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] disabled:opacity-50 text-[#07130F] font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md shadow-[#35E27F]/20"
+            className="w-full py-3.5 rounded-2xl bg-[#2D5A34] hover:bg-[#234729] disabled:opacity-50 text-white font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md"
           >
             {isScanning ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin text-[#07130F]" />
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
                 <span>Reading Menu &amp; Discovering Nutrition Details...</span>
               </>
             ) : (
               <>
-                <Sparkles className="w-4 h-4 text-[#07130F]" />
+                <Sparkles className="w-4 h-4 text-[#F5C842]" />
                 <span>Scan Menu Details</span>
               </>
             )}
@@ -318,19 +318,19 @@ export default function MenuScannerModal({
 
           {/* Results Display */}
           {results && (
-            <div className="space-y-4 pt-4 border-t border-[#1B3B2F]">
+            <div className="space-y-4 pt-4 border-t border-[#E8DEC8]">
               <div className="flex items-center justify-between">
-                <h4 className="font-bold text-[#F5F7F3] text-sm flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#35E27F]" />
+                <h4 className="font-serif font-bold text-[#231815] text-sm flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#2D5A34]" />
                   <span>Found Dishes ({results.length})</span>
                 </h4>
-                <span className="text-[10px] uppercase font-bold text-[#35E27F] bg-[#123D2A] px-2.5 py-1 rounded-md border border-[#1B3B2F]">
+                <span className="text-[10px] uppercase font-bold text-[#2D5A34] bg-[#EBF4ED] px-2.5 py-1 rounded-full border border-[#C5DEC9]">
                   Menu Confirmed
                 </span>
               </div>
 
               {summary && (
-                <p className="text-xs text-[#A8B5AE] bg-[#0F231B] p-3.5 rounded-xl border border-[#1B3B2F] italic">
+                <p className="text-xs text-[#6B5E55] bg-[#FAF6EE] p-3.5 rounded-2xl border border-[#E8DEC8] italic">
                   &ldquo;{summary}&rdquo;
                 </p>
               )}
@@ -339,12 +339,12 @@ export default function MenuScannerModal({
                 {results.map((dish, idx) => (
                   <div
                     key={idx}
-                    className="p-4 rounded-xl bg-[#0F231B] border border-[#1B3B2F] space-y-2.5 shadow-xs transition-all"
+                    className="p-4 rounded-2xl bg-[#FAF6EE] border border-[#E8DEC8] space-y-2.5 shadow-xs transition-all"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <h5 className="font-bold text-[#F5F7F3] text-sm">{dish.name}</h5>
-                        <p className="text-xs text-[#35E27F] font-semibold">
+                        <h5 className="font-serif font-bold text-[#231815] text-sm">{dish.name}</h5>
+                        <p className="text-xs text-[#C86A1D] font-semibold">
                           {dish.restaurant || `${city.name} Kitchen`}
                         </p>
                       </div>
@@ -352,7 +352,7 @@ export default function MenuScannerModal({
                       <button
                         id={`add-scanned-dish-btn-${idx}`}
                         onClick={() => handleAddDiscoveredDish(dish)}
-                        className="px-3.5 py-1.5 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer active:scale-95"
+                        className="px-3.5 py-1.5 rounded-xl bg-[#C86A1D] hover:bg-[#B35912] text-white text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer active:scale-95 shadow-xs"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Add to Dishes</span>
@@ -360,40 +360,40 @@ export default function MenuScannerModal({
                     </div>
 
                     {/* Macros Grid */}
-                    <div className="grid grid-cols-4 gap-2 text-center bg-[#07130F] border border-[#1B3B2F] p-2.5 rounded-xl text-xs">
+                    <div className="grid grid-cols-4 gap-2 text-center bg-[#FFFFFF] border border-[#E8DEC8] p-2.5 rounded-xl text-xs">
                       <div>
-                        <span className="text-[9px] font-bold text-[#A8B5AE] block uppercase">
+                        <span className="text-[9px] font-bold text-[#6B5E55] block uppercase">
                           Calories
                         </span>
-                        <span className="font-bold text-[#F5F7F3]">{dish.calories}</span>
+                        <span className="font-bold text-[#231815]">{dish.calories}</span>
                       </div>
                       <div>
-                        <span className="text-[9px] font-bold text-[#35E27F] block uppercase">
+                        <span className="text-[9px] font-bold text-[#C86A1D] block uppercase">
                           Protein
                         </span>
-                        <span className="font-bold text-[#35E27F]">{dish.protein}g</span>
+                        <span className="font-bold text-[#C86A1D]">{dish.protein}g</span>
                       </div>
                       <div>
-                        <span className="text-[9px] font-bold text-[#A8B5AE] block uppercase">
+                        <span className="text-[9px] font-bold text-[#6B5E55] block uppercase">
                           Carbs
                         </span>
-                        <span className="font-bold text-[#F5F7F3]">{dish.carbs}g</span>
+                        <span className="font-bold text-[#231815]">{dish.carbs}g</span>
                       </div>
                       <div>
-                        <span className="text-[9px] font-bold text-[#35E27F] block uppercase">
+                        <span className="text-[9px] font-bold text-[#2D5A34] block uppercase">
                           Clean Fat
                         </span>
-                        <span className="font-bold text-[#35E27F]">{dish.fat}g</span>
+                        <span className="font-bold text-[#2D5A34]">{dish.fat}g</span>
                       </div>
                     </div>
 
-                    <div className="text-[11px] text-[#F5F7F3]">
-                      <strong className="text-[#A8B5AE]">Cooking Fat: </strong>
-                      <span className="text-[#35E27F] font-bold">{dish.cookingFat}</span>
+                    <div className="text-[11px] text-[#231815]">
+                      <strong className="text-[#6B5E55]">Cooking Fat: </strong>
+                      <span className="text-[#2D5A34] font-bold">{dish.cookingFat}</span>
                     </div>
 
                     {dish.analysisNotes && (
-                      <p className="text-[11px] text-[#A8B5AE] italic bg-[#07130F] p-2.5 rounded-xl border border-[#1B3B2F]">
+                      <p className="text-[11px] text-[#6B5E55] italic bg-[#FFFFFF] p-2.5 rounded-xl border border-[#E8DEC8]">
                         {dish.analysisNotes}
                       </p>
                     )}

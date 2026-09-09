@@ -118,29 +118,29 @@ export default async function CityHubPage({ params }: CityPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="min-h-screen bg-[#07130F] text-[#F5F7F3] flex flex-col">
+      <div className="min-h-screen bg-[#FAF6EE] text-[#231815] flex flex-col">
         {/* Navigation Breadcrumb Bar */}
-        <header className="border-b border-[#1B3B2F] bg-[#0A1A12]/90 backdrop-blur-md sticky top-0 z-30">
+        <header className="border-b border-[#E8DEC8] bg-[#FAF6EE]/95 backdrop-blur-md sticky top-0 z-30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
-            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-[#A8B5AE]">
+            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-[#6B5E55]">
               <Link
                 href="/"
-                className="hover:text-[#35E27F] transition-colors flex items-center gap-1 font-medium"
+                className="hover:text-[#C86A1D] transition-colors flex items-center gap-1 font-semibold"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>HealthyVicinity</span>
               </Link>
               <span>/</span>
-              <span className="text-[#35E27F] font-semibold">
+              <span className="text-[#C86A1D] font-bold">
                 {city}, {state}
               </span>
             </nav>
 
             <Link
               href="/"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#35E27F] hover:bg-[#44eb8c] text-[#07130F] text-xs font-bold transition-all"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#2D5A34] hover:bg-[#234729] text-white text-xs font-bold transition-all shadow-xs"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 text-[#F5C842]" />
               <span>Full Interactive Map</span>
             </Link>
           </div>
@@ -149,23 +149,25 @@ export default async function CityHubPage({ params }: CityPageProps) {
         {/* Main Semantic Content Area */}
         <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
           {/* City Hero Section */}
-          <section className="relative rounded-3xl bg-[#0B1A14] border border-[#1B3B2F] p-6 sm:p-10 overflow-hidden shadow-lg">
-            {/* Ambient Lighting */}
-            <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#35E27F]/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -left-12 -bottom-12 w-80 h-80 bg-[#123D2A]/30 rounded-full blur-3xl pointer-events-none" />
+          <section className="relative rounded-[32px] bg-gradient-to-br from-[#F5C842] via-[#F9D65E] to-[#EFA928] border border-[#E6B830] p-6 sm:p-10 overflow-hidden shadow-xl text-[#231815]">
+            {/* Ambient Sun Glow */}
+            <div className="absolute top-0 right-1/4 w-96 h-96 bg-white/30 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -left-12 -bottom-12 w-80 h-80 bg-[#E08A1E]/20 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative z-10 max-w-3xl space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#123D2A] text-[#b6f7c1] border border-[#1B3B2F] text-xs font-semibold">
-                <MapPin className="w-3.5 h-3.5 text-[#35E27F]" />
-                <span>{city}, {state} Clean Dining Guide</span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/85 text-[#231815] border border-white/80 text-xs font-bold shadow-xs">
+                <MapPin className="w-3.5 h-3.5 text-[#C86A1D]" />
+                <span>{city}, {state} Wholesome Dining Guide</span>
               </div>
 
-              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight text-[#F5F7F3]">
+              <h1 className="font-serif font-black text-2xl sm:text-4xl lg:text-5xl tracking-tight leading-tight text-[#231815]">
                 Seed-Oil-Free &amp; High-Protein Dining in{' '}
-                <span className="text-[#35E27F]">{city}, {state}</span>
+                <span className="italic font-normal text-[#692900] underline decoration-[#C86A1D]/40 decoration-wavy decoration-2">
+                  {city}, {state}
+                </span>
               </h1>
 
-              <p className="text-sm sm:text-base text-[#A8B5AE] leading-relaxed">
+              <p className="text-sm sm:text-base text-[#4A3210] font-medium leading-relaxed">
                 Explore {dishes.length} kitchen-verified dishes in {city}. Every dish is prepared
                 with pure fats (grass-fed beef tallow, avocado oil, and extra virgin olive oil),
                 free from industrial seed oils, with complete macronutrient breakdowns.
@@ -173,21 +175,21 @@ export default async function CityHubPage({ params }: CityPageProps) {
 
               {/* City Statistics Micro-dashboard */}
               <div className="pt-2 grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="p-3 rounded-xl bg-[#07130F] border border-[#1B3B2F]">
-                  <div className="text-[11px] text-[#A8B5AE]">Verified Dishes</div>
-                  <div className="text-lg sm:text-xl font-extrabold text-[#F5F7F3]">{dishes.length}</div>
+                <div className="p-3.5 rounded-2xl bg-white/85 border border-white/80 shadow-xs">
+                  <div className="text-[11px] font-bold text-[#6B5E55]">Verified Dishes</div>
+                  <div className="text-lg sm:text-xl font-serif font-black text-[#231815]">{dishes.length}</div>
                 </div>
-                <div className="p-3 rounded-xl bg-[#07130F] border border-[#1B3B2F]">
-                  <div className="text-[11px] text-[#A8B5AE]">Avg. Protein</div>
-                  <div className="text-lg sm:text-xl font-extrabold text-[#35E27F]">{avgProtein}g</div>
+                <div className="p-3.5 rounded-2xl bg-white/85 border border-white/80 shadow-xs">
+                  <div className="text-[11px] font-bold text-[#6B5E55]">Avg. Protein</div>
+                  <div className="text-lg sm:text-xl font-serif font-black text-[#2D5A34]">{avgProtein}g</div>
                 </div>
-                <div className="p-3 rounded-xl bg-[#07130F] border border-[#1B3B2F]">
-                  <div className="text-[11px] text-[#A8B5AE]">Avg. Calories</div>
-                  <div className="text-lg sm:text-xl font-extrabold text-[#F5F7F3]">{avgCalories} kcal</div>
+                <div className="p-3.5 rounded-2xl bg-white/85 border border-white/80 shadow-xs">
+                  <div className="text-[11px] font-bold text-[#6B5E55]">Avg. Calories</div>
+                  <div className="text-lg sm:text-xl font-serif font-black text-[#231815]">{avgCalories} kcal</div>
                 </div>
-                <div className="p-3 rounded-xl bg-[#07130F] border border-[#1B3B2F]">
-                  <div className="text-[11px] text-[#A8B5AE]">Cooking Fats</div>
-                  <div className="text-xs sm:text-sm font-extrabold text-[#b6f7c1] truncate">
+                <div className="p-3.5 rounded-2xl bg-white/85 border border-white/80 shadow-xs">
+                  <div className="text-[11px] font-bold text-[#6B5E55]">Cooking Fats</div>
+                  <div className="text-xs sm:text-sm font-extrabold text-[#914605] truncate">
                     100% Pure Animal/Fruit
                   </div>
                 </div>
@@ -206,14 +208,14 @@ export default async function CityHubPage({ params }: CityPageProps) {
           </section>
 
           {/* Educational SEO Content Block: The HealthyVicinity Standard in This City */}
-          <section className="p-6 sm:p-8 rounded-2xl bg-[#0F231B] border border-[#1B3B2F] space-y-4">
+          <section className="p-6 sm:p-8 rounded-[28px] bg-[#FFFFFF] border border-[#E8DEC8] space-y-4 shadow-xs">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-[#35E27F]" />
-              <h2 className="text-lg sm:text-xl font-bold text-[#F5F7F3]">
+              <ShieldCheck className="w-5 h-5 text-[#2D5A34]" />
+              <h2 className="font-serif font-bold text-lg sm:text-xl text-[#231815]">
                 The HealthyVicinity Verification Standard in {city}
               </h2>
             </div>
-            <div className="prose prose-invert text-xs sm:text-sm text-[#A8B5AE] leading-relaxed space-y-3 max-w-4xl">
+            <div className="text-xs sm:text-sm text-[#6B5E55] leading-relaxed space-y-3 max-w-4xl">
               <p>
                 In standard commercial kitchens across {city}, vegetable oils, soybean oils, canola,
                 and corn oil are ubiquitous due to their industrial shelf life and low cost. At
@@ -231,8 +233,8 @@ export default async function CityHubPage({ params }: CityPageProps) {
           </section>
 
           {/* Internal Cross-Linking: Other US Cities */}
-          <section className="space-y-4 pt-4 border-t border-[#1B3B2F]">
-            <h2 className="text-sm font-bold text-[#F5F7F3] uppercase tracking-wider">
+          <section className="space-y-4 pt-4 border-t border-[#E8DEC8]">
+            <h2 className="font-serif font-bold text-sm text-[#231815] uppercase tracking-wider">
               Explore Seed-Oil-Free Dining in Other Metros
             </h2>
             <div className="flex flex-wrap gap-2">
@@ -240,7 +242,7 @@ export default async function CityHubPage({ params }: CityPageProps) {
                 <Link
                   key={hub.slug}
                   href={`/${hub.slug}`}
-                  className="px-3 py-1.5 rounded-xl bg-[#0F231B] hover:bg-[#123D2A] text-xs font-semibold text-[#A8B5AE] hover:text-[#35E27F] border border-[#1B3B2F] transition-all"
+                  className="px-3 py-1.5 rounded-xl bg-[#FFFFFF] hover:bg-[#FFF7ED] text-xs font-semibold text-[#6B5E55] hover:text-[#C86A1D] border border-[#E8DEC8] hover:border-[#C86A1D]/40 transition-all shadow-xs"
                 >
                   {hub.name}, {hub.state} ({hub.count} dishes)
                 </Link>
@@ -250,12 +252,12 @@ export default async function CityHubPage({ params }: CityPageProps) {
         </main>
 
         {/* Minimal Footer */}
-        <footer className="border-t border-[#1B3B2F] bg-[#07130F] py-8 text-center text-xs text-[#A8B5AE]">
+        <footer className="border-t border-[#E8DEC8] bg-[#FAF6EE] py-8 text-center text-xs text-[#6B5E55]">
           <div className="max-w-7xl mx-auto px-4 space-y-2">
             <p>
-              &copy; {new Date().getFullYear()} HealthyVicinity &bull; Bio-Individual Dining Engine &bull; Zero Seed Oils
+              &copy; {new Date().getFullYear()} HealthyVicinity &bull; Wholesome Living Directory &bull; Zero Seed Oils
             </p>
-            <p className="text-[11px] text-[#697A72]">
+            <p className="text-[11px] text-[#8C7A6B]">
               Verified Clean High-Protein Nutrition Directory for {city}, {state}
             </p>
           </div>
