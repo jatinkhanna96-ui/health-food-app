@@ -629,6 +629,25 @@ export default function HomePage() {
     }
   };
 
+  const scrollToSection = (id: string) => {
+    const elem = document.getElementById(id);
+    if (elem) {
+      elem.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleHeaderSearchClick = () => {
+    const input = document.getElementById('dish-search-input') as HTMLInputElement | null;
+    if (input) {
+      input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        input.focus();
+      }, 350);
+    } else {
+      scrollToSection('dishes-section');
+    }
+  };
+
   const allCityDishesCount = dishes.filter((d) => d.city === selectedCity.name).length;
 
   return (
@@ -1200,128 +1219,229 @@ export default function HomePage() {
       </aside>
 
       {/* ========================================================================= */}
-      {/* 2. TOP APP HEADER                                                         */}
+      {/* 2. TOP APP HEADER (Artisanal Organic Brand per Pinterest pin.it/6DBHBcDfO) */}
       {/* ========================================================================= */}
       <header
         id="main-app-header"
-        className="sticky top-0 z-30 px-3 sm:px-6 lg:px-8 bg-[#FAF6EE]/95 backdrop-blur-md border-b border-[#E8DEC8] shadow-xs"
+        className="sticky top-0 z-40 bg-[#FAF6EE]/95 backdrop-blur-md border-b border-[#E8DEC8] shadow-2xs"
       >
-        <div className="max-w-7xl mx-auto h-14 sm:h-20 flex items-center justify-between gap-2 sm:gap-3">
-          {/* Top/Left Brand Identity */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-[#FDF2C8] text-[#C86A1D] flex items-center justify-center border border-[#F3DFC1] shrink-0 shadow-xs">
-              <Compass className="w-4 h-4 sm:w-5 sm:h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="font-serif font-black text-base sm:text-xl lg:text-2xl tracking-tight text-[#231815] leading-none">
-                  Healthy Vicinity <span className="text-[#C86A1D] italic font-normal">Market</span>
-                </span>
-                <span className="hidden md:inline-flex px-2 py-0.5 rounded-full bg-[#EBF4ED] text-[#2D5A34] text-[10px] font-bold tracking-wider uppercase border border-[#C5DEC9] items-center gap-1 shrink-0">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#2D5A34] animate-pulse" />
-                  <span>Verified</span>
-                </span>
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="h-16 sm:h-20 flex items-center justify-between gap-2.5 sm:gap-4">
+            {/* Top/Left Brand Identity */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <div
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#FAF0DC] text-[#231815] flex items-center justify-center border border-[#E8DEC8] shrink-0 shadow-2xs group cursor-pointer hover:bg-[#F5E6CC] transition-colors"
+                title="Healthy Vicinity Market & Kitchens"
+              >
+                {/* Artisanal spiral/swirl leaf mark inspired by the reference emblem */}
+                <svg
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-[#231815] group-hover:text-[#C86A1D] transition-colors"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="9" strokeOpacity="0.25" strokeWidth="1.5" />
+                  <path d="M12 7c-2.8 0-5 2.2-5 5s2.2 5 5 5 4.5-1.8 4.8-4.2" />
+                  <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+                </svg>
               </div>
-              <p className="hidden sm:flex text-[#6B5E55] font-medium text-[11px] sm:text-xs mt-0.5 items-center gap-1.5">
-                <span className="text-[#2D5A34] font-semibold">Wholesome Clean Dining Guide</span>
-                <span>&bull;</span>
-                <span className="text-[#8C7A6B]">Seed-Oil Free &amp; Transparent Macros</span>
-              </p>
+              <div
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="cursor-pointer select-none"
+              >
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <span className="font-serif font-black text-lg sm:text-2xl tracking-tight text-[#231815] leading-none">
+                    Healthy Vicinity<span className="text-[#C86A1D] text-lg font-normal">&trade;</span>
+                  </span>
+                </div>
+                <p className="hidden sm:flex text-[#8C7A6B] font-semibold text-[10px] sm:text-[11px] tracking-wider uppercase mt-0.5 items-center gap-1.5">
+                  <span>Clean Kitchens</span>
+                  <span>&bull;</span>
+                  <span className="text-[#2D5A34]">Organic Table</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Center Desktop Navigation Links per pin style */}
+            <nav className="hidden lg:flex items-center gap-5 xl:gap-7 2xl:gap-8 shrink-0">
+              <button
+                onClick={() => scrollToSection('healthy-food-guide-section')}
+                className="text-[13px] font-semibold tracking-wide text-[#3D3028] hover:text-[#C86A1D] transition-colors cursor-pointer py-1 relative group"
+              >
+                <span>Food Guide</span>
+                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C86A1D] group-hover:w-full transition-all duration-200" />
+              </button>
+              <button
+                onClick={() => scrollToSection('snack-ideas-section')}
+                className="text-[13px] font-semibold tracking-wide text-[#3D3028] hover:text-[#C86A1D] transition-colors cursor-pointer py-1 relative group"
+              >
+                <span>Snack Ideas</span>
+                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C86A1D] group-hover:w-full transition-all duration-200" />
+              </button>
+              <button
+                onClick={() => scrollToSection('kitchen-reels-section')}
+                className="text-[13px] font-semibold tracking-wide text-[#3D3028] hover:text-[#C86A1D] transition-colors cursor-pointer py-1 relative group"
+              >
+                <span>Food Scouts</span>
+                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C86A1D] group-hover:w-full transition-all duration-200" />
+              </button>
+              <button
+                onClick={() => scrollToSection('explore-india-section')}
+                className="text-[13px] font-semibold tracking-wide text-[#3D3028] hover:text-[#C86A1D] transition-colors cursor-pointer py-1 relative group"
+              >
+                <span>Culture Table</span>
+                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C86A1D] group-hover:w-full transition-all duration-200" />
+              </button>
+              <button
+                onClick={() => scrollToSection('dishes-section')}
+                className="text-[13px] font-semibold tracking-wide text-[#3D3028] hover:text-[#C86A1D] transition-colors cursor-pointer py-1 relative group"
+              >
+                <span>Clean Dishes</span>
+                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#C86A1D] group-hover:w-full transition-all duration-200" />
+              </button>
+            </nav>
+
+            {/* Right Controls: Search, Country, City, Scanner, and Caramel CTA Button */}
+            <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+              {/* Minimalist Search Icon Button (matching Pinterest reference) */}
+              <button
+                id="header-search-icon-btn"
+                onClick={handleHeaderSearchClick}
+                className="p-2 sm:p-2.5 rounded-full bg-white/90 hover:bg-white text-[#4A3C31] hover:text-[#C86A1D] border border-[#E8DEC8] hover:border-[#C86A1D]/60 transition-all cursor-pointer shadow-2xs active:scale-95 shrink-0"
+                title="Search healthy dishes, ingredients, or dietary goals"
+                aria-label="Search healthy dishes"
+              >
+                <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#231815]" />
+              </button>
+
+              {/* Country Switcher: 🇮🇳 India (INR) | 🇺🇸 USA (USD) */}
+              <div
+                id="header-country-switcher"
+                className="inline-flex items-center rounded-full bg-[#F4ECE1] p-0.5 sm:p-1 border border-[#E8DEC8] shrink-0 shadow-2xs"
+                title="Switch country (auto-detected from your IP or location)"
+              >
+                <button
+                  id="header-country-btn-in"
+                  onClick={() => handleSwitchCountry('IN')}
+                  className={`px-2 py-1 sm:px-2.5 sm:py-1 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                    selectedCity.country === 'IN'
+                      ? 'bg-[#C86A1D] text-white shadow-xs font-extrabold'
+                      : 'text-[#6B5E55] hover:text-[#231815]'
+                  }`}
+                  title="India - 31 cities (₹ INR)"
+                >
+                  <span>🇮🇳</span>
+                  <span className="hidden sm:inline">IN</span>
+                </button>
+                <button
+                  id="header-country-btn-us"
+                  onClick={() => handleSwitchCountry('US')}
+                  className={`px-2 py-1 sm:px-2.5 sm:py-1 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                    selectedCity.country === 'US'
+                      ? 'bg-[#C86A1D] text-white shadow-xs font-extrabold'
+                      : 'text-[#6B5E55] hover:text-[#231815]'
+                  }`}
+                  title="United States - 30 cities ($ USD)"
+                >
+                  <span>🇺🇸</span>
+                  <span className="hidden sm:inline">US</span>
+                </button>
+              </div>
+
+              {/* City Selector Pill Button */}
+              <button
+                id="header-city-selector-btn"
+                onClick={() => setIsLocationModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-white/95 hover:bg-[#FDFBF7] text-[#231815] font-bold text-xs border border-[#E8DEC8] hover:border-[#C86A1D]/60 transition-all cursor-pointer max-w-[120px] sm:max-w-[170px] group active:scale-95 shadow-2xs shrink-0"
+                title="Where are you eating? Click to select city"
+              >
+                <span className="text-xs shrink-0">
+                  {selectedCity.country === 'IN' ? '🇮🇳' : '📍'}
+                </span>
+                <span className="truncate text-left font-bold text-[#231815] group-hover:text-[#C86A1D] transition-colors">
+                  {selectedCity.name}
+                </span>
+                <ChevronDown className="w-3 h-3 text-[#6B5E55] group-hover:text-[#C86A1D] shrink-0 ml-0.5 transition-colors" />
+              </button>
+
+              {/* Quick Auto-Locate Button */}
+              <button
+                id="header-quick-locate-btn"
+                onClick={handleQuickLocate}
+                disabled={isAutoLocating}
+                className="p-2 sm:p-2.5 rounded-full bg-white/95 hover:bg-[#EBF4ED] text-[#2D5A34] border border-[#E8DEC8] hover:border-[#2D5A34]/60 transition-all cursor-pointer active:scale-95 shadow-2xs shrink-0 disabled:opacity-60"
+                title="Auto-detect location via GPS or IP address"
+              >
+                {isAutoLocating ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#2D5A34]" />
+                ) : (
+                  <Navigation className="w-3.5 h-3.5 text-[#2D5A34]" />
+                )}
+              </button>
+
+              {/* AI Menu Scanner Button */}
+              <button
+                id="open-menu-scanner-btn"
+                onClick={() => setIsScannerOpen(true)}
+                className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-[#EBF4ED] hover:bg-[#DCEDE0] text-[#2D5A34] text-xs font-bold transition-all cursor-pointer border border-[#C5DEC9] active:scale-95 shrink-0 shadow-2xs"
+                title="Scan any restaurant menu with AI"
+              >
+                <ScanLine className="w-3.5 h-3.5 text-[#2D5A34]" />
+                <span className="hidden sm:inline">AI Scanner</span>
+              </button>
+
+              {/* The Rich Amber / Caramel Pill CTA Button (Star element from Pinterest reference) */}
+              <button
+                id="header-open-map-btn"
+                onClick={() => setIsMapOpen(true)}
+                className="rounded-full px-3.5 sm:px-5 py-2 sm:py-2.5 bg-[#C86A1D] hover:bg-[#B35912] active:bg-[#994708] text-white font-bold text-xs sm:text-sm tracking-wide shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex items-center gap-1.5 sm:gap-2 shrink-0 active:scale-95 whitespace-nowrap"
+                title="Find healthy food near me & explore radar"
+              >
+                <Radar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-200 shrink-0" />
+                <span className="hidden xs:inline sm:inline">Find Food Near Me</span>
+                <span className="xs:hidden">Near Me</span>
+                <span className="px-1.5 py-0.5 rounded-full bg-white/20 text-white font-bold text-[10px] border border-white/20 hidden md:inline">
+                  {cityReelsCount}
+                </span>
+              </button>
             </div>
           </div>
 
-          {/* Controls: Country Switcher, City Dropdown, Map Radar, and AI Scanner */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-            {/* Country Switcher: 🇮🇳 India (INR) | 🇺🇸 USA (USD) */}
-            <div
-              id="header-country-switcher"
-              className="inline-flex items-center rounded-2xl bg-[#F4ECE1] p-0.5 sm:p-1 border border-[#E8DEC8] shrink-0 shadow-xs"
-              title="Switch country (auto-detected from your IP or location)"
-            >
-              <button
-                id="header-country-btn-in"
-                onClick={() => handleSwitchCountry('IN')}
-                className={`px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  selectedCity.country === 'IN'
-                    ? 'bg-[#C86A1D] text-white shadow-xs font-extrabold'
-                    : 'text-[#6B5E55] hover:text-[#231815]'
-                }`}
-                title="India - 31 cities (₹ INR)"
-              >
-                <span>🇮🇳</span>
-                <span className="hidden xs:inline sm:inline">India</span>
-              </button>
-              <button
-                id="header-country-btn-us"
-                onClick={() => handleSwitchCountry('US')}
-                className={`px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  selectedCity.country === 'US'
-                    ? 'bg-[#C86A1D] text-white shadow-xs font-extrabold'
-                    : 'text-[#6B5E55] hover:text-[#231815]'
-                }`}
-                title="United States - 30 cities ($ USD)"
-              >
-                <span>🇺🇸</span>
-                <span className="hidden xs:inline sm:inline">USA</span>
-              </button>
-            </div>
-
-            {/* City Selector Button (Opens Location UX Modal: "Where are you eating?") */}
+          {/* Mobile Quick-Navigation Strip (Clean Horizontal Scroll) */}
+          <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 overflow-x-auto py-2 border-t border-[#E8DEC8]/60 no-scrollbar text-xs font-semibold text-[#4A3C31]">
             <button
-              id="header-city-selector-btn"
-              onClick={() => setIsLocationModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2.5 rounded-2xl bg-[#FFFFFF] hover:bg-[#FDFBF7] text-[#231815] font-bold text-xs border border-[#E8DEC8] hover:border-[#C86A1D]/60 transition-all cursor-pointer max-w-[135px] sm:max-w-[200px] group active:scale-95 shadow-xs"
-              title="Where are you eating? Click to select city or use location"
+              onClick={() => scrollToSection('healthy-food-guide-section')}
+              className="px-3 py-1 rounded-full bg-white/80 hover:bg-white border border-[#E8DEC8] whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all"
             >
-              <span className="text-xs shrink-0">
-                {selectedCity.country === 'IN' ? '🇮🇳' : '📍'}
-              </span>
-              <span className="truncate text-left font-bold text-[#231815] group-hover:text-[#C86A1D] transition-colors">
-                {selectedCity.name}
-                {selectedCity.country === 'IN' ? ' (IN)' : `, ${selectedCity.state}`}
-              </span>
-              <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#6B5E55] group-hover:text-[#C86A1D] shrink-0 ml-0.5 sm:ml-1 transition-colors" />
+              Food Guide
             </button>
-
-            {/* Quick Auto-Locate Button */}
             <button
-              id="header-quick-locate-btn"
-              onClick={handleQuickLocate}
-              disabled={isAutoLocating}
-              className="p-1.5 sm:p-2.5 rounded-2xl bg-[#FFFFFF] hover:bg-[#EBF4ED] text-[#2D5A34] border border-[#E8DEC8] hover:border-[#2D5A34]/60 transition-all cursor-pointer active:scale-95 shadow-xs shrink-0 disabled:opacity-60"
-              title="Auto-detect location via GPS or IP address"
+              onClick={() => scrollToSection('snack-ideas-section')}
+              className="px-3 py-1 rounded-full bg-white/80 hover:bg-white border border-[#E8DEC8] whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all"
             >
-              {isAutoLocating ? (
-                <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin text-[#2D5A34]" />
-              ) : (
-                <Navigation className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#2D5A34]" />
-              )}
+              Snack Ideas
             </button>
-
-            {/* Map Radar (count) */}
             <button
-              id="header-open-map-btn"
-              onClick={() => setIsMapOpen(true)}
-              className="inline-flex items-center justify-center gap-1 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2.5 rounded-2xl bg-[#FFFFFF] hover:bg-[#FDFBF7] text-[#231815] text-xs font-bold border border-[#E8DEC8] hover:border-[#C86A1D]/50 transition-all duration-200 cursor-pointer group active:scale-95 shrink-0 whitespace-nowrap shadow-xs"
-              title="Map Radar"
+              onClick={() => scrollToSection('kitchen-reels-section')}
+              className="px-3 py-1 rounded-full bg-white/80 hover:bg-white border border-[#E8DEC8] whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all"
             >
-              <Radar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C86A1D] group-hover:rotate-45 transition-transform shrink-0" />
-              <span className="hidden sm:inline">Map Radar</span>
-              <span className="px-1.5 py-0.5 rounded-full bg-[#FDF2C8] text-[#914605] font-bold text-[10px] border border-[#F3DFC1]">
-                {cityReelsCount}
-              </span>
+              Food Scouts
             </button>
-
-            {/* AI Menu Scanner CTA Button */}
             <button
-              id="open-menu-scanner-btn"
-              onClick={() => setIsScannerOpen(true)}
-              className="inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2.5 rounded-2xl bg-[#2D5A34] hover:bg-[#234729] text-white text-xs font-bold transition-all duration-200 cursor-pointer group active:scale-95 shrink-0 shadow-xs whitespace-nowrap"
-              title="AI Menu Scanner"
+              onClick={() => scrollToSection('explore-india-section')}
+              className="px-3 py-1 rounded-full bg-white/80 hover:bg-white border border-[#E8DEC8] whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all"
             >
-              <ScanLine className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white group-hover:rotate-12 transition-transform" />
-              <span className="hidden sm:inline">AI Menu Scanner</span>
-              <span className="sm:hidden text-[11px]">Scan</span>
+              Culture Table
+            </button>
+            <button
+              onClick={() => scrollToSection('dishes-section')}
+              className="px-3 py-1 rounded-full bg-white/80 hover:bg-white border border-[#E8DEC8] whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all"
+            >
+              Clean Dishes
             </button>
           </div>
         </div>

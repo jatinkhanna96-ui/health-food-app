@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -282,7 +282,7 @@ export default function HealthyFoodGuide({
         </div>
 
         {/* 3. HEALTHY SNACK IDEAS RIBBON */}
-        <div className="space-y-6 pt-4">
+        <div id="snack-ideas-section" className="space-y-6 pt-4 scroll-mt-24">
           <div className="text-center">
             <div className="inline-flex items-center justify-center gap-3 text-[#3E4D3F]">
               <span className="font-serif text-sm tracking-widest text-[#C86A1D]">&mdash;&mdash;&equiv;</span>
