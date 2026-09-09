@@ -15,6 +15,7 @@ import MenuScannerModal from '@/components/MenuScannerModal';
 import InteractiveMap from '@/components/InteractiveMap';
 import BentoFilters, { FilterState } from '@/components/BentoFilters';
 import ReelsBar from '@/components/ReelsBar';
+import HealthyFoodGuide from '@/components/HealthyFoodGuide';
 import { Reel, ReelCity, getCityReels, REELS_DATA } from '@/lib/reelsData';
 import {
   Compass,
@@ -1482,6 +1483,30 @@ export default function HomePage() {
             filteredCount={filteredDishes.length}
           />
         </section>
+
+        {/* ========================================================================= */}
+        {/* EAT CLEAN FEEL AMAZING: WHOLESOME HEALTHY FOOD LIST & SNACK IDEAS         */}
+        {/* ========================================================================= */}
+        <HealthyFoodGuide
+          cityName={selectedCity.name}
+          dishesCount={filteredDishes.length}
+          onFilterByCategory={(keyword) => {
+            setFilters((prev) => ({
+              ...prev,
+              searchQuery: keyword,
+            }));
+            const elem = document.getElementById('dishes-section');
+            if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+          }}
+          onFilterBySnack={(snack) => {
+            setFilters((prev) => ({
+              ...prev,
+              searchQuery: snack,
+            }));
+            const elem = document.getElementById('dishes-section');
+            if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+          }}
+        />
 
         {/* ========================================================================= */}
         {/* COMPACT SECTION: EXPLORE HEALTHY FOOD IN INDIA                            */}
