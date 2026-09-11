@@ -15,6 +15,8 @@ import DishDetailModal from '@/components/DishDetailModal';
 import MenuScannerModal from '@/components/MenuScannerModal';
 import LocationSelectorModal from '@/components/LocationSelectorModal';
 import BentoFilters, { FilterState } from '@/components/BentoFilters';
+import CravingDiscoveryRow from '@/components/CravingDiscoveryRow';
+import { getCravingById, matchDishToCraving } from '@/lib/cravingCategories';
 import ReelsBar from '@/components/ReelsBar';
 import HealthyFoodGuide from '@/components/HealthyFoodGuide';
 import ExploreIndiaSection from '@/components/ExploreIndiaSection';
@@ -137,6 +139,9 @@ export default function HomePage({
     benefitGutSoothers: false,
   });
 
+  // Selected craving category (e.g. 'burgers', 'biryani', 'pizza')
+  const [selectedCraving, setSelectedCraving] = useState<string | null>(null);
+
   // Progressive rendering: 12 cards initially for 0ms frame drops and silky scrolling
   const [visibleCount, setVisibleCount] = useState(12);
 
@@ -158,10 +163,10 @@ export default function HomePage({
 
   const allCityDishesCount = currentCityDishes.length;
 
-  // Reset pagination when city or filters change
+  // Reset pagination when city, filters, or selected craving changes
   useEffect(() => {
     setVisibleCount(12);
-  }, [selectedCity.name, filters]);
+  }, [selectedCity.name, filters, selectedCraving]);
 
   const selectedReelCity: ReelCity = useMemo(() => {
     const match = CITIES_DROPDOWN.find((c) => c.cityName === selectedCity.name);
@@ -524,6 +529,7 @@ export default function HomePage({
       benefitGutSoothers: false,
     });
     setSelectedCookingFat('all');
+    setSelectedCraving(null);
   };
 
   const triggerRadarScan = () => {
@@ -536,8 +542,18 @@ export default function HomePage({
     }, 2800);
   };
 
+  const activeCravingCategory = useMemo(() => {
+    return selectedCraving ? getCravingById(selectedCraving) : null;
+  }, [selectedCraving]);
+
   const filteredDishes = useMemo(() => {
     return currentCityDishes.filter((dish) => {
+      // 1. Craving category filter (e.g. Burgers -> Better Burgers, Biryani -> Better Biryani)
+      if (selectedCraving && !matchDishToCraving(dish, selectedCraving)) {
+        return false;
+      }
+
+      // 2. Cooking fat filter
       if (selectedCookingFat !== 'all') {
         if (!dish.cookingFat.toLowerCase().includes(selectedCookingFat.toLowerCase())) {
           return false;
@@ -596,7 +612,7 @@ export default function HomePage({
 
       return true;
     });
-  }, [currentCityDishes, filters, selectedCookingFat]);
+  }, [currentCityDishes, filters, selectedCookingFat, selectedCraving]);
 
   // Clear selected dish if it belongs to a different city than currently selected
   useEffect(() => {
@@ -1674,6 +1690,19 @@ export default function HomePage({
         )}
 
         {/* ========================================================================= */}
+        {/* WHAT ARE YOU CRAVING? FOOD CATEGORY DISCOVERY ROW                         */}
+        {/* ========================================================================= */}
+        <CravingDiscoveryRow
+          selectedCraving={selectedCraving}
+          onSelectCraving={(id) => {
+            setSelectedCraving(id);
+          }}
+          onClearCraving={() => setSelectedCraving(null)}
+          country={selectedCity.country === 'IN' ? 'IN' : 'US'}
+          matchingCount={filteredDishes.length}
+        />
+
+        {/* ========================================================================= */}
         {/* BENEFIT-DRIVEN BENTO FILTERS MATRIX                                       */}
         {/* ========================================================================= */}
         <section aria-label="Benefit-Driven Filters">
@@ -1730,14 +1759,20 @@ export default function HomePage({
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-lg sm:text-2xl font-serif font-black text-[#231815] flex items-center gap-2">
                   <Flame className="w-5 h-5 text-[#C86A1D] shrink-0" />
-                  <span>Wholesome Dishes in {selectedCity.name}</span>
+                  <span>
+                    {activeCravingCategory
+                      ? `${activeCravingCategory.betterLabel} in ${selectedCity.name}`
+                      : `Wholesome Dishes in ${selectedCity.name}`}
+                  </span>
                 </h2>
                 <span className="text-xs font-bold text-[#914605] bg-[#FDF2C8] px-3 py-1 rounded-full border border-[#F3DFC1] shrink-0">
                   {filteredDishes.length} options nearby
                 </span>
               </div>
               <p className="text-xs text-[#6B5E55] mt-1 font-medium">
-                Locally sourced &amp; kitchen-verified dishes matched to your dietary preferences.
+                {activeCravingCategory
+                  ? `Clean-ingredient, healthier versions of your favorite ${activeCravingCategory.label.toLowerCase()} cravings in ${selectedCity.name}.`
+                  : 'Locally sourced & kitchen-verified dishes matched to your dietary preferences.'}
               </p>
             </div>
 
