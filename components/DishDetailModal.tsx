@@ -90,13 +90,13 @@ export default function DishDetailModal({ dish, onClose }: DishDetailModalProps)
               </span>
             </div>
             <div className="flex items-center justify-between gap-2 flex-wrap pt-0.5">
-              <p className="text-[11px] sm:text-sm font-medium text-white/90 flex items-center gap-1.5 truncate">
+              <p className="text-[11px] sm:text-sm font-medium text-white/90 flex items-center gap-1.5 truncate min-w-0 flex-1">
                 <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-[#F5C842] shrink-0" />
-                <span className="text-white font-bold">{dish.restaurant}</span>
-                <span className="text-white/40">&bull;</span>
-                <span className="text-[#FDF2C8]">{formatPrice(dish.price, dish.city, dish.id)} &bull; 1.2 mi</span>
-                <span className="text-white/40">&bull;</span>
-                <span className="truncate">{dish.city}</span>
+                <span className="text-white font-bold truncate">{dish.restaurant}</span>
+                <span className="text-white/40 shrink-0">&bull;</span>
+                <span className="text-[#FDF2C8] shrink-0">{formatPrice(dish.price, dish.city, dish.id)} &bull; 1.2 mi</span>
+                <span className="text-white/40 shrink-0">&bull;</span>
+                <span className="truncate shrink-0">{dish.city}</span>
               </p>
 
               <a
@@ -109,12 +109,12 @@ export default function DishDetailModal({ dish, onClose }: DishDetailModalProps)
                 })}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold border border-white/40 transition-all cursor-pointer shadow-xs active:scale-95"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold border border-white/40 transition-all cursor-pointer shadow-xs active:scale-95 shrink-0 whitespace-nowrap"
                 title={`Open directions to ${dish.restaurant} in Google Maps`}
               >
-                <Navigation className="w-3 h-3 fill-current" />
+                <Navigation className="w-3 h-3 fill-current shrink-0" />
                 <span>Directions</span>
-                <ExternalLink className="w-2.5 h-2.5 opacity-80" />
+                <ExternalLink className="w-2.5 h-2.5 opacity-80 shrink-0" />
               </a>
             </div>
           </div>

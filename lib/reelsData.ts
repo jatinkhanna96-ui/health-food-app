@@ -314,7 +314,7 @@ export const REELS_DATA: Reel[] = [
     views: "6.7k",
     type: "real",
     dish_name: "Gluten-Free Paleo Protein Skillet",
-    thumbnail: "https://images.unsplash.com/photo-1514944298352-82d603a11b7e?auto=format&fit=crop&w=800&q=80",
+    thumbnail: "https://images.unsplash.com/photo-1543339308-43e59d6b73a6?auto=format&fit=crop&w=800&q=80",
     tags: ["gluten-free", "high-protein", "paleo"],
     eating_type: "creator testing gluten-free skillet dish",
     verified: true,

@@ -23,7 +23,7 @@ interface DishCardProps {
   onOpenDetails: (dish: Dish) => void;
 }
 
-export default function DishCard({
+const DishCard = React.memo(function DishCard({
   dish,
   isSelected = false,
   onSelect,
@@ -65,30 +65,32 @@ export default function DishCard({
           {/* Clean Subtle Gradient at bottom for text contrast */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none" />
 
-          {/* Wholesome Verification Indicator */}
-          <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-white/95 backdrop-blur-md text-[#2D5A34] text-[10px] sm:text-[11px] font-bold tracking-wide border border-[#E8DEC8] flex items-center gap-1.5 shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#2D5A34]" />
-            <span className="font-extrabold">✓</span>
-            <span>Kitchen Verified</span>
-          </div>
+          {/* Top Overlays: Kitchen Verified & Rating Pill in a Single Flex Row to Prevent Any Icon Overlap */}
+          <div className="absolute top-2.5 inset-x-2.5 sm:top-3 sm:inset-x-3 z-10 flex items-center justify-between gap-1.5 sm:gap-2 pointer-events-none">
+            {/* Wholesome Verification Indicator */}
+            <div className="pointer-events-auto px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-white/95 backdrop-blur-md text-[#2D5A34] text-[10px] sm:text-[11px] font-bold tracking-wide border border-[#E8DEC8] flex items-center gap-1.5 shadow-xs shrink min-w-0 max-w-[72%]">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#2D5A34] shrink-0" />
+              <span className="truncate">Kitchen Verified</span>
+            </div>
 
-          {/* Rating Pill */}
-          <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 flex items-center gap-1">
-            <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-white/95 backdrop-blur-md text-[#231815] text-[11px] sm:text-xs font-bold shadow-sm flex items-center gap-1 border border-[#E8DEC8]">
-              <Star className="w-3 h-3 fill-[#F5C842] text-[#F5C842]" />
-              <span>{dish.rating.toFixed(1)}</span>
-            </span>
+            {/* Rating Pill */}
+            <div className="pointer-events-auto shrink-0">
+              <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-white/95 backdrop-blur-md text-[#231815] text-[11px] sm:text-xs font-bold shadow-xs flex items-center gap-1 border border-[#E8DEC8]">
+                <Star className="w-3 h-3 fill-[#F5C842] text-[#F5C842] shrink-0" />
+                <span>{dish.rating.toFixed(1)}</span>
+              </span>
+            </div>
           </div>
 
           {/* Nutrition Data Bar */}
-          <div className="absolute bottom-2 inset-x-2 sm:bottom-2.5 sm:inset-x-3">
+          <div className="absolute bottom-2 inset-x-2 sm:bottom-2.5 sm:inset-x-3 z-10 pointer-events-none">
             <div className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur-md border border-[#E8DEC8] flex items-center justify-between text-[11px] sm:text-xs font-semibold text-[#231815] shadow-xs">
-              <div className="flex items-center gap-2">
-                <span className="text-[#231815] font-bold">{dish.calories} kcal</span>
-                <span className="text-[#E8DEC8]">&bull;</span>
-                <span className="text-[#2D5A34] font-bold">{dish.protein}g protein</span>
+              <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 truncate">
+                <span className="text-[#231815] font-bold shrink-0">{dish.calories} kcal</span>
+                <span className="text-[#E8DEC8] shrink-0">&bull;</span>
+                <span className="text-[#2D5A34] font-bold truncate">{dish.protein}g protein</span>
               </div>
-              <div className="w-14 sm:w-16 h-1.5 bg-[#E8DEC8] rounded-full overflow-hidden shrink-0">
+              <div className="w-12 sm:w-16 h-1.5 bg-[#E8DEC8] rounded-full overflow-hidden shrink-0 ml-2">
                 <div
                   className="h-full bg-[#2D5A34] rounded-full transition-all duration-500"
                   style={{ width: `${proteinPercent}%` }}
@@ -105,43 +107,43 @@ export default function DishCard({
             <h3 className="font-bold text-[#231815] text-sm sm:text-base group-hover:text-[#C86A1D] transition-colors duration-200 leading-snug line-clamp-1">
               {dish.name}
             </h3>
-            <p className="text-[11px] sm:text-xs font-medium text-[#6B5E55] flex items-center gap-1.5">
+            <p className="text-[11px] sm:text-xs font-medium text-[#6B5E55] flex items-center gap-1.5 min-w-0">
               <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#C86A1D] shrink-0" />
-              <span className="truncate font-semibold">{dish.restaurant}</span>
-              <span className="text-[#DFD2BC]">&bull;</span>
-              <span className="truncate">{dish.city}</span>
+              <span className="truncate font-semibold min-w-0">{dish.restaurant}</span>
+              <span className="text-[#DFD2BC] shrink-0">&bull;</span>
+              <span className="truncate min-w-0">{dish.city}</span>
             </p>
           </div>
 
           {/* Useful Consumer-Friendly Tags */}
           <div className="flex flex-wrap gap-1 sm:gap-1.5 pt-0.5">
             {dish.protein >= 35 && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#EBF4ED] text-[#2D5A34] text-[10px] sm:text-[11px] font-bold border border-[#D5E8D8]">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#EBF4ED] text-[#2D5A34] text-[10px] sm:text-[11px] font-bold border border-[#D5E8D8] shrink-0">
                 High Protein
               </span>
             )}
             {dish.calories <= 550 && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#FDF5D9] text-[#8C5D0D] text-[10px] sm:text-[11px] font-semibold border border-[#F4E3A8]">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#FDF5D9] text-[#8C5D0D] text-[10px] sm:text-[11px] font-semibold border border-[#F4E3A8] shrink-0">
                 Lower Calorie
               </span>
             )}
             {dish.isKeto && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#FDF5D9] text-[#8C5D0D] text-[10px] sm:text-[11px] font-semibold border border-[#F4E3A8]">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#FDF5D9] text-[#8C5D0D] text-[10px] sm:text-[11px] font-semibold border border-[#F4E3A8] shrink-0">
                 Low Sugar
               </span>
             )}
             {dish.isSeedOilFree && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#FAF6EE] text-[#6B5E55] text-[10px] sm:text-[11px] font-medium border border-[#E8DEC8]">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#FAF6EE] text-[#6B5E55] text-[10px] sm:text-[11px] font-medium border border-[#E8DEC8] shrink-0">
                 Seed-Oil Free
               </span>
             )}
             {dish.isGlutenFree && (
-              <span className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-lg bg-[#FAF6EE] text-[#6B5E55] text-[10px] sm:text-[11px] font-medium border border-[#E8DEC8]">
+              <span className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-lg bg-[#FAF6EE] text-[#6B5E55] text-[10px] sm:text-[11px] font-medium border border-[#E8DEC8] shrink-0">
                 Gluten-Free
               </span>
             )}
             {dish.isDairyFree && (
-              <span className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-lg bg-[#FAF6EE] text-[#6B5E55] text-[10px] sm:text-[11px] font-medium border border-[#E8DEC8]">
+              <span className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-lg bg-[#FAF6EE] text-[#6B5E55] text-[10px] sm:text-[11px] font-medium border border-[#E8DEC8] shrink-0">
                 Dairy-Free
               </span>
             )}
@@ -153,21 +155,21 @@ export default function DishCard({
               Why it fits
             </span>
             <div className="grid grid-cols-2 gap-1 sm:gap-1.5 text-[11px] sm:text-xs text-[#231815]">
-              <div className="flex items-center gap-1 sm:gap-1.5">
-                <span className="text-[#2D5A34] font-bold text-xs">✓</span>
-                <span className="truncate">{dish.protein}g protein</span>
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="text-[#2D5A34] font-bold text-xs shrink-0">✓</span>
+                <span className="truncate min-w-0">{dish.protein}g protein</span>
               </div>
-              <div className="flex items-center gap-1 sm:gap-1.5">
-                <span className="text-[#2D5A34] font-bold text-xs">✓</span>
-                <span className="truncate">{dish.calories} cal</span>
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="text-[#2D5A34] font-bold text-xs shrink-0">✓</span>
+                <span className="truncate min-w-0">{dish.calories} cal</span>
               </div>
-              <div className="flex items-center gap-1 sm:gap-1.5">
-                <span className="text-[#2D5A34] font-bold text-xs">✓</span>
-                <span className="truncate font-medium">{dish.cookingFat}</span>
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="text-[#2D5A34] font-bold text-xs shrink-0">✓</span>
+                <span className="truncate min-w-0 font-medium">{dish.cookingFat}</span>
               </div>
-              <div className="flex items-center gap-1 sm:gap-1.5">
-                <span className="text-[#2D5A34] font-bold text-xs">✓</span>
-                <span className="truncate">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="text-[#2D5A34] font-bold text-xs shrink-0">✓</span>
+                <span className="truncate min-w-0">
                   {dish.highlights?.[0] || (dish.isKeto ? 'Low added sugar' : 'Whole foods')}
                 </span>
               </div>
@@ -194,13 +196,15 @@ export default function DishCard({
             e.stopPropagation();
             onOpenDetails(dish);
           }}
-          className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-[#C86A1D] hover:bg-[#A84E18] text-white text-[11px] sm:text-xs font-bold transition-all duration-200 cursor-pointer shadow-xs flex items-center gap-1 sm:gap-1.5 active:scale-95 whitespace-nowrap"
+          className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-[#C86A1D] hover:bg-[#A84E18] text-white text-[11px] sm:text-xs font-bold transition-all duration-200 cursor-pointer shadow-xs flex items-center gap-1 sm:gap-1.5 active:scale-95 shrink-0 whitespace-nowrap"
           title="See what is inside this dish"
         >
           <span>See Details</span>
-          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+          <Plus className="w-3.5 h-3.5 stroke-[2.5] shrink-0" />
         </button>
       </div>
     </div>
   );
-}
+});
+
+export default DishCard;

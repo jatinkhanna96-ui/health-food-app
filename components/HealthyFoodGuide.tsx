@@ -95,7 +95,7 @@ const FOOD_PILLARS: FoodPillar[] = [
     id: 'hydration',
     name: 'HYDRATION',
     icon: 'leaf',
-    image: 'https://images.unsplash.com/photo-1559839914-ba2a0f8b1c41?auto=format&fit=crop&w=400&q=80',
+    image: 'https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=400&q=80',
     items: ['Water', 'Coconut Water', 'Lemon Water', 'Herbal Tea', 'Green Tea'],
     filterKeyword: 'broth',
     benefit: 'Electrolytes & Vitality',
@@ -247,6 +247,7 @@ export default function HealthyFoodGuide({
                     fill
                     sizes="(max-width: 640px) 80px, 90px"
                     className="object-cover"
+                    referrerPolicy="no-referrer"
                   />
                   {isSelected && (
                     <div className="absolute inset-0 bg-[#2D5A34]/30 backdrop-blur-2xs flex items-center justify-center">
@@ -311,6 +312,7 @@ export default function HealthyFoodGuide({
                     fill
                     sizes="(max-width: 640px) 64px, 72px"
                     className="object-cover"
+                    referrerPolicy="no-referrer"
                   />
                 </div>
 

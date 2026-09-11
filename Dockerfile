@@ -11,16 +11,11 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+ENV NEXT_TELEMETRY_DISABLED=1
 
-COPY package*.json ./
-RUN npm install --omit=dev
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/server.js ./server.js
-COPY --from=builder /app/server.ts ./server.ts
-COPY --from=builder /app/scripts ./scripts
-COPY --from=builder /app/next.config.mjs ./next.config.mjs
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
 EXPOSE 3000
-CMD ["npm", "start"]
+CMD ["node", "server.js"]

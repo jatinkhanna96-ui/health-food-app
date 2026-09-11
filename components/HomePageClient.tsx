@@ -9,14 +9,27 @@ import {
   CityLocation,
 } from '@/lib/mockData';
 import { formatPrice, getGoogleMapsDirectionsUrl } from '@/lib/utils';
+import dynamic from 'next/dynamic';
 import DishCard from '@/components/DishCard';
 import DishDetailModal from '@/components/DishDetailModal';
 import MenuScannerModal from '@/components/MenuScannerModal';
-import InteractiveMap from '@/components/InteractiveMap';
+import LocationSelectorModal from '@/components/LocationSelectorModal';
 import BentoFilters, { FilterState } from '@/components/BentoFilters';
 import ReelsBar from '@/components/ReelsBar';
 import HealthyFoodGuide from '@/components/HealthyFoodGuide';
+import ExploreIndiaSection from '@/components/ExploreIndiaSection';
 import { Reel, ReelCity, getCityReels, REELS_DATA } from '@/lib/reelsData';
+
+// Dynamic import for Leaflet client-only map:
+const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), {
+  loading: () => (
+    <div className="w-full h-full min-h-[300px] flex flex-col items-center justify-center bg-[#FAF6EE] text-[#6B5E55] gap-2 p-6 rounded-2xl border border-[#E8DEC8]">
+      <span className="text-xs font-bold text-[#1A100C]">Initializing Radar &amp; Geo Map...</span>
+    </div>
+  ),
+  ssr: false,
+});
+
 import {
   Compass,
   MapPin,
@@ -53,8 +66,6 @@ import {
   getDefaultCityForCountry,
   CountryCode,
 } from '@/lib/locations';
-import LocationSelectorModal from '@/components/LocationSelectorModal';
-import ExploreIndiaSection from '@/components/ExploreIndiaSection';
 
 const CITIES_DROPDOWN: {
   id: ReelCity;
@@ -70,11 +81,25 @@ const CITIES_DROPDOWN: {
   country: c.country,
 }));
 
-export default function HomePage() {
+export interface HomePageClientProps {
+  initialCity?: CityLocation;
+  initialCountry?: CountryCode;
+  initialSearch?: string;
+  widgetsSlot?: React.ReactNode;
+}
+
+export default function HomePage({
+  initialCity,
+  initialCountry,
+  initialSearch,
+  widgetsSlot,
+}: HomePageClientProps = {}) {
   const [dishes, setDishes] = useState<Dish[]>(INITIAL_DISHES);
   // Initial state is strictly identical on server and client to prevent hydration mismatch
   const [selectedCity, setSelectedCity] = useState<CityLocation>(() => {
-    return toCityLocation(getDefaultCityForCountry('US'));
+    if (initialCity) return initialCity;
+    const country = initialCountry || 'US';
+    return toCityLocation(getDefaultCityForCountry(country));
   });
   const [selectedDish, setSelectedDish] = useState<Dish | null>(null);
   const [detailDish, setDetailDish] = useState<Dish | null>(null);
@@ -93,7 +118,7 @@ export default function HomePage() {
   const [isRadarScanning, setIsRadarScanning] = useState(false);
 
   const [filters, setFilters] = useState<FilterState>({
-    search: '',
+    search: initialSearch || '',
     seedOilFree: false,
     grassFed: false,
     glutenFree: false,
@@ -111,6 +136,32 @@ export default function HomePage() {
     benefitBrainFuel: false,
     benefitGutSoothers: false,
   });
+
+  // Progressive rendering: 12 cards initially for 0ms frame drops and silky scrolling
+  const [visibleCount, setVisibleCount] = useState(12);
+
+  // City-indexed dishes lookup for instant O(1) retrieval across the app
+  const dishesByCity = useMemo(() => {
+    const map: Record<string, Dish[]> = {};
+    for (const d of dishes) {
+      if (!map[d.city]) {
+        map[d.city] = [];
+      }
+      map[d.city].push(d);
+    }
+    return map;
+  }, [dishes]);
+
+  const currentCityDishes = useMemo(() => {
+    return dishesByCity[selectedCity.name] || [];
+  }, [dishesByCity, selectedCity.name]);
+
+  const allCityDishesCount = currentCityDishes.length;
+
+  // Reset pagination when city or filters change
+  useEffect(() => {
+    setVisibleCount(12);
+  }, [selectedCity.name, filters]);
 
   const selectedReelCity: ReelCity = useMemo(() => {
     const match = CITIES_DROPDOWN.find((c) => c.cityName === selectedCity.name);
@@ -134,13 +185,13 @@ export default function HomePage() {
         // ignore
       }
     }
-    const cityDishes = dishes.filter((d) => d.city === loc.name);
+    const cityDishes = dishesByCity[loc.name] || [];
     if (cityDishes.length > 0) {
       setSelectedDish(cityDishes[0]);
     } else {
       setSelectedDish(null);
     }
-  }, [dishes]);
+  }, [dishesByCity]);
 
   // Direct switch between India and United States
   const handleSwitchCountry = useCallback((country: 'IN' | 'US') => {
@@ -267,19 +318,22 @@ export default function HomePage() {
     };
   }, [handleSelectCityConfig, selectedCity.country]);
 
-  const handleSelectCityByName = useCallback((cityName: string) => {
-    const config = getCityConfigByName(cityName);
-    if (config) {
-      handleSelectCityConfig(config, true);
-    } else {
-      const loc = CITY_LOCATIONS.find((c) => c.name.toLowerCase() === cityName.toLowerCase());
-      if (loc) {
-        setSelectedCity(loc);
-        const cityDishes = dishes.filter((d) => d.city === loc.name);
-        setSelectedDish(cityDishes.length > 0 ? cityDishes[0] : null);
+  const handleSelectCityByName = useCallback(
+    (cityName: string) => {
+      const config = getCityConfigByName(cityName);
+      if (config) {
+        handleSelectCityConfig(config, true);
+      } else {
+        const loc = CITY_LOCATIONS.find((c) => c.name.toLowerCase() === cityName.toLowerCase());
+        if (loc) {
+          setSelectedCity(loc);
+          const cityDishes = dishesByCity[loc.name] || [];
+          setSelectedDish(cityDishes.length > 0 ? cityDishes[0] : null);
+        }
       }
-    }
-  }, [handleSelectCityConfig, dishes]);
+    },
+    [handleSelectCityConfig, dishesByCity]
+  );
 
   // When city changes via dropdown
   const handleCitySelect = (cityId: ReelCity) => {
@@ -483,9 +537,7 @@ export default function HomePage() {
   };
 
   const filteredDishes = useMemo(() => {
-    return dishes.filter((dish) => {
-      if (dish.city !== selectedCity.name) return false;
-
+    return currentCityDishes.filter((dish) => {
       if (selectedCookingFat !== 'all') {
         if (!dish.cookingFat.toLowerCase().includes(selectedCookingFat.toLowerCase())) {
           return false;
@@ -544,7 +596,7 @@ export default function HomePage() {
 
       return true;
     });
-  }, [dishes, filters, selectedCity, selectedCookingFat]);
+  }, [currentCityDishes, filters, selectedCookingFat]);
 
   // Clear selected dish if it belongs to a different city than currently selected
   useEffect(() => {
@@ -648,7 +700,18 @@ export default function HomePage() {
     }
   };
 
-  const allCityDishesCount = dishes.filter((d) => d.city === selectedCity.name).length;
+  const handleSelectDish = useCallback((d: Dish) => {
+    setSelectedDish(d);
+  }, []);
+
+  const handleOpenDetails = useCallback((d: Dish) => {
+    setSelectedDish(d);
+    setDetailDish(d);
+  }, []);
+
+  const displayedDishes = useMemo(() => {
+    return filteredDishes.slice(0, visibleCount);
+  }, [filteredDishes, visibleCount]);
 
   return (
     <div className="min-h-screen bg-[#FAF6EE] text-[#231815] flex flex-col font-sans selection:bg-[#F5C842]/35 selection:text-[#231815] relative overflow-x-hidden">
@@ -661,18 +724,18 @@ export default function HomePage() {
       {/* ========================================================================= */}
       <div
         id="mission-vision-announcement-header"
-        className="relative w-full bg-[#FDF8E2] border-b border-[#F0E5C0] py-2 sm:py-2.5 px-3.5 sm:px-4 transition-all"
+        className="relative w-full bg-[#FFF9EB] border-b border-[#EBDDB7] py-2 sm:py-2.5 px-3 sm:px-4 transition-all z-30 shadow-2xs"
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2.5 text-xs">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="relative flex h-2 w-2 shrink-0">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-3 text-xs">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <span className="relative flex h-2.5 w-2.5 shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C86A1D] opacity-80" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C86A1D]" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#C86A1D]" />
             </span>
-            <span className="text-[#231815] uppercase tracking-wider text-[9px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#F5C842] border border-[#E8C040] shrink-0">
+            <span className="text-[#1A120E] uppercase tracking-wider text-[10px] sm:text-[11px] font-black px-2.5 py-0.5 rounded-full bg-[#F5C842] border border-[#E0BC35] shrink-0 shadow-2xs">
               Our Vision
             </span>
-            <p className="text-[#3B2C24] font-medium truncate text-[11px] sm:text-[13px]">
+            <p className="text-[#1A120E] font-bold text-xs sm:text-[13px] leading-snug truncate sm:whitespace-normal">
               Make every meal a wholesome choice you can feel good about.
             </p>
           </div>
@@ -681,10 +744,12 @@ export default function HomePage() {
               const elem = document.getElementById('mission-section');
               if (elem) elem.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-[#C86A1D] hover:text-[#A84E18] hover:underline cursor-pointer shrink-0 transition-colors"
+            className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-black text-[#A84E18] hover:text-[#C86A1D] hover:underline cursor-pointer shrink-0 transition-colors py-0.5 px-1.5"
+            title="Read our mission and food philosophy"
           >
-            <span>Our Mission</span>
-            <ArrowRight className="w-3 h-3" />
+            <span className="hidden xs:inline">Our Mission</span>
+            <span className="xs:hidden font-bold">Mission</span>
+            <ArrowRight className="w-3.5 h-3.5 text-[#A84E18]" />
           </button>
         </div>
       </div>
@@ -1226,9 +1291,9 @@ export default function HomePage() {
         className="sticky top-0 z-40 bg-[#FAF6EE]/95 backdrop-blur-md border-b border-[#E8DEC8] shadow-2xs"
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="h-16 sm:h-20 flex items-center justify-between gap-2.5 sm:gap-4">
+          <div className="h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
             {/* Top/Left Brand Identity */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 shrink">
               <div
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#FAF0DC] text-[#231815] flex items-center justify-center border border-[#E8DEC8] shrink-0 shadow-2xs group cursor-pointer hover:bg-[#F5E6CC] transition-colors"
@@ -1236,7 +1301,7 @@ export default function HomePage() {
               >
                 {/* Artisanal spiral/swirl leaf mark inspired by the reference emblem */}
                 <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6 text-[#231815] group-hover:text-[#C86A1D] transition-colors"
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-[#231815] group-hover:text-[#C86A1D] transition-colors shrink-0"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -1251,23 +1316,23 @@ export default function HomePage() {
               </div>
               <div
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="cursor-pointer select-none"
+                className="cursor-pointer select-none min-w-0"
               >
                 <div className="flex items-center gap-1 sm:gap-1.5">
-                  <span className="font-serif font-black text-lg sm:text-2xl tracking-tight text-[#231815] leading-none">
-                    Healthy Vicinity<span className="text-[#C86A1D] text-lg font-normal">&trade;</span>
+                  <span className="font-serif font-black text-base sm:text-xl xl:text-2xl tracking-tight text-[#1A100C] leading-none truncate">
+                    Healthy Vicinity<span className="text-[#C86A1D] text-xs sm:text-lg font-bold">&trade;</span>
                   </span>
                 </div>
-                <p className="hidden sm:flex text-[#8C7A6B] font-semibold text-[10px] sm:text-[11px] tracking-wider uppercase mt-0.5 items-center gap-1.5">
-                  <span>Clean Kitchens</span>
-                  <span>&bull;</span>
-                  <span className="text-[#2D5A34]">Organic Table</span>
+                <p className="hidden sm:flex text-[#6E594B] font-bold text-[9px] sm:text-[11px] tracking-wider uppercase mt-0.5 items-center gap-1 sm:gap-1.5 whitespace-nowrap">
+                  <span className="text-[#2C1E16]">Clean Kitchens</span>
+                  <span className="text-[#C86A1D]">&bull;</span>
+                  <span className="text-[#1E4D27]">Organic Table</span>
                 </p>
               </div>
             </div>
 
-            {/* Center Desktop Navigation Links per pin style */}
-            <nav className="hidden lg:flex items-center gap-5 xl:gap-7 2xl:gap-8 shrink-0">
+            {/* Center Desktop Navigation Links per pin style (Visible on xl screens to prevent header icon crowding on laptops) */}
+            <nav className="hidden xl:flex items-center gap-4 2xl:gap-6 shrink-0">
               <button
                 onClick={() => scrollToSection('healthy-food-guide-section')}
                 className="text-[13px] font-semibold tracking-wide text-[#3D3028] hover:text-[#C86A1D] transition-colors cursor-pointer py-1 relative group"
@@ -1306,49 +1371,49 @@ export default function HomePage() {
             </nav>
 
             {/* Right Controls: Search, Country, City, Scanner, and Caramel CTA Button */}
-            <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-              {/* Minimalist Search Icon Button (matching Pinterest reference) */}
+            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+              {/* Minimalist Search Icon Button */}
               <button
                 id="header-search-icon-btn"
                 onClick={handleHeaderSearchClick}
-                className="p-2 sm:p-2.5 rounded-full bg-white/90 hover:bg-white text-[#4A3C31] hover:text-[#C86A1D] border border-[#E8DEC8] hover:border-[#C86A1D]/60 transition-all cursor-pointer shadow-2xs active:scale-95 shrink-0"
+                className="p-1.5 sm:p-2.5 rounded-full bg-white hover:bg-[#F9F5EE] text-[#1A100C] hover:text-[#C86A1D] border border-[#E0D4BE] hover:border-[#C86A1D]/60 transition-all cursor-pointer shadow-2xs active:scale-95 shrink-0 flex items-center justify-center"
                 title="Search healthy dishes, ingredients, or dietary goals"
                 aria-label="Search healthy dishes"
               >
-                <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#231815]" />
+                <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#1A100C] shrink-0" />
               </button>
 
               {/* Country Switcher: 🇮🇳 India (INR) | 🇺🇸 USA (USD) */}
               <div
                 id="header-country-switcher"
-                className="inline-flex items-center rounded-full bg-[#F4ECE1] p-0.5 sm:p-1 border border-[#E8DEC8] shrink-0 shadow-2xs"
+                className="hidden md:inline-flex items-center rounded-full bg-[#F4ECE1] p-0.5 sm:p-1 border border-[#E8DEC8] shrink-0 shadow-2xs"
                 title="Switch country (auto-detected from your IP or location)"
               >
                 <button
                   id="header-country-btn-in"
                   onClick={() => handleSwitchCountry('IN')}
-                  className={`px-2 py-1 sm:px-2.5 sm:py-1 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                  className={`px-2 py-1 sm:px-2.5 sm:py-1 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shrink-0 ${
                     selectedCity.country === 'IN'
                       ? 'bg-[#C86A1D] text-white shadow-xs font-extrabold'
                       : 'text-[#6B5E55] hover:text-[#231815]'
                   }`}
                   title="India - 31 cities (₹ INR)"
                 >
-                  <span>🇮🇳</span>
-                  <span className="hidden sm:inline">IN</span>
+                  <span className="shrink-0">🇮🇳</span>
+                  <span className="hidden lg:inline">IN</span>
                 </button>
                 <button
                   id="header-country-btn-us"
                   onClick={() => handleSwitchCountry('US')}
-                  className={`px-2 py-1 sm:px-2.5 sm:py-1 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                  className={`px-2 py-1 sm:px-2.5 sm:py-1 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shrink-0 ${
                     selectedCity.country === 'US'
                       ? 'bg-[#C86A1D] text-white shadow-xs font-extrabold'
                       : 'text-[#6B5E55] hover:text-[#231815]'
                   }`}
                   title="United States - 30 cities ($ USD)"
                 >
-                  <span>🇺🇸</span>
-                  <span className="hidden sm:inline">US</span>
+                  <span className="shrink-0">🇺🇸</span>
+                  <span className="hidden lg:inline">US</span>
                 </button>
               </div>
 
@@ -1356,30 +1421,30 @@ export default function HomePage() {
               <button
                 id="header-city-selector-btn"
                 onClick={() => setIsLocationModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-white/95 hover:bg-[#FDFBF7] text-[#231815] font-bold text-xs border border-[#E8DEC8] hover:border-[#C86A1D]/60 transition-all cursor-pointer max-w-[120px] sm:max-w-[170px] group active:scale-95 shadow-2xs shrink-0"
+                className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full bg-white hover:bg-[#FDFBF7] text-[#1A100C] font-extrabold text-xs border border-[#E0D4BE] hover:border-[#C86A1D]/60 transition-all cursor-pointer max-w-[95px] xs:max-w-[120px] sm:max-w-[160px] group active:scale-95 shadow-2xs shrink-0"
                 title="Where are you eating? Click to select city"
               >
                 <span className="text-xs shrink-0">
                   {selectedCity.country === 'IN' ? '🇮🇳' : '📍'}
                 </span>
-                <span className="truncate text-left font-bold text-[#231815] group-hover:text-[#C86A1D] transition-colors">
+                <span className="truncate text-left font-black text-[#1A100C] group-hover:text-[#C86A1D] transition-colors min-w-0">
                   {selectedCity.name}
                 </span>
-                <ChevronDown className="w-3 h-3 text-[#6B5E55] group-hover:text-[#C86A1D] shrink-0 ml-0.5 transition-colors" />
+                <ChevronDown className="w-3 h-3 text-[#5A4638] group-hover:text-[#C86A1D] shrink-0 ml-0.5 transition-colors" />
               </button>
 
-              {/* Quick Auto-Locate Button */}
+              {/* Quick Auto-Locate Button (XL screens only to preserve breathing room) */}
               <button
                 id="header-quick-locate-btn"
                 onClick={handleQuickLocate}
                 disabled={isAutoLocating}
-                className="p-2 sm:p-2.5 rounded-full bg-white/95 hover:bg-[#EBF4ED] text-[#2D5A34] border border-[#E8DEC8] hover:border-[#2D5A34]/60 transition-all cursor-pointer active:scale-95 shadow-2xs shrink-0 disabled:opacity-60"
+                className="hidden xl:inline-flex p-2 sm:p-2.5 rounded-full bg-white hover:bg-[#EBF4ED] text-[#2D5A34] border border-[#E0D4BE] hover:border-[#2D5A34]/60 transition-all cursor-pointer active:scale-95 shadow-2xs shrink-0 disabled:opacity-60"
                 title="Auto-detect location via GPS or IP address"
               >
                 {isAutoLocating ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#2D5A34]" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#2D5A34] shrink-0" />
                 ) : (
-                  <Navigation className="w-3.5 h-3.5 text-[#2D5A34]" />
+                  <Navigation className="w-3.5 h-3.5 text-[#2D5A34] shrink-0" />
                 )}
               </button>
 
@@ -1387,59 +1452,67 @@ export default function HomePage() {
               <button
                 id="open-menu-scanner-btn"
                 onClick={() => setIsScannerOpen(true)}
-                className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-[#EBF4ED] hover:bg-[#DCEDE0] text-[#2D5A34] text-xs font-bold transition-all cursor-pointer border border-[#C5DEC9] active:scale-95 shrink-0 shadow-2xs"
+                className="hidden lg:inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-[#EBF4ED] hover:bg-[#DCEDE0] text-[#1C4623] text-xs font-black transition-all cursor-pointer border border-[#BBD8C0] active:scale-95 shrink-0 shadow-2xs"
                 title="Scan any restaurant menu with AI"
               >
-                <ScanLine className="w-3.5 h-3.5 text-[#2D5A34]" />
-                <span className="hidden sm:inline">AI Scanner</span>
+                <ScanLine className="w-3.5 h-3.5 text-[#2D5A34] shrink-0" />
+                <span className="shrink-0">AI Scanner</span>
               </button>
 
-              {/* The Rich Amber / Caramel Pill CTA Button (Star element from Pinterest reference) */}
+              {/* The Rich Amber / Caramel Pill CTA Button */}
               <button
                 id="header-open-map-btn"
                 onClick={() => setIsMapOpen(true)}
-                className="rounded-full px-3.5 sm:px-5 py-2 sm:py-2.5 bg-[#C86A1D] hover:bg-[#B35912] active:bg-[#994708] text-white font-bold text-xs sm:text-sm tracking-wide shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex items-center gap-1.5 sm:gap-2 shrink-0 active:scale-95 whitespace-nowrap"
+                className="rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 bg-[#C86A1D] hover:bg-[#B35912] active:bg-[#994708] text-white font-black text-xs sm:text-sm tracking-wide shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer flex items-center gap-1 sm:gap-1.5 shrink-0 active:scale-95 whitespace-nowrap"
                 title="Find healthy food near me & explore radar"
               >
                 <Radar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-200 shrink-0" />
-                <span className="hidden xs:inline sm:inline">Find Food Near Me</span>
-                <span className="xs:hidden">Near Me</span>
-                <span className="px-1.5 py-0.5 rounded-full bg-white/20 text-white font-bold text-[10px] border border-white/20 hidden md:inline">
+                <span className="hidden sm:inline">Find Food</span>
+                <span className="sm:hidden">Radar</span>
+                <span className="px-1.5 py-0.5 rounded-full bg-white/25 text-white font-black text-[10px] border border-white/20 hidden md:inline shrink-0">
                   {cityReelsCount}
                 </span>
               </button>
             </div>
           </div>
 
-          {/* Mobile Quick-Navigation Strip (Clean Horizontal Scroll) */}
-          <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 overflow-x-auto py-2 border-t border-[#E8DEC8]/60 no-scrollbar text-xs font-semibold text-[#4A3C31]">
+          {/* Quick-Navigation Strip (Clean Horizontal Scroll with High Contrast Text) */}
+          <div className="flex xl:hidden items-center gap-1.5 sm:gap-2 overflow-x-auto py-2.5 border-t border-[#E8DEC8]/80 no-scrollbar text-xs font-bold text-[#1A100C]">
+            <button
+              onClick={() => setIsScannerOpen(true)}
+              className="px-2.5 py-1 rounded-full bg-[#EBF4ED] hover:bg-[#DCEDE0] text-[#1E4324] font-black border border-[#BBD8C0] whitespace-nowrap shrink-0 flex items-center gap-1 active:scale-95 transition-all shadow-2xs"
+              title="Scan any restaurant menu with AI"
+            >
+              <ScanLine className="w-3.5 h-3.5 text-[#2D5A34]" />
+              <span>AI Menu Scanner</span>
+            </button>
             <button
               onClick={() => scrollToSection('healthy-food-guide-section')}
-              className="px-3 py-1 rounded-full bg-white/80 hover:bg-white border border-[#E8DEC8] whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all"
+              className="px-3 py-1 rounded-full bg-white hover:bg-[#F7F2E7] border border-[#E0D4BE] text-[#1A100C] font-bold whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all shadow-2xs"
             >
               Food Guide
             </button>
             <button
               onClick={() => scrollToSection('snack-ideas-section')}
-              className="px-3 py-1 rounded-full bg-white/80 hover:bg-white border border-[#E8DEC8] whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all"
+              className="px-3 py-1 rounded-full bg-white hover:bg-[#F7F2E7] border border-[#E0D4BE] text-[#1A100C] font-bold whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all shadow-2xs"
             >
               Snack Ideas
             </button>
             <button
               onClick={() => scrollToSection('kitchen-reels-section')}
-              className="px-3 py-1 rounded-full bg-white/80 hover:bg-white border border-[#E8DEC8] whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all"
+              className="px-3 py-1 rounded-full bg-white hover:bg-[#F7F2E7] border border-[#E0D4BE] text-[#1A100C] font-bold whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all shadow-2xs"
             >
               Food Scouts
             </button>
             <button
               onClick={() => scrollToSection('explore-india-section')}
-              className="px-3 py-1 rounded-full bg-white/80 hover:bg-white border border-[#E8DEC8] whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all"
+              className="px-3 py-1 rounded-full bg-white hover:bg-[#F7F2E7] border border-[#E0D4BE] text-[#1A100C] font-bold whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all shadow-2xs"
             >
               Culture Table
             </button>
             <button
               onClick={() => scrollToSection('dishes-section')}
-              className="px-3 py-1 rounded-full bg-white/80 hover:bg-white border border-[#E8DEC8] whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all"
+              className="px-3 py-1 rounded-full bg-white hover:bg-[#F7F2E7] border border-[#E0D4BE] text-[#1A100C] font-bold whitespace-nowrap shrink-0 hover:text-[#C86A1D] active:scale-95 transition-all shadow-2xs"
             >
               Clean Dishes
             </button>
@@ -1500,19 +1573,19 @@ export default function HomePage() {
 
           <div className="relative z-10 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6 lg:gap-10">
             <div className="max-w-3xl space-y-3.5 sm:space-y-4.5 flex-1">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/85 backdrop-blur-xs text-[#231815] border border-white/60 text-[10px] sm:text-xs font-bold tracking-wide shadow-xs">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 backdrop-blur-xs text-[#180E09] border border-white/80 text-[11px] sm:text-xs font-black tracking-wide shadow-xs">
                 <Sparkles className="w-3.5 h-3.5 text-[#C86A1D] shrink-0" />
                 <span>Wholesome Kitchen Transparency &bull; {selectedCity.name}</span>
               </div>
 
-              <h1 className="font-serif font-black text-2xl sm:text-4xl lg:text-5xl tracking-tight leading-tight sm:leading-[1.12] text-[#231815]">
+              <h1 className="font-serif font-black text-2xl sm:text-4xl lg:text-5xl tracking-tight leading-tight sm:leading-[1.12] text-[#150D08]">
                 Wholesome, healthy food <br className="hidden sm:inline" />
-                <span className="italic font-normal text-[#692900] underline decoration-[#C86A1D]/40 decoration-wavy decoration-2">
+                <span className="italic font-bold text-[#481800] underline decoration-[#A84E18]/60 decoration-wavy decoration-2">
                   rooted in community.
                 </span>
               </h1>
 
-              <p className="text-xs sm:text-base text-[#4A3210] font-medium leading-relaxed max-w-2xl">
+              <p className="text-sm sm:text-base text-[#2E1D0E] font-semibold leading-relaxed max-w-2xl">
                 Discover neighborhood kitchens honoring traditional preparation, seed-oil-free fats, nutrient-dense ingredients, and transparent macros in {selectedCity.name}.
               </p>
 
@@ -1592,6 +1665,15 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
+        {/* QUICK CATEGORY PILL WIDGETS (SSR SLOT)                                    */}
+        {/* ========================================================================= */}
+        {widgetsSlot && (
+          <section aria-label="Explore Food Categories" className="pt-2">
+            {widgetsSlot}
+          </section>
+        )}
+
+        {/* ========================================================================= */}
         {/* BENEFIT-DRIVEN BENTO FILTERS MATRIX                                       */}
         {/* ========================================================================= */}
         <section aria-label="Benefit-Driven Filters">
@@ -1613,7 +1695,7 @@ export default function HomePage() {
           onFilterByCategory={(keyword) => {
             setFilters((prev) => ({
               ...prev,
-              searchQuery: keyword,
+              search: keyword,
             }));
             const elem = document.getElementById('dishes-section');
             if (elem) elem.scrollIntoView({ behavior: 'smooth' });
@@ -1621,7 +1703,7 @@ export default function HomePage() {
           onFilterBySnack={(snack) => {
             setFilters((prev) => ({
               ...prev,
-              searchQuery: snack,
+              search: snack,
             }));
             const elem = document.getElementById('dishes-section');
             if (elem) elem.scrollIntoView({ behavior: 'smooth' });
@@ -1669,20 +1751,38 @@ export default function HomePage() {
           </div>
 
           {filteredDishes.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 relative">
-              {filteredDishes.map((dish) => (
-                <DishCard
-                  key={dish.id}
-                  dish={dish}
-                  isSelected={selectedDish?.id === dish.id}
-                  onSelect={(d) => setSelectedDish(d)}
-                  onOpenDetails={(d) => {
-                    setSelectedDish(d);
-                    setDetailDish(d);
-                  }}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 relative">
+                {displayedDishes.map((dish) => (
+                  <DishCard
+                    key={dish.id}
+                    dish={dish}
+                    isSelected={selectedDish?.id === dish.id}
+                    onSelect={handleSelectDish}
+                    onOpenDetails={handleOpenDetails}
+                  />
+                ))}
+              </div>
+
+              {filteredDishes.length > visibleCount && (
+                <div className="pt-6 pb-2 flex flex-col items-center justify-center gap-2">
+                  <button
+                    id="load-more-dishes-btn"
+                    onClick={() => setVisibleCount((prev) => prev + 12)}
+                    className="px-6 py-3 rounded-2xl bg-white hover:bg-[#FDFBF7] text-[#1A100C] border-2 border-[#E8DEC8] hover:border-[#C86A1D] text-xs sm:text-sm font-black transition-all shadow-xs hover:shadow-md cursor-pointer active:scale-95 flex items-center gap-2.5"
+                  >
+                    <span>Show More Wholesome Dishes</span>
+                    <span className="px-2 py-0.5 rounded-full bg-[#FAF6EE] text-[#C86A1D] text-[11px] font-extrabold border border-[#E8DEC8]">
+                      +{filteredDishes.length - visibleCount} more
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-[#C86A1D]" />
+                  </button>
+                  <p className="text-[11px] text-[#7A6B60] font-medium">
+                    Showing {Math.min(visibleCount, filteredDishes.length)} of {filteredDishes.length} verified options in {selectedCity.name}
+                  </p>
+                </div>
+              )}
+            </>
           ) : allCityDishesCount === 0 ? (
             <div className="p-8 sm:p-12 text-center bg-[#FFFFFF] border border-[#E8DEC8] rounded-[28px] space-y-3.5 shadow-xs">
               <div className="w-12 h-12 rounded-2xl bg-[#FDF2C8] text-[#C86A1D] flex items-center justify-center mx-auto border border-[#F3DFC1]">

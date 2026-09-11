@@ -120,28 +120,29 @@ export default async function CityHubPage({ params }: CityPageProps) {
 
       <div className="min-h-screen bg-[#FAF6EE] text-[#231815] flex flex-col">
         {/* Navigation Breadcrumb Bar */}
-        <header className="border-b border-[#E8DEC8] bg-[#FAF6EE]/95 backdrop-blur-md sticky top-0 z-30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
-            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-[#6B5E55]">
+        <header className="border-b border-[#E8DEC8] bg-[#FAF6EE]/95 backdrop-blur-md sticky top-0 z-30 shadow-2xs">
+          <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-3 sm:py-3.5 flex items-center justify-between gap-2">
+            <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 sm:gap-2 text-xs text-[#1A100C] min-w-0">
               <Link
                 href="/"
-                className="hover:text-[#C86A1D] transition-colors flex items-center gap-1 font-semibold"
+                className="hover:text-[#C86A1D] transition-colors flex items-center gap-1 font-bold text-[#1A100C] shrink-0"
               >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                <span>HealthyVicinity</span>
+                <ArrowLeft className="w-3.5 h-3.5 text-[#C86A1D]" />
+                <span className="font-serif font-black text-sm sm:text-base">HealthyVicinity</span>
               </Link>
-              <span>/</span>
-              <span className="text-[#C86A1D] font-bold">
+              <span className="text-[#8C7A6B]">/</span>
+              <span className="text-[#C86A1D] font-extrabold truncate">
                 {city}, {state}
               </span>
             </nav>
 
             <Link
               href="/"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#2D5A34] hover:bg-[#234729] text-white text-xs font-bold transition-all shadow-xs"
+              className="inline-flex items-center gap-1 sm:gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#2D5A34] hover:bg-[#234729] text-white text-xs font-bold transition-all shadow-xs shrink-0 active:scale-95"
             >
               <Sparkles className="w-3.5 h-3.5 text-[#F5C842]" />
-              <span>Full Interactive Map</span>
+              <span className="hidden xs:inline">Interactive Map</span>
+              <span className="xs:hidden">Map</span>
             </Link>
           </div>
         </header>
@@ -155,19 +156,19 @@ export default async function CityHubPage({ params }: CityPageProps) {
             <div className="absolute -left-12 -bottom-12 w-80 h-80 bg-[#E08A1E]/20 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative z-10 max-w-3xl space-y-4">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/85 text-[#231815] border border-white/80 text-xs font-bold shadow-xs">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 text-[#180E09] border border-white/80 text-xs font-black shadow-xs">
                 <MapPin className="w-3.5 h-3.5 text-[#C86A1D]" />
                 <span>{city}, {state} Wholesome Dining Guide</span>
               </div>
 
-              <h1 className="font-serif font-black text-2xl sm:text-4xl lg:text-5xl tracking-tight leading-tight text-[#231815]">
+              <h1 className="font-serif font-black text-2xl sm:text-4xl lg:text-5xl tracking-tight leading-tight text-[#150D08]">
                 Seed-Oil-Free &amp; High-Protein Dining in{' '}
-                <span className="italic font-normal text-[#692900] underline decoration-[#C86A1D]/40 decoration-wavy decoration-2">
+                <span className="italic font-bold text-[#481800] underline decoration-[#A84E18]/60 decoration-wavy decoration-2">
                   {city}, {state}
                 </span>
               </h1>
 
-              <p className="text-sm sm:text-base text-[#4A3210] font-medium leading-relaxed">
+              <p className="text-sm sm:text-base text-[#2E1D0E] font-semibold leading-relaxed">
                 Explore {dishes.length} kitchen-verified dishes in {city}. Every dish is prepared
                 with pure fats (grass-fed beef tallow, avocado oil, and extra virgin olive oil),
                 free from industrial seed oils, with complete macronutrient breakdowns.

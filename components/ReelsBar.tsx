@@ -283,26 +283,28 @@ export default function ReelsBar({
               <div className="relative z-10 p-1.5 sm:p-2 space-y-1">
                 {/* Creator Avatar & Handle */}
                 <div className="flex items-center justify-between gap-1">
-                  <div className="flex items-center gap-1 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded-full border border-white/20 min-w-0 max-w-[70%]">
+                  <div className="flex items-center gap-1 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded-full border border-white/20 min-w-0 max-w-[60%] shrink">
                     <div className="w-3.5 h-3.5 rounded-full bg-[#C86A1D] text-white text-[8px] font-bold flex items-center justify-center uppercase shrink-0">
                       {reel.creator_handle.replace('@', '').charAt(0) || 'C'}
                     </div>
-                    <span className="text-[8.5px] font-bold text-white truncate">
+                    <span className="text-[8.5px] font-bold text-white truncate min-w-0">
                       {reel.creator_handle}
                     </span>
                   </div>
 
-                  {/* Nationwide Viral badge if applicable */}
-                  {isNationwide && (
-                    <span className="px-1.5 py-0.5 rounded-full bg-[#C86A1D] text-white text-[8px] font-extrabold uppercase tracking-wider shrink-0 shadow-xs">
-                      Viral
-                    </span>
-                  )}
-                  {reel.price && (
-                    <span className="px-1.5 py-0.5 rounded-full bg-[#F5C842] text-[#231815] text-[8px] font-extrabold uppercase tracking-wider shrink-0 shadow-xs">
-                      ₹{reel.price}
-                    </span>
-                  )}
+                  {/* Badges container */}
+                  <div className="flex items-center gap-1 shrink-0">
+                    {isNationwide && (
+                      <span className="px-1.5 py-0.5 rounded-full bg-[#C86A1D] text-white text-[8px] font-extrabold uppercase tracking-wider shrink-0 shadow-xs">
+                        Viral
+                      </span>
+                    )}
+                    {reel.price && (
+                      <span className="px-1.5 py-0.5 rounded-full bg-[#F5C842] text-[#231815] text-[8px] font-extrabold uppercase tracking-wider shrink-0 shadow-xs">
+                        ₹{reel.price}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {/* Top Badge: "56gP / 12gF / 549cal / 3gS" */}
@@ -323,14 +325,14 @@ export default function ReelsBar({
               {/* Card Bottom: Dish name + Restaurant + Views + Verified Clean */}
               <div className="relative z-10 p-2 sm:p-2.5 space-y-1 bg-gradient-to-t from-black via-black/80 to-transparent pt-3">
                 {/* Views & Verified Clean badge */}
-                <div className="flex items-center justify-between text-[8.5px]">
-                  <span className="inline-flex items-center gap-0.5 text-white/80 font-semibold">
-                    <Eye className="w-2.5 h-2.5 text-[#F5C842]" />
+                <div className="flex items-center justify-between text-[8.5px] gap-1">
+                  <span className="inline-flex items-center gap-0.5 text-white/80 font-semibold shrink-0">
+                    <Eye className="w-2.5 h-2.5 text-[#F5C842] shrink-0" />
                     <span>{reel.views}</span>
                   </span>
 
-                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-[#2D5A34]/90 text-white text-[8px] sm:text-[8.5px] font-bold border border-[#2D5A34]">
-                    <CheckCircle2 className="w-2 h-2 text-white" />
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-[#2D5A34]/90 text-white text-[8px] sm:text-[8.5px] font-bold border border-[#2D5A34] shrink-0">
+                    <CheckCircle2 className="w-2 h-2 text-white shrink-0" />
                     <span>Clean</span>
                   </span>
                 </div>

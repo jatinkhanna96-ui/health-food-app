@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import {
   ShieldCheck,
   Zap,
@@ -51,13 +51,72 @@ const QUICK_SEARCH_EXAMPLES = [
   'Low-sugar dessert',
 ];
 
-export default function BentoFilters({
+function BentoFilters({
   filters,
   onChange,
   onReset,
   totalDishesCount,
   filteredCount,
 }: BentoFiltersProps) {
+  // Local state for 0ms immediate input responsiveness with debounced propagation
+  const [localSearch, setLocalSearch] = useState(filters.search);
+  const [localProtein, setLocalProtein] = useState(filters.minProtein);
+  const [localCarbs, setLocalCarbs] = useState(filters.maxCarbs);
+
+  useEffect(() => {
+    setLocalSearch(filters.search);
+  }, [filters.search]);
+
+  useEffect(() => {
+    setLocalProtein(filters.minProtein);
+  }, [filters.minProtein]);
+
+  useEffect(() => {
+    setLocalCarbs(filters.maxCarbs);
+  }, [filters.maxCarbs]);
+
+  // Debounced search commit (160ms) - typing feels buttery smooth without re-render lag
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (localSearch !== filters.search) {
+        onChange({ ...filters, search: localSearch });
+      }
+    }, 160);
+    return () => clearTimeout(handler);
+  }, [localSearch, filters, onChange]);
+
+  // Debounced slider commit (100ms) - smooth 60fps dragging
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (localProtein !== filters.minProtein) {
+        onChange({ ...filters, minProtein: localProtein });
+      }
+    }, 100);
+    return () => clearTimeout(handler);
+  }, [localProtein, filters, onChange]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (localCarbs !== filters.maxCarbs) {
+        onChange({ ...filters, maxCarbs: localCarbs });
+      }
+    }, 100);
+    return () => clearTimeout(handler);
+  }, [localCarbs, filters, onChange]);
+
+  const handleClearSearch = useCallback(() => {
+    setLocalSearch('');
+    onChange({ ...filters, search: '' });
+  }, [filters, onChange]);
+
+  const handleExampleSearch = useCallback(
+    (example: string) => {
+      setLocalSearch(example);
+      onChange({ ...filters, search: example });
+    },
+    [filters, onChange]
+  );
+
   // Toggle the 3 primary personalization cards
   const toggleBenefit = (benefit: 'postWorkout' | 'brainFuel' | 'gutSoothers') => {
     if (benefit === 'postWorkout') {
@@ -138,14 +197,14 @@ export default function BentoFilters({
               id="dish-search-input"
               suppressHydrationWarning
               type="text"
-              value={filters.search}
-              onChange={(e) => onChange({ ...filters, search: e.target.value })}
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
               placeholder='Try "high-protein lunch near me"'
               className="w-full pl-10 pr-4 py-2 sm:py-3 rounded-xl bg-[#FAF6EE] border border-[#E8DEC8] text-xs font-semibold text-[#231815] placeholder:text-[#9E9084] focus:outline-none focus:border-[#C86A1D] focus:bg-white transition-all duration-200"
             />
-            {filters.search && (
+            {localSearch && (
               <button
-                onClick={() => onChange({ ...filters, search: '' })}
+                onClick={handleClearSearch}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9084] hover:text-[#231815] text-xs font-bold"
               >
                 &times;
@@ -187,9 +246,9 @@ export default function BentoFilters({
             <button
               key={example}
               type="button"
-              onClick={() => onChange({ ...filters, search: example })}
+              onClick={() => handleExampleSearch(example)}
               className={`text-[10px] sm:text-[11px] px-2.5 py-1 rounded-lg border transition-all duration-150 cursor-pointer shrink-0 whitespace-nowrap ${
-                filters.search.toLowerCase() === example.toLowerCase()
+                localSearch.toLowerCase() === example.toLowerCase()
                   ? 'bg-[#C86A1D] text-white font-bold border-[#C86A1D]'
                   : 'bg-[#FAF6EE] text-[#6B5E55] hover:text-[#231815] border-[#E8DEC8] hover:border-[#D4C3A3]'
               }`}
@@ -492,7 +551,7 @@ export default function BentoFilters({
                 <span>Min Protein</span>
               </span>
               <span className="px-2.5 py-0.5 rounded-md bg-[#EBF4ED] text-[#2D5A34] font-bold text-[10px] sm:text-[11px] border border-[#D5E8D8]">
-                {filters.minProtein}g+
+                {localProtein}g+
               </span>
             </div>
             <input
@@ -502,8 +561,8 @@ export default function BentoFilters({
               min="0"
               max="60"
               step="5"
-              value={filters.minProtein}
-              onChange={(e) => onChange({ ...filters, minProtein: Number(e.target.value) })}
+              value={localProtein}
+              onChange={(e) => setLocalProtein(Number(e.target.value))}
               className="w-full accent-[#C86A1D] cursor-pointer h-2 bg-[#E8DEC8] rounded-lg"
             />
           </div>
@@ -515,7 +574,7 @@ export default function BentoFilters({
                 <span>Max Carbs</span>
               </span>
               <span className="px-2.5 py-0.5 rounded-md bg-[#FDF5D9] text-[#8C5D0D] font-bold text-[10px] sm:text-[11px] border border-[#F4E3A8]">
-                &le; {filters.maxCarbs}g
+                &le; {localCarbs}g
               </span>
             </div>
             <input
@@ -525,8 +584,8 @@ export default function BentoFilters({
               min="5"
               max="50"
               step="5"
-              value={filters.maxCarbs}
-              onChange={(e) => onChange({ ...filters, maxCarbs: Number(e.target.value) })}
+              value={localCarbs}
+              onChange={(e) => setLocalCarbs(Number(e.target.value))}
               className="w-full accent-[#C86A1D] cursor-pointer h-2 bg-[#E8DEC8] rounded-lg"
             />
           </div>
@@ -535,3 +594,5 @@ export default function BentoFilters({
     </div>
   );
 }
+
+export default memo(BentoFilters);

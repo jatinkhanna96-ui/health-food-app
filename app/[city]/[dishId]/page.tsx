@@ -128,34 +128,35 @@ export default async function DishDetailPage({ params }: DishPageProps) {
 
       <div className="min-h-screen bg-[#FAF6EE] text-[#231815] flex flex-col">
         {/* Top Header & Breadcrumbs */}
-        <header className="border-b border-[#E8DEC8] bg-[#FAF6EE]/90 backdrop-blur-md sticky top-0 z-30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
-            <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 sm:gap-2 text-xs text-[#6B5E55] overflow-x-auto whitespace-nowrap">
+        <header className="border-b border-[#E8DEC8] bg-[#FAF6EE]/95 backdrop-blur-md sticky top-0 z-30 shadow-2xs">
+          <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-3 sm:py-3.5 flex items-center justify-between gap-2">
+            <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 sm:gap-2 text-xs text-[#1A100C] overflow-x-auto whitespace-nowrap min-w-0 no-scrollbar">
               <Link
                 href="/"
-                className="hover:text-[#C86A1D] transition-colors flex items-center gap-1 font-semibold"
+                className="hover:text-[#C86A1D] transition-colors flex items-center gap-1 font-bold text-[#1A100C] shrink-0"
               >
                 <ArrowLeft className="w-3.5 h-3.5 text-[#C86A1D]" />
-                <span>HealthyVicinity</span>
+                <span className="font-serif font-black text-sm sm:text-base">HealthyVicinity</span>
               </Link>
-              <span>/</span>
+              <span className="text-[#8C7A6B]">/</span>
               <Link
                 href={`/${citySlug}`}
-                className="hover:text-[#C86A1D] transition-colors font-semibold"
+                className="hover:text-[#C86A1D] transition-colors font-bold text-[#3B2C24] shrink-0"
               >
-                {dish.city}, {dish.state}
+                {dish.city}
               </Link>
-              <span>/</span>
-              <span className="text-[#C86A1D] font-bold truncate max-w-[180px] sm:max-w-[300px]">
+              <span className="text-[#8C7A6B]">/</span>
+              <span className="text-[#C86A1D] font-black truncate max-w-[140px] xs:max-w-[200px] sm:max-w-[320px]">
                 {dish.dish_name}
               </span>
             </nav>
 
             <Link
               href={`/${citySlug}`}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white hover:bg-[#F4EDE2] text-[#231815] border border-[#E8DEC8] text-xs font-bold transition-all shrink-0 ml-2 shadow-xs"
+              className="inline-flex items-center gap-1 sm:gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full bg-white hover:bg-[#F4EDE2] text-[#1A100C] border border-[#E0D4BE] text-xs font-black transition-all shrink-0 shadow-2xs active:scale-95"
             >
-              <span>All {dish.city} Dishes</span>
+              <span className="hidden sm:inline">All {dish.city} Dishes</span>
+              <span className="sm:hidden">All Dishes</span>
               <ChevronRight className="w-3 h-3 text-[#C86A1D]" />
             </Link>
           </div>

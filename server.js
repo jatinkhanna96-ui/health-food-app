@@ -34,7 +34,7 @@ const next = require('next');
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = process.env.HOSTNAME || '0.0.0.0';
-const port = parseInt(process.env.PORT, 10) || 3000;
+const port = 3000;
 
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
@@ -43,6 +43,19 @@ app.prepare().then(() => {
   createServer(async (req, res) => {
     try {
       const parsedUrl = parse(req.url, true);
+      const pathname = parsedUrl.pathname || '';
+
+      // Direct fallback handler for app chunk requests (e.g. error.js, global-error.js)
+      if (pathname.startsWith('/_next/static/chunks/app/')) {
+        const chunkFileName = pathname.replace('/_next/static/chunks/app/', '');
+        const chunkFilePath = path.join(process.cwd(), '.next', 'static', 'chunks', 'app', chunkFileName);
+        if (fs.existsSync(chunkFilePath)) {
+          res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
+          res.setHeader('Cache-Control', 'no-store, must-revalidate');
+          return fs.createReadStream(chunkFilePath).pipe(res);
+        }
+      }
+
       await handle(req, res, parsedUrl);
     } catch (err) {
       console.error('Error occurred handling', req.url, err);

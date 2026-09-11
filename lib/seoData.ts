@@ -529,11 +529,19 @@ export function generateCityJsonLd(
  * Google-compliant Schema.org Structured Data for the Main Directory Page
  * Includes WebSite, Organization, DataCatalog/CollectionPage ItemList directory of cities and dishes, and Breadcrumbs
  */
+let cachedDirectoryJsonLdMap = new Map<string, any>();
+
 export function generateDirectoryJsonLd(baseUrl = SITE_URL) {
+  if (cachedDirectoryJsonLdMap.has(baseUrl)) {
+    return cachedDirectoryJsonLdMap.get(baseUrl);
+  }
+
   const hubs = getAllCityHubs();
   const allDishes = getAllDishes();
+  // Highlight top representative city hubs for the directory schema
+  const featuredHubs = hubs.slice(0, 16);
 
-  return {
+  const result = {
     '@context': 'https://schema.org',
     '@graph': [
       {
@@ -588,12 +596,12 @@ export function generateDirectoryJsonLd(baseUrl = SITE_URL) {
           name: 'City Dining Directories',
           description: 'Explore healthy dining directories by city',
           numberOfItems: hubs.length,
-          itemListElement: hubs.map((hub, index) => ({
+          itemListElement: featuredHubs.map((hub, index) => ({
             '@type': 'ListItem',
             position: index + 1,
             name: `${hub.name}, ${hub.state} Healthy Dining Directory`,
             url: `${baseUrl}/${hub.slug}`,
-            description: `Discover ${hub.count} verified clean, seed-oil-free restaurants in ${hub.name}, ${hub.state}. Average protein: ${hub.avg_protein}g.`,
+            description: `Discover verified clean, seed-oil-free restaurants in ${hub.name}, ${hub.state}. Average protein: ${hub.avg_protein}g.`,
           })),
         },
       },
@@ -611,4 +619,7 @@ export function generateDirectoryJsonLd(baseUrl = SITE_URL) {
       },
     ],
   };
+
+  cachedDirectoryJsonLdMap.set(baseUrl, result);
+  return result;
 }

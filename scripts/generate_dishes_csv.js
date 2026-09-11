@@ -188,6 +188,15 @@ const csvContent = rows.join('\r\n');
 
 function safeWrite(filePath, content) {
   try {
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+      try {
+        fs.mkdirSync(dir, { recursive: true });
+      } catch (e) {
+        // Path not accessible in current environment (e.g. Windows path in Linux container)
+        return;
+      }
+    }
     fs.writeFileSync(filePath, content, 'utf8');
     console.log(`Saved ${content.split('\r\n').length - 1} rows to ${filePath}`);
   } catch (err) {
