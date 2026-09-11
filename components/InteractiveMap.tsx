@@ -57,21 +57,20 @@ function pixelToLat(py: number, z: number): number {
 }
 
 function getTileUrl(style: MapStyle, z: number, x: number, y: number): string {
-  const subdomains = ['a', 'b', 'c', 'd'];
+  const subdomains = ['a', 'b', 'c'];
   const s = subdomains[Math.abs(x + y) % subdomains.length];
   
   if (style === 'dark') {
-    // CartoDB Dark Matter
-    return `https://${s}.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`;
+    // ESRI World Dark Gray Base - 100% free, zero watermark, no API key required
+    return `https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/${z}/${y}/${x}`;
   }
   if (style === 'light') {
-    // CartoDB Positron - clean monotone
-    return `https://${s}.basemaps.cartocdn.com/light_all/${z}/${x}/${y}.png`;
+    // ESRI World Light Gray Base - 100% free, clean modern monotone, zero watermark
+    return `https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/${z}/${y}/${x}`;
   }
   // Default and 'voyager' / 'osm':
-  // Use CartoDB Voyager raster tiles. This is open, fast, compliant with web usage policies,
-  // and completely avoids OpenStreetMap volunteer-server blocking errors.
-  return `https://${s}.basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}.png`;
+  // OpenStreetMap Humanitarian (HOT) tiles: warm organic palette, zero watermarks, zero API key required.
+  return `https://${s}.tile.openstreetmap.fr/hot/${z}/${x}/${y}.png`;
 }
 
 export default function InteractiveMap({
@@ -580,9 +579,17 @@ export default function InteractiveMap({
             }}
             onError={(e) => {
               const target = e.currentTarget;
-              const fallback = `https://basemaps.cartocdn.com/rastertiles/voyager/${tile.z}/${tile.x}/${tile.y}.png`;
-              if (target.src !== fallback) {
-                target.src = fallback;
+              const currentSrc = target.src || '';
+              const s = ['a', 'b', 'c'][Math.abs(tile.x + tile.y) % 3];
+              // 1st fallback: Standard OpenStreetMap (100% free, universal coverage, no watermark)
+              const osmFallback = `https://${s}.tile.openstreetmap.org/${tile.z}/${tile.x}/${tile.y}.png`;
+              // 2nd fallback: ESRI World Street Map (high-availability enterprise CDN, zero watermark)
+              const esriFallback = `https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/${tile.z}/${tile.y}/${tile.x}`;
+              
+              if (!currentSrc.includes('tile.openstreetmap.org') && !currentSrc.includes('arcgisonline.com')) {
+                target.src = osmFallback;
+              } else if (currentSrc.includes('tile.openstreetmap.org')) {
+                target.src = esriFallback;
               }
             }}
           />
