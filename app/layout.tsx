@@ -6,6 +6,13 @@ export const metadata: Metadata = {
   title: 'Healthy Vicinity — Find Food That Fits Your Diet',
   description:
     'Find food that fits your diet. Discover healthy dishes and restaurants near you with nutrition, ingredients, cooking methods, and information you can trust.',
+  manifest: '/manifest.json',
+  themeColor: '#C86A1D',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'HealthyVicinity',
+  },
   openGraph: {
     title: 'Healthy Vicinity — Find Food That Fits Your Diet',
     description:

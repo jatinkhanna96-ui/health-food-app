@@ -1,0 +1,7 @@
+<resources>
+    <color name="brand_orange">#C86A1D</color>
+    <color name="brand_gold">#F5C842</color>
+    <color name="bg_cream">#FAF6EE</color>
+    <color name="text_dark">#231815</color>
+    <color name="text_muted">#6B5E55</color>
+</resources>

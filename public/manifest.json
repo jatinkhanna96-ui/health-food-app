@@ -1,0 +1,24 @@
+{
+  "name": "Healthy Vicinity - Wholesome Clean Dining",
+  "short_name": "HealthyVicinity",
+  "description": "Discover seed-oil free, pastured fat, and macro-verified healthy dishes near you.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF6EE",
+  "theme_color": "#C86A1D",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
