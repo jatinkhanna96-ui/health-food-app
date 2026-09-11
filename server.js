@@ -32,9 +32,9 @@ Module._resolveFilename = function (request, parent, isMain, options) {
 
 const next = require('next');
 
-const dev = process.env.NODE_ENV !== 'production';
+const dev = process.env.NODE_ENV === 'development';
 const hostname = process.env.HOSTNAME || '0.0.0.0';
-const port = 3000;
+const port = parseInt(process.env.PORT || '3000', 10);
 
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
@@ -44,6 +44,12 @@ app.prepare().then(() => {
     try {
       const parsedUrl = parse(req.url, true);
       const pathname = parsedUrl.pathname || '';
+
+      // Direct guard against legacy _document probe requests
+      if (pathname === '/_document' || pathname === '/_document/') {
+        res.statusCode = 404;
+        return res.end('Not Found');
+      }
 
       // Direct fallback handler for app chunk requests (e.g. error.js, global-error.js)
       if (pathname.startsWith('/_next/static/chunks/app/')) {

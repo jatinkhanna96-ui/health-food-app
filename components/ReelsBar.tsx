@@ -339,22 +339,22 @@ export default function ReelsBar({
 
                 {/* Off-Delivery indicator if why is present */}
                 {(reel.why || reel.why_off_delivery) && (
-                  <div className="text-[8px] font-bold text-white bg-[#C86A1D]/90 px-1.5 py-0.5 rounded border border-[#C86A1D] truncate">
+                  <div className="text-[8px] sm:text-[8.5px] font-bold text-white bg-[#C86A1D]/95 px-1.5 py-0.5 rounded border border-[#C86A1D] line-clamp-2 leading-tight">
                     ⚡ {reel.why || reel.why_off_delivery}
                   </div>
                 )}
 
                 {/* Dish Name */}
-                <h3 className="text-[10.5px] sm:text-[11.5px] font-bold text-[#F5F7F3] leading-snug line-clamp-2 drop-shadow-sm group-hover:text-[#35E27F] transition-colors">
+                <h3 className="text-[10.5px] sm:text-[11.5px] font-bold text-[#F5F7F3] leading-snug line-clamp-2 drop-shadow-sm group-hover:text-[#F5C842] transition-colors">
                   {reel.dish_name || reel.caption_for_app}
                 </h3>
 
                 {/* Restaurant */}
-                <div className="flex items-center justify-between text-[9px] text-[#A8B5AE] pt-0.5">
-                  <span className="font-bold text-[#b6f7c1] truncate max-w-[85px] sm:max-w-[100px]">
+                <div className="flex items-center justify-between text-[9px] text-white/80 pt-0.5 gap-1.5">
+                  <span className="font-bold text-[#F5C842] truncate flex-1 min-w-0">
                     {reel.restaurant}
                   </span>
-                  <span className="text-[8px] sm:text-[8.5px] text-[#A8B5AE] shrink-0 font-medium">
+                  <span className="text-[8px] sm:text-[8.5px] text-white/70 shrink-0 font-medium whitespace-nowrap">
                     Watch &rarr;
                   </span>
                 </div>
@@ -365,17 +365,17 @@ export default function ReelsBar({
       </div>
 
       {/* Section Sub-footer indicator */}
-      <div className="relative z-10 pt-0.5 flex flex-col sm:flex-row items-center justify-between gap-1.5 text-[10px] sm:text-[11px] text-[#A8B5AE]">
+      <div className="relative z-10 pt-1 flex flex-col sm:flex-row items-center justify-between gap-1.5 text-[11px] text-[#4A3B32]">
         <div className="flex items-center gap-1.5">
-          <ShieldCheck className="w-3.5 h-3.5 text-[#35E27F]" />
-          <span>
-            Showing <strong className="text-[#F5F7F3]">{displayReels.length} reels</strong> &bull; {selectedCity} &bull; 100% Verified Clean
+          <ShieldCheck className="w-4 h-4 text-[#1C4623] shrink-0" />
+          <span className="text-[#3D3028] font-medium">
+            Showing <strong className="text-[#1A100C] font-extrabold">{displayReels.length} reels</strong> &bull; {selectedCity} &bull; 100% Verified Clean
           </span>
         </div>
 
         <button
           onClick={() => setIsAddReelOpen(true)}
-          className="text-[10px] sm:text-[11px] font-bold text-[#35E27F] hover:underline cursor-pointer"
+          className="text-[11px] font-bold text-[#1C4623] hover:text-[#C86A1D] hover:underline cursor-pointer transition-colors"
         >
           Film yourself eating clean &amp; share with community &rarr;
         </button>

@@ -1293,7 +1293,7 @@ export default function HomePage({
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
             {/* Top/Left Brand Identity */}
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0 shrink">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <div
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#FAF0DC] text-[#231815] flex items-center justify-center border border-[#E8DEC8] shrink-0 shadow-2xs group cursor-pointer hover:bg-[#F5E6CC] transition-colors"
@@ -1316,11 +1316,11 @@ export default function HomePage({
               </div>
               <div
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="cursor-pointer select-none min-w-0"
+                className="cursor-pointer select-none shrink-0"
               >
-                <div className="flex items-center gap-1 sm:gap-1.5">
-                  <span className="font-serif font-black text-base sm:text-xl xl:text-2xl tracking-tight text-[#1A100C] leading-none truncate">
-                    Healthy Vicinity<span className="text-[#C86A1D] text-xs sm:text-lg font-bold">&trade;</span>
+                <div className="flex items-center gap-1 sm:gap-1.5 whitespace-nowrap">
+                  <span className="font-serif font-black text-lg sm:text-xl md:text-2xl tracking-tight text-[#1A100C] leading-none whitespace-nowrap">
+                    Healthy Vicinity<span className="text-[#C86A1D] text-xs sm:text-base font-bold ml-0.5">&trade;</span>
                   </span>
                 </div>
                 <p className="hidden sm:flex text-[#6E594B] font-bold text-[9px] sm:text-[11px] tracking-wider uppercase mt-0.5 items-center gap-1 sm:gap-1.5 whitespace-nowrap">
@@ -1331,8 +1331,8 @@ export default function HomePage({
               </div>
             </div>
 
-            {/* Center Desktop Navigation Links per pin style (Visible on xl screens to prevent header icon crowding on laptops) */}
-            <nav className="hidden xl:flex items-center gap-4 2xl:gap-6 shrink-0">
+            {/* Center Desktop Navigation Links per pin style (Visible on 2xl screens to prevent header icon crowding on laptops) */}
+            <nav className="hidden 2xl:flex items-center gap-4 2xl:gap-6 shrink-0">
               <button
                 onClick={() => scrollToSection('healthy-food-guide-section')}
                 className="text-[13px] font-semibold tracking-wide text-[#3D3028] hover:text-[#C86A1D] transition-colors cursor-pointer py-1 relative group"
@@ -1477,7 +1477,7 @@ export default function HomePage({
           </div>
 
           {/* Quick-Navigation Strip (Clean Horizontal Scroll with High Contrast Text) */}
-          <div className="flex xl:hidden items-center gap-1.5 sm:gap-2 overflow-x-auto py-2.5 border-t border-[#E8DEC8]/80 no-scrollbar text-xs font-bold text-[#1A100C]">
+          <div className="flex 2xl:hidden items-center gap-1.5 sm:gap-2 overflow-x-auto py-2.5 border-t border-[#E8DEC8]/80 no-scrollbar text-xs font-bold text-[#1A100C]">
             <button
               onClick={() => setIsScannerOpen(true)}
               className="px-2.5 py-1 rounded-full bg-[#EBF4ED] hover:bg-[#DCEDE0] text-[#1E4324] font-black border border-[#BBD8C0] whitespace-nowrap shrink-0 flex items-center gap-1 active:scale-95 transition-all shadow-2xs"
