@@ -37,3 +37,9 @@ yarn-error.log*
 *deploy.yaml
 service.yaml
 
+# Android build outputs
+android/.gradle/
+android/app/build/
+android/local.properties
+
+

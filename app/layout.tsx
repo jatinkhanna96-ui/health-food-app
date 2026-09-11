@@ -1,13 +1,18 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import ClientErrorHandler from '@/components/ClientErrorHandler';
+
+export const viewport: Viewport = {
+  themeColor: '#C86A1D',
+  width: 'device-width',
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: 'Healthy Vicinity — Find Food That Fits Your Diet',
   description:
     'Find food that fits your diet. Discover healthy dishes and restaurants near you with nutrition, ingredients, cooking methods, and information you can trust.',
   manifest: '/manifest.json',
-  themeColor: '#C86A1D',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',

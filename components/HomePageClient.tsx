@@ -755,18 +755,29 @@ export default function HomePage({
               Make every meal a wholesome choice you can feel good about.
             </p>
           </div>
-          <button
-            onClick={() => {
-              const elem = document.getElementById('mission-section');
-              if (elem) elem.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-black text-[#A84E18] hover:text-[#C86A1D] hover:underline cursor-pointer shrink-0 transition-colors py-0.5 px-1.5"
-            title="Read our mission and food philosophy"
-          >
-            <span className="hidden xs:inline">Our Mission</span>
-            <span className="xs:hidden font-bold">Mission</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#A84E18]" />
-          </button>
+          <div className="flex items-center gap-2">
+            <a
+              href="/HealthyVicinity-GalaxyFold.apk"
+              download="HealthyVicinity-GalaxyFold.apk"
+              className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black text-white bg-[#C86A1D] hover:bg-[#B35912] px-2.5 py-1 rounded-full shadow-2xs transition-transform active:scale-95 shrink-0"
+              title="Download Android APK for Samsung Galaxy Fold and all Android devices"
+            >
+              <span>📱 Android APK</span>
+              <span className="hidden md:inline bg-white/20 text-[9px] px-1.5 py-0.5 rounded-full font-bold">Fold Ready</span>
+            </a>
+            <button
+              onClick={() => {
+                const elem = document.getElementById('mission-section');
+                if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-black text-[#A84E18] hover:text-[#C86A1D] hover:underline cursor-pointer shrink-0 transition-colors py-0.5 px-1.5"
+              title="Read our mission and food philosophy"
+            >
+              <span className="hidden xs:inline">Our Mission</span>
+              <span className="xs:hidden font-bold">Mission</span>
+              <ArrowRight className="w-3.5 h-3.5 text-[#A84E18]" />
+            </button>
+          </div>
         </div>
       </div>
 
