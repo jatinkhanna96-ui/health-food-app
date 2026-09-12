@@ -148,11 +148,19 @@ async function resolveServerLocation(searchParams?: {
     }
 
     // Check Accept-Language header for regional preference
-    const acceptLanguage = headerList.get('accept-language') || '';
+    const acceptLanguage = (headerList.get('accept-language') || '').toLowerCase();
     if (
-      acceptLanguage.toLowerCase().includes('en-in') ||
-      acceptLanguage.toLowerCase().includes('hi-in') ||
-      acceptLanguage.toLowerCase().includes('hi')
+      acceptLanguage.includes('en-in') ||
+      acceptLanguage.includes('hi-in') ||
+      acceptLanguage.includes('hi') ||
+      acceptLanguage.includes('ta') ||
+      acceptLanguage.includes('te') ||
+      acceptLanguage.includes('mr') ||
+      acceptLanguage.includes('gu') ||
+      acceptLanguage.includes('kn') ||
+      acceptLanguage.includes('ml') ||
+      acceptLanguage.includes('pa') ||
+      acceptLanguage.includes('bn')
     ) {
       const cfg = getDefaultCityForCountry('IN');
       return {

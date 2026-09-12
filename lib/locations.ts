@@ -1001,19 +1001,64 @@ export function findClosestCity(lat: number, lng: number): CityConfig {
 export function detectUserCountryFromClient(): CountryCode {
   if (typeof window === 'undefined') return 'US';
   try {
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    // 1. Check precise timezone offset: IST (Indian Standard Time, UTC+5:30) is uniquely -330 minutes
+    const offset = new Date().getTimezoneOffset();
+    if (offset === -330) {
+      return 'IN';
+    }
+
+    // 2. Check resolved timeZone name
+    const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
     if (
-      tz.includes('Calcutta') ||
-      tz.includes('Kolkata') ||
-      tz.startsWith('Asia/Colombo') ||
-      tz.startsWith('Asia/Kathmandu') ||
-      tz === 'IST'
+      tz.includes('calcutta') ||
+      tz.includes('kolkata') ||
+      tz.includes('asia/colombo') ||
+      tz.includes('asia/kathmandu') ||
+      tz.includes('asia/dhaka') ||
+      tz === 'ist'
     ) {
       return 'IN';
     }
-    const langs = navigator.languages || [navigator.language || ''];
-    if (langs.some((l) => l.toLowerCase().endsWith('-in') || l.toLowerCase() === 'hi')) {
+
+    // 3. Check browser language / locale preferences
+    const langs = navigator.languages && navigator.languages.length > 0
+      ? navigator.languages
+      : [navigator.language || ''];
+    if (
+      langs.some((l) => {
+        const lower = (l || '').toLowerCase();
+        return (
+          lower.endsWith('-in') ||
+          lower === 'hi' ||
+          lower.startsWith('hi-') ||
+          lower === 'ta' ||
+          lower === 'te' ||
+          lower === 'bn' ||
+          lower === 'mr' ||
+          lower === 'gu' ||
+          lower === 'kn' ||
+          lower === 'ml' ||
+          lower === 'pa'
+        );
+      })
+    ) {
       return 'IN';
+    }
+
+    // 4. Check for North America / USA timezones
+    if (
+      tz.startsWith('america/new_york') ||
+      tz.startsWith('america/chicago') ||
+      tz.startsWith('america/denver') ||
+      tz.startsWith('america/los_angeles') ||
+      tz.startsWith('america/phoenix') ||
+      tz.startsWith('america/detroit') ||
+      tz.startsWith('america/indiana') ||
+      tz.startsWith('america/boise') ||
+      tz.startsWith('america/anchorage') ||
+      tz.startsWith('pacific/honolulu')
+    ) {
+      return 'US';
     }
   } catch {
     // ignore
@@ -1022,12 +1067,46 @@ export function detectUserCountryFromClient(): CountryCode {
 }
 
 /**
- * Get default flagship city for a country
+ * Get intelligent default city based on country and optional client timezone
  */
 export function getDefaultCityForCountry(country: CountryCode): CityConfig {
   if (country === 'IN') {
+    if (typeof window !== 'undefined') {
+      try {
+        const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
+        if (tz.includes('kolkata') || tz.includes('calcutta')) {
+          // Check if user has closer regional match or default to Delhi
+          return INDIAN_CITIES.find((c) => c.city === 'Delhi') || INDIAN_CITIES[0];
+        }
+      } catch {
+        // ignore
+      }
+    }
     return INDIAN_CITIES.find((c) => c.city === 'Delhi') || INDIAN_CITIES[0];
   }
+
+  // USA: Check timezone for intelligent default (e.g. NYC for Eastern, Chicago for Central, LA for Pacific)
+  if (typeof window !== 'undefined') {
+    try {
+      const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
+      if (tz.startsWith('america/new_york') || tz.startsWith('america/detroit')) {
+        const nyc = US_CITIES.find((c) => c.city === 'New York');
+        if (nyc) return nyc;
+      } else if (tz.startsWith('america/chicago')) {
+        const chi = US_CITIES.find((c) => c.city === 'Chicago');
+        if (chi) return chi;
+      } else if (tz.startsWith('america/los_angeles')) {
+        const la = US_CITIES.find((c) => c.city === 'Los Angeles');
+        if (la) return la;
+      } else if (tz.startsWith('america/denver')) {
+        const den = US_CITIES.find((c) => c.city === 'Denver');
+        if (den) return den;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
   return US_CITIES.find((c) => c.city === 'Austin') || US_CITIES[0];
 }
 
@@ -1044,60 +1123,80 @@ export function resolveLocationToCity(
   const upper = (countryCode || '').trim().toUpperCase();
   let normCountry: CountryCode | undefined;
 
-  if (
-    upper === 'IN' ||
-    upper === 'IND' ||
-    upper === 'INDIA' ||
-    upper === 'PK' || // Pakistan
-    upper === 'BD' || // Bangladesh
-    upper === 'NP' || // Nepal
-    upper === 'LK' || // Sri Lanka
-    upper === 'BT'    // Bhutan
-  ) {
+  // 1. Explicit country code check
+  if (['IN', 'IND', 'INDIA', 'PK', 'BD', 'NP', 'LK', 'BT'].includes(upper)) {
     normCountry = 'IN';
-  } else if (
-    upper === 'US' ||
-    upper === 'USA' ||
-    upper === 'UNITED STATES' ||
-    upper === 'CA' || // Canada
-    upper === 'MX'    // Mexico
-  ) {
+  } else if (['US', 'USA', 'UNITED STATES', 'CA', 'MX'].includes(upper)) {
     normCountry = 'US';
-  } else if (upper) {
-    // If other international country: test coordinate proximity to India vs US
-    if (typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng)) {
+  }
+
+  // 2. Coordinate geography is ground truth
+  const hasCoords = typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng);
+  if (hasCoords) {
+    if (lat >= 6 && lat <= 38 && lng >= 68 && lng <= 98) {
+      normCountry = 'IN';
+    } else if (lat >= 24 && lat <= 50 && lng >= -126 && lng <= -66) {
+      normCountry = 'US';
+    } else if (!normCountry) {
+      // For any other global coordinates, compare distance to India vs USA
       const distToIndia = Math.hypot(lat - 20.59, lng - 78.96);
       const distToUS = Math.hypot(lat - 37.09, lng - (-95.71));
       normCountry = distToIndia < distToUS ? 'IN' : 'US';
-    } else {
-      normCountry = detectUserCountryFromClient();
     }
   }
 
-  // If a city name was detected (e.g. from IP or reverse geocode), check for exact or alias match
+  // 3. Fallback to client heuristics only if country still unknown and no coordinates
+  if (!normCountry && !hasCoords) {
+    normCountry = detectUserCountryFromClient();
+  }
+
+  // 1. If a city name was detected (e.g. from IP or reverse geocode), match against all known cities
   if (detectedCity && detectedCity.trim()) {
     const q = detectedCity.trim().toLowerCase();
-    const exact = ALL_CITIES.find(
+
+    // Try matching with normalized country preference
+    let matched = ALL_CITIES.find(
       (c) =>
         (!normCountry || c.country === normCountry) &&
         (c.city.toLowerCase() === q ||
           c.displayName.toLowerCase() === q ||
           c.aliases.some((a) => a.toLowerCase() === q))
     );
-    if (exact) return exact;
 
-    if (q.length >= 3) {
-      const partial = ALL_CITIES.find(
+    // If not found in preferred country, search ALL cities (handles proxy country mismatch like SG proxy for Gurugram)
+    if (!matched) {
+      matched = ALL_CITIES.find(
+        (c) =>
+          c.city.toLowerCase() === q ||
+          c.displayName.toLowerCase() === q ||
+          c.aliases.some((a) => a.toLowerCase() === q)
+      );
+    }
+
+    // Substring / partial alias match
+    if (!matched && q.length >= 3) {
+      matched = ALL_CITIES.find(
         (c) =>
           (!normCountry || c.country === normCountry) &&
           (c.city.toLowerCase().includes(q) ||
+            q.includes(c.city.toLowerCase()) ||
             c.aliases.some((a) => a.toLowerCase().includes(q) || q.includes(a.toLowerCase())))
       );
-      if (partial) return partial;
     }
+
+    if (!matched && q.length >= 3) {
+      matched = ALL_CITIES.find(
+        (c) =>
+          c.city.toLowerCase().includes(q) ||
+          q.includes(c.city.toLowerCase()) ||
+          c.aliases.some((a) => a.toLowerCase().includes(q) || q.includes(a.toLowerCase()))
+      );
+    }
+
+    if (matched) return matched;
   }
 
-  // If country code is known, prioritize matching country pool
+  // 2. Select matching country pool based on normalized country
   const pool =
     normCountry === 'IN'
       ? INDIAN_CITIES
@@ -1105,11 +1204,12 @@ export function resolveLocationToCity(
       ? US_CITIES
       : ALL_CITIES;
 
-  // If lat or lng are missing or invalid, return default city for that country
+  // If lat or lng are missing or invalid, return default city for that pool
   if (typeof lat !== 'number' || typeof lng !== 'number' || isNaN(lat) || isNaN(lng)) {
     return pool[0];
   }
 
+  // 3. Coordinate distance calculation (Haversine formula)
   let closest = pool[0];
   let minDistance = Infinity;
 

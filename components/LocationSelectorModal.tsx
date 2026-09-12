@@ -23,6 +23,8 @@ import {
   getPopularCities,
   findClosestCity,
   resolveLocationToCity,
+  detectUserCountryFromClient,
+  getDefaultCityForCountry,
 } from '@/lib/locations';
 
 interface LocationSelectorModalProps {
@@ -147,12 +149,18 @@ export default function LocationSelectorModal({
       if (countryRes.ok) {
         const countryData = await countryRes.json();
         if (countryData && countryData.country) {
-          const resolvedCountry: CountryCode = countryData.country === 'IN' ? 'IN' : 'US';
-          const defaultCity = resolvedCountry === 'IN' ? INDIAN_CITIES[0] : US_CITIES[0];
+          const rawCountry = countryData.country.toUpperCase();
+          const resolvedCountry: CountryCode =
+            rawCountry === 'IN' || ['PK', 'BD', 'NP', 'LK'].includes(rawCountry)
+              ? 'IN'
+              : rawCountry === 'US' || ['CA', 'MX'].includes(rawCountry)
+              ? 'US'
+              : detectUserCountryFromClient();
+          const defaultCity = getDefaultCityForCountry(resolvedCountry);
           setActiveCountry(resolvedCountry);
           setLocationStatus({
             type: 'success',
-            message: `📍 Country detected via IP: ${resolvedCountry === 'IN' ? 'India' : 'USA'}`,
+            message: `📍 Country detected via network: ${resolvedCountry === 'IN' ? 'India 🇮🇳' : 'USA 🇺🇸'}`,
           });
           setTimeout(() => {
             setIsLocating(false);
@@ -180,7 +188,7 @@ export default function LocationSelectorModal({
     setIsLocating(true);
     setLocationStatus({
       type: 'loading',
-      message: 'Requesting GPS location...',
+      message: 'Requesting precise GPS location...',
     });
 
     if (!navigator.geolocation) {
@@ -194,20 +202,43 @@ export default function LocationSelectorModal({
         handled = true;
         runNetworkFallback('GPS search timed out. Detecting via network/IP...');
       }
-    }, 5500);
+    }, 10500);
 
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
+      async (pos) => {
         if (handled) return;
         handled = true;
         clearTimeout(fallbackTimer);
 
         const { latitude, longitude } = pos.coords;
-        const closest = resolveLocationToCity(latitude, longitude);
+        setLocationStatus({
+          type: 'loading',
+          message: 'Resolving nearest city from GPS coordinates...',
+        });
+
+        // Reverse geocode via /api/locate to obtain administrative city & state
+        let detectedCity: string | undefined;
+        let detectedCountry: string | undefined;
+        try {
+          const revRes = await fetch(`/api/locate?lat=${latitude}&lng=${longitude}`, {
+            signal: AbortSignal.timeout(3000),
+          });
+          if (revRes.ok) {
+            const revData = await revRes.json();
+            if (revData && revData.success) {
+              detectedCity = revData.city;
+              detectedCountry = revData.countryCode;
+            }
+          }
+        } catch {
+          // Continue with coordinate Haversine match
+        }
+
+        const closest = resolveLocationToCity(latitude, longitude, detectedCity, detectedCountry);
         setActiveCountry(closest.country);
         setLocationStatus({
           type: 'success',
-          message: `📍 Found nearest city: ${closest.displayName} (${closest.country === 'IN' ? 'India' : 'USA'})`,
+          message: `📍 Pinpointed: ${closest.displayName} (${closest.country === 'IN' ? 'India 🇮🇳' : 'USA 🇺🇸'})`,
         });
         setTimeout(() => {
           setIsLocating(false);
@@ -222,14 +253,14 @@ export default function LocationSelectorModal({
 
         const reason =
           err.code === 1
-            ? 'GPS access blocked. Finding your city via network/IP...'
+            ? 'GPS access permission blocked. Detecting via network/IP...'
             : err.code === 2
-            ? 'GPS position unavailable. Finding your city via network/IP...'
-            : 'GPS timed out. Finding your city via network/IP...';
+            ? 'GPS position unavailable. Detecting via network/IP...'
+            : 'GPS timed out. Detecting via network/IP...';
 
         runNetworkFallback(reason);
       },
-      { timeout: 5000, enableHighAccuracy: false, maximumAge: 300000 }
+      { timeout: 10000, enableHighAccuracy: true, maximumAge: 60000 }
     );
   };
 

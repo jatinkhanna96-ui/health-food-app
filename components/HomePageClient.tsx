@@ -214,7 +214,7 @@ export default function HomePage({
     setTimeout(() => setLocationBannerText(null), 3500);
   }, [handleSelectCityConfig]);
 
-  // Auto-detect country & city from user IP address on load
+  // Auto-detect country & city on load
   useEffect(() => {
     let isCancelled = false;
 
@@ -223,43 +223,105 @@ export default function HomePage({
       typeof window !== 'undefined' &&
       sessionStorage.getItem('healthy_vicinity_manual_country_switch') === 'true';
 
-    // 1. Fast zero-latency client heuristic (matches user's browser timezone/locale)
-    if (!hasManualSessionOverride) {
-      const clientCountry = detectUserCountryFromClient();
-      if (clientCountry === 'IN' && selectedCity.country !== 'IN') {
-        const indiaDefault = getDefaultCityForCountry('IN');
-        handleSelectCityConfig(indiaDefault, false);
+    // 1. Check if user previously saved a city preference
+    if (!hasManualSessionOverride && typeof window !== 'undefined') {
+      try {
+        const savedCityJson = localStorage.getItem('healthy_vicinity_saved_city');
+        if (savedCityJson) {
+          const saved = JSON.parse(savedCityJson);
+          const matched = ALL_CITIES.find(
+            (c) => c.id === saved.id || c.city.toLowerCase() === (saved.name || saved.city || '').toLowerCase()
+          );
+          if (matched) {
+            handleSelectCityConfig(matched, false);
+            return;
+          }
+        }
+      } catch {
+        // ignore
       }
     }
 
+    // 2. Instant client heuristic (matches user's browser timezone/locale)
+    if (!hasManualSessionOverride) {
+      const clientCountry = detectUserCountryFromClient();
+      if (clientCountry !== selectedCity.country) {
+        const defaultCity = getDefaultCityForCountry(clientCountry);
+        handleSelectCityConfig(defaultCity, false);
+      }
+    }
+
+    // 3. Silent GPS check if permission was already granted previously
+    if (!hasManualSessionOverride && typeof navigator !== 'undefined' && navigator.permissions?.query) {
+      navigator.permissions
+        .query({ name: 'geolocation' })
+        .then((permissionStatus) => {
+          if (permissionStatus.state === 'granted' && !isCancelled && navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              async (pos) => {
+                if (isCancelled) return;
+                const { latitude, longitude } = pos.coords;
+                let detectedCity: string | undefined;
+                let detectedCountry: string | undefined;
+                try {
+                  const revRes = await fetch(`/api/locate?lat=${latitude}&lng=${longitude}`, {
+                    signal: AbortSignal.timeout(3000),
+                  });
+                  if (revRes.ok) {
+                    const revData = await revRes.json();
+                    if (revData && revData.success) {
+                      detectedCity = revData.city;
+                      detectedCountry = revData.countryCode;
+                    }
+                  }
+                } catch {
+                  // continue
+                }
+                const resolved = resolveLocationToCity(latitude, longitude, detectedCity, detectedCountry);
+                if (!isCancelled) {
+                  handleSelectCityConfig(resolved, false);
+                }
+              },
+              () => {},
+              { timeout: 8000, enableHighAccuracy: true, maximumAge: 60000 }
+            );
+          }
+        })
+        .catch(() => {});
+    }
+
+    // 4. IP-based location auto-detection
     async function detectCountryAndLocationFromIP() {
       if (hasManualSessionOverride) return;
 
-      // Tier 1: Fast direct browser IP lookup via api.country.is (<50ms)
+      // Tier 1: Call internal API endpoint (inspects proxy headers, ip-api.com, ipwhois)
       try {
-        const fastCountryRes = await fetch('https://api.country.is/', {
-          signal: AbortSignal.timeout(2000),
-        });
-        if (fastCountryRes.ok && !isCancelled) {
-          const fastData = await fastCountryRes.json();
-          if (fastData && fastData.country) {
-            const detectedCountry: CountryCode = fastData.country === 'IN' ? 'IN' : 'US';
-            if (detectedCountry !== selectedCity.country) {
-              const defaultCity = getDefaultCityForCountry(detectedCountry);
-              handleSelectCityConfig(defaultCity, false);
-              const label = detectedCountry === 'IN' ? 'India 🇮🇳' : 'USA 🇺🇸';
-              setLocationBannerText(`📍 Auto-switched country to ${label} based on IP address`);
-              setTimeout(() => {
-                if (!isCancelled) setLocationBannerText(null);
-              }, 4000);
+        if (!isCancelled) {
+          const res = await fetch('/api/locate');
+          if (res.ok) {
+            const data = await res.json();
+            if (
+              data.success &&
+              (data.countryCode ||
+                (typeof data.latitude === 'number' && typeof data.longitude === 'number') ||
+                data.city)
+            ) {
+              const resolved = resolveLocationToCity(
+                data.latitude,
+                data.longitude,
+                data.city,
+                data.countryCode
+              );
+              handleSelectCityConfig(resolved, false);
+              return;
             }
           }
         }
       } catch {
-        // Proceed to rich IP resolution
+        // Proceed to direct browser fallback
       }
 
-      // Tier 2: Rich direct browser IP lookup via ipwho.is (resolves city, region, coordinates)
+      // Tier 2: Rich direct browser IP lookup via ipwho.is
       try {
         if (!isCancelled) {
           const directRes = await fetch('https://ipwho.is/', {
@@ -275,44 +337,12 @@ export default function HomePage({
                 directData.country_code
               );
               handleSelectCityConfig(resolved, false);
-              const countryLabel = resolved.country === 'IN' ? 'India 🇮🇳' : 'USA 🇺🇸';
-              setLocationBannerText(`📍 Country & city detected via IP: ${resolved.displayName} (${countryLabel})`);
-              setTimeout(() => {
-                if (!isCancelled) setLocationBannerText(null);
-              }, 5000);
               return;
             }
           }
         }
       } catch {
-        // Proceed to internal API fallback
-      }
-
-      // Tier 3: Call internal API endpoint (inspects reverse proxy edge headers & client IP)
-      try {
-        if (!isCancelled) {
-          const res = await fetch('/api/locate');
-          if (res.ok) {
-            const data = await res.json();
-            if (data.success && (data.countryCode || (typeof data.latitude === 'number' && typeof data.longitude === 'number'))) {
-              const resolved = resolveLocationToCity(
-                data.latitude,
-                data.longitude,
-                data.city,
-                data.countryCode
-              );
-              handleSelectCityConfig(resolved, false);
-              const countryLabel = resolved.country === 'IN' ? 'India 🇮🇳' : 'USA 🇺🇸';
-              setLocationBannerText(`📍 Country detected via IP: ${resolved.displayName} (${countryLabel})`);
-              setTimeout(() => {
-                if (!isCancelled) setLocationBannerText(null);
-              }, 5000);
-              return;
-            }
-          }
-        }
-      } catch {
-        // Handled silently
+        // Silently handled
       }
     }
 
@@ -351,14 +381,21 @@ export default function HomePage({
   const [isAutoLocating, setIsAutoLocating] = useState(false);
   const handleQuickLocate = useCallback(() => {
     setIsAutoLocating(true);
+    setLocationBannerText('📡 Pinpointing your location via GPS...');
 
     const fallbackToNetwork = async () => {
+      setLocationBannerText('🌐 Resolving your location via network...');
       // 1. Try internal locate API
       try {
         const res = await fetch('/api/locate');
         if (res.ok) {
           const data = await res.json();
-          if (data.success && (data.countryCode || (typeof data.latitude === 'number' && typeof data.longitude === 'number'))) {
+          if (
+            data.success &&
+            (data.countryCode ||
+              (typeof data.latitude === 'number' && typeof data.longitude === 'number') ||
+              data.city)
+          ) {
             const resolved = resolveLocationToCity(
               data.latitude,
               data.longitude,
@@ -367,7 +404,7 @@ export default function HomePage({
             );
             handleSelectCityConfig(resolved, true);
             const countryLabel = resolved.country === 'IN' ? 'India 🇮🇳' : 'USA 🇺🇸';
-            setLocationBannerText(`📍 Location detected via IP: ${resolved.displayName} (${countryLabel})`);
+            setLocationBannerText(`📍 Location detected: ${resolved.displayName} (${countryLabel})`);
             setTimeout(() => setLocationBannerText(null), 5000);
             setIsAutoLocating(false);
             return;
@@ -393,40 +430,19 @@ export default function HomePage({
             );
             handleSelectCityConfig(resolved, true);
             const countryLabel = resolved.country === 'IN' ? 'India 🇮🇳' : 'USA 🇺🇸';
-            setLocationBannerText(`📍 Location detected via IP: ${resolved.displayName} (${countryLabel})`);
+            setLocationBannerText(`📍 Location detected: ${resolved.displayName} (${countryLabel})`);
             setTimeout(() => setLocationBannerText(null), 5000);
             setIsAutoLocating(false);
             return;
           }
         }
       } catch {
-        // Proceed to fast country lookup
+        // Proceed
       }
 
-      // 3. Fast country IP lookup fallback
-      try {
-        const countryRes = await fetch('https://api.country.is/', {
-          signal: AbortSignal.timeout(2000),
-        });
-        if (countryRes.ok) {
-          const cData = await countryRes.json();
-          if (cData && cData.country) {
-            const resolvedCountry: CountryCode = cData.country === 'IN' ? 'IN' : 'US';
-            const defaultCity = getDefaultCityForCountry(resolvedCountry);
-            handleSelectCityConfig(defaultCity, true);
-            const countryLabel = resolvedCountry === 'IN' ? 'India 🇮🇳' : 'USA 🇺🇸';
-            setLocationBannerText(`📍 Country detected via IP: ${countryLabel}`);
-            setTimeout(() => setLocationBannerText(null), 5000);
-            setIsAutoLocating(false);
-            return;
-          }
-        }
-      } catch {
-        // ignore
-      }
-
-      // If network fails as well, open the location modal for manual selection
+      // If network could not pinpoint, open the location modal for manual selection
       setIsAutoLocating(false);
+      setLocationBannerText(null);
       setIsLocationModalOpen(true);
     };
 
@@ -441,14 +457,34 @@ export default function HomePage({
         handled = true;
         fallbackToNetwork();
       }
-    }, 4500);
+    }, 10500);
 
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
+      async (pos) => {
         if (handled) return;
         handled = true;
         clearTimeout(timeout);
-        const resolved = resolveLocationToCity(pos.coords.latitude, pos.coords.longitude);
+        const { latitude, longitude } = pos.coords;
+
+        // Reverse geocode via /api/locate for exact administrative city & state
+        let detectedCity: string | undefined;
+        let detectedCountry: string | undefined;
+        try {
+          const revRes = await fetch(`/api/locate?lat=${latitude}&lng=${longitude}`, {
+            signal: AbortSignal.timeout(3000),
+          });
+          if (revRes.ok) {
+            const revData = await revRes.json();
+            if (revData && revData.success) {
+              detectedCity = revData.city;
+              detectedCountry = revData.countryCode;
+            }
+          }
+        } catch {
+          // ignore
+        }
+
+        const resolved = resolveLocationToCity(latitude, longitude, detectedCity, detectedCountry);
         handleSelectCityConfig(resolved, true);
         const countryLabel = resolved.country === 'IN' ? 'India 🇮🇳' : 'USA 🇺🇸';
         setLocationBannerText(`📍 Pinpointed location via GPS: ${resolved.displayName} (${countryLabel})`);
@@ -461,7 +497,7 @@ export default function HomePage({
         clearTimeout(timeout);
         fallbackToNetwork();
       },
-      { timeout: 4000, enableHighAccuracy: false, maximumAge: 300000 }
+      { timeout: 10000, enableHighAccuracy: true, maximumAge: 60000 }
     );
   }, [handleSelectCityConfig]);
 
@@ -1460,13 +1496,13 @@ export default function HomePage({
                 <ChevronDown className="w-3 h-3 text-[#5A4638] group-hover:text-[#C86A1D] shrink-0 ml-0.5 transition-colors" />
               </button>
 
-              {/* Quick Auto-Locate Button (XL screens only to preserve breathing room) */}
+              {/* Quick Auto-Locate Button */}
               <button
                 id="header-quick-locate-btn"
                 onClick={handleQuickLocate}
                 disabled={isAutoLocating}
-                className="hidden xl:inline-flex p-2 sm:p-2.5 rounded-full bg-white hover:bg-[#EBF4ED] text-[#2D5A34] border border-[#E0D4BE] hover:border-[#2D5A34]/60 transition-all cursor-pointer active:scale-95 shadow-2xs shrink-0 disabled:opacity-60"
-                title="Auto-detect location via GPS or IP address"
+                className="inline-flex items-center justify-center p-1.5 sm:p-2 rounded-full bg-white hover:bg-[#EBF4ED] text-[#2D5A34] border border-[#E0D4BE] hover:border-[#2D5A34]/60 transition-all cursor-pointer active:scale-95 shadow-2xs shrink-0 disabled:opacity-60"
+                title="Auto-detect my location (GPS / IP)"
               >
                 {isAutoLocating ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin text-[#2D5A34] shrink-0" />
