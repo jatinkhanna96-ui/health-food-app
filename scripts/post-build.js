@@ -34,6 +34,24 @@ try {
   const staticDir = path.join(process.cwd(), '.next', 'static');
   const publicDir = path.join(process.cwd(), 'public');
 
+  // Ensure common app router chunks have non-hashed aliases for development and fallback clients
+  const appChunksDir = path.join(staticDir, 'chunks', 'app');
+  if (fs.existsSync(appChunksDir)) {
+    const chunkFiles = fs.readdirSync(appChunksDir);
+    const prefixes = ['error', 'global-error', 'not-found', 'layout', 'page'];
+    for (const prefix of prefixes) {
+      const aliasTarget = path.join(appChunksDir, `${prefix}.js`);
+      if (!fs.existsSync(aliasTarget)) {
+        const matching = chunkFiles.find(f => f.startsWith(`${prefix}-`) && f.endsWith('.js'));
+        if (matching) {
+          try {
+            fs.copyFileSync(path.join(appChunksDir, matching), aliasTarget);
+          } catch (_) {}
+        }
+      }
+    }
+  }
+
   if (fs.existsSync(standaloneDir)) {
     const standaloneStaticDir = path.join(standaloneDir, '.next', 'static');
     copyRecursiveSync(staticDir, standaloneStaticDir);
@@ -41,6 +59,11 @@ try {
     if (fs.existsSync(publicDir)) {
       const standalonePublicDir = path.join(standaloneDir, 'public');
       copyRecursiveSync(publicDir, standalonePublicDir);
+    }
+
+    const serverTs = path.join(process.cwd(), 'server.ts');
+    if (fs.existsSync(serverTs)) {
+      fs.copyFileSync(serverTs, path.join(standaloneDir, 'server.ts'));
     }
   }
 

@@ -15,7 +15,13 @@ try {
 } catch (_) {}
 
 console.log('> Running Next.js build with NODE_ENV=production...');
-const nextCli = path.resolve(__dirname, '..', 'node_modules', 'next', 'dist', 'bin', 'next');
+let nextCli;
+try {
+  nextCli = require.resolve('next/dist/bin/next');
+} catch (_) {
+  nextCli = path.resolve(__dirname, '..', 'node_modules', 'next', 'dist', 'bin', 'next');
+}
+
 const buildResult = spawnSync(process.execPath, [nextCli, 'build'], {
   stdio: 'inherit',
   env: {
